@@ -14,23 +14,25 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="40dp">
 
             <TextView
                 android:id="@+id/tv_napitok_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="20dp"
+                android:textStyle="bold"
+                android:layout_centerVertical="true"
                 android:text="Капучино"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="25sp" />
 
             <TextView
                 android:id="@+id/tv_napitok_cost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:foregroundGravity="center_vertical"
+                android:layout_marginEnd="20dp"
+                android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/coffee_line"
                 android:text="90Р"
                 android:textSize="20sp" />
@@ -39,13 +41,14 @@
                 android:id="@+id/coffee_line"
                 layout="@layout/line"
                 android:layout_width="1dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/ib_napitok_add" />
 
             <ImageButton
                 android:id="@+id/ib_napitok_add"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:layout_centerVertical="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="10dp"
                 android:src="@drawable/star_icon_1" />

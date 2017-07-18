@@ -84,6 +84,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mAdapter = new CoffeeAdapter(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerview.setLayoutManager(linearLayoutManager);
+        SpaceItemDecoration decorator = new SpaceItemDecoration(16, true, true);
+        recyclerview.addItemDecoration(decorator);
         recyclerview.setAdapter(mAdapter);
         FrameLayout parentThatHasBottomSheetBehavior = (FrameLayout) findViewById(R.id.fl_sheet_content);
         mBottomSheetBehavior = BottomSheetBehavior.from(parentThatHasBottomSheetBehavior);
@@ -99,7 +101,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.getUiSettings().setRotateGesturesEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
-        MarkerOptions options = new MarkerOptions();
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override

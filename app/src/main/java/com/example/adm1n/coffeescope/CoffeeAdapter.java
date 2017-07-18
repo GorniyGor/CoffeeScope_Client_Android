@@ -1,10 +1,13 @@
 package com.example.adm1n.coffeescope;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 class CoffeeAdapter extends RecyclerView.Adapter<CoffeeAdapter.CoffeeViewHolder> {
@@ -32,15 +35,25 @@ class CoffeeAdapter extends RecyclerView.Adapter<CoffeeAdapter.CoffeeViewHolder>
 
     static class CoffeeViewHolder extends RecyclerView.ViewHolder {
 
-        TextView appName;
+        private ImageButton ib_napitok_add;
+        private Context mContext;
 
         CoffeeViewHolder(Context context) {
             this(LayoutInflater.from(context).inflate(R.layout.coffee_adapter_item, null));
+            mContext = context;
         }
 
         private CoffeeViewHolder(View itemView) {
             super(itemView);
-//            appName = (TextView) itemView.findViewById(R.id.app_name);
+            ib_napitok_add = (ImageButton) itemView.findViewById(R.id.ib_napitok_add);
+
+            ib_napitok_add.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, ViborNapitka.class);
+                    mContext.startActivity(intent);
+                }
+            });
         }
     }
 }

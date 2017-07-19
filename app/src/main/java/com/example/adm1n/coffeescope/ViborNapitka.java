@@ -38,7 +38,7 @@ public class ViborNapitka extends AppCompatActivity {
         recyclerview = (RecyclerView) findViewById(R.id.rv);
         mAdapter = new CoffeeAdapter(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        SpaceItemDecoration decorator = new SpaceItemDecoration(16, true, true);
+        SpaceItemDecoration decorator = new SpaceItemDecoration(32, true, true);
         recyclerview.addItemDecoration(decorator);
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setAdapter(mAdapter);

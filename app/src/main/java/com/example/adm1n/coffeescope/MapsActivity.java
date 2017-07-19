@@ -6,6 +6,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -51,6 +52,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LatLng mLastKnownLocation;
     private boolean mPermissionDenied = false;
     private TextView tvCoffeName;
+    private AppBarLayout appBarLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +77,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mButtonMyLocate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getLastKnownLocation();
+                if (mMap.getMyLocation() != null) {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                            new LatLng(mMap.getMyLocation().getLatitude(), mMap.getMyLocation().getLongitude()), DEFAULT_MAP_ZOOM));
+                }
+//                getLastKnownLocation();
             }
         });
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -84,12 +90,27 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mAdapter = new CoffeeAdapter(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerview.setLayoutManager(linearLayoutManager);
-        SpaceItemDecoration decorator = new SpaceItemDecoration(16, true, true);
+        SpaceItemDecoration decorator = new SpaceItemDecoration(32, true, true);
         recyclerview.addItemDecoration(decorator);
         recyclerview.setAdapter(mAdapter);
+        appBarLayout = (AppBarLayout) findViewById(R.id.peakView);
         FrameLayout parentThatHasBottomSheetBehavior = (FrameLayout) findViewById(R.id.fl_sheet_content);
         mBottomSheetBehavior = BottomSheetBehavior.from(parentThatHasBottomSheetBehavior);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+        mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    appBarLayout.setExpanded(true);
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
         tvCoffeName = (TextView) findViewById(R.id.tv_coffee_name);
         mapFragment.getMapAsync(this);
     }
@@ -98,9 +119,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         enableMyLocation();
+        getLastKnownLocation();
         mMap.getUiSettings().setRotateGesturesEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
-        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mMap.getUiSettings().setMyLocationButtonEnabled(true);
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -157,7 +179,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else if (mMap != null) {
             // Access to the location has been granted to the app.
             mMap.setMyLocationEnabled(true);
-            getLastKnownLocation();
+//            getLastKnownLocation();
         }
     }
 

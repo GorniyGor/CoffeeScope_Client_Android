@@ -31,7 +31,7 @@
                 android:id="@+id/main.collapsing"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_scrollFlags="scroll">
+                app:layout_scrollFlags="scroll|snap">
 
                 <include layout="@layout/preview_coffee_card" />
 
@@ -39,11 +39,22 @@
 
         </android.support.design.widget.AppBarLayout>
 
+        <TextView
+            android:id="@+id/tvTagCoffee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Кофе"
+            android:textColor="@color/black"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/coordinator"
+            android:layout_below="@+id/tvTagCoffee"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     </android.support.design.widget.CoordinatorLayout>
 

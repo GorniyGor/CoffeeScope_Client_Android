@@ -35,7 +35,7 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/app_name"
-            android:screenOrientation="reversePortrait"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,7 +46,7 @@
 
         <activity
             android:name=".ViborNapitka"
-            android:screenOrientation="reversePortrait"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/app_name">
         </activity>

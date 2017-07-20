@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/ivPreviewArrowTop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@color/white"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:src="@drawable/star_icon_1" />
+
+    <include
+        android:id="@+id/viewPreviewTopHorizontalLine"
+        layout="@layout/line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/ivPreviewArrowTop"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:background="@color/line" />
+
+    <TextView
+        android:id="@+id/tv_coffee_name"
+        style="@style/PreviewCardCoffeeName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/viewPreviewTopHorizontalLine"
+        android:background="@color/white"
+        android:paddingTop="8dp"
+        android:text="Название кофейни"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+</RelativeLayout>

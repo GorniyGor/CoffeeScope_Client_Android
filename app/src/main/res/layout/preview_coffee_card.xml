@@ -6,29 +6,36 @@
 
     <TextView
         android:id="@+id/tv_coffe_address"
+        style="@style/PreviewCardCoffeeDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_coffee_name"
-        android:gravity="center"
         android:text="Адрес кофейни"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/tv_coffe_phone_number"
+        style="@style/PreviewCardCoffeeDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_coffe_address"
-        android:gravity="center"
         android:text="Телефон кофейни"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <TextView
-        android:id="@+id/tv_coffe_preview_info"
+    <View
+        android:id="@+id/viewPreviewBottomHorizontalLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/tv_coffe_phone_number"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/line" />
+
+    <include
+        layout="@layout/preview_card_bottom_elements"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_coffe_phone_number"
-        android:gravity="center"
-        android:text="разная информация"
-        android:textColor="@color/black"
-        android:textSize="40sp"/>
+        android:background="@color/white"
+        android:layout_below="@id/viewPreviewBottomHorizontalLine"
+        android:layout_marginBottom="8dp" />
 </RelativeLayout>

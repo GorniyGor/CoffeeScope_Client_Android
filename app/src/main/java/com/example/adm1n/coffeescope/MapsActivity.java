@@ -274,13 +274,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    LatLng castLatLngToString(String latLng) {
+        String[] newLatLng = latLng.split(",");
+        double latitude = Double.parseDouble(newLatLng[0]);
+        double longitude = Double.parseDouble(newLatLng[1]);
+        LatLng coffeeLatLng = new LatLng(latitude, longitude);
+        return coffeeLatLng;
+    }
+
     void setMarkers() {
         for (int i = 0; i < coffeeList.size(); i++) {
-            String[] latLng = coffeeList.get(i).getCoordinate().split(",");
-            double latitude = Double.parseDouble(latLng[0]);
-            double longitude = Double.parseDouble(latLng[1]);
-            LatLng coffeeLatLng = new LatLng(latitude, longitude);
-            mMap.addMarker(new MarkerOptions().position(coffeeLatLng).snippet(String.valueOf(i)));
+            mMap.addMarker(new MarkerOptions().position(castLatLngToString(coffeeList.get(i).getCoordinate())).snippet(String.valueOf(i)));
         }
     }
 
@@ -299,6 +303,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         tvPreviewBottomRateCount = (TextView) findViewById(R.id.tvPreviewBottomRateCount);
         tvPreviewBottomRateCount.setText(coffee.getRating());
         tvPreviewBottomRangeCount = (TextView) findViewById(R.id.tvPreviewBottomRangeCount);
-        tvPreviewBottomRangeCount.setText(coffee.getRange());
+        tvPreviewBottomRangeCount.setText(String.valueOf(
+                calculationDistance(mLastKnownLocation, castLatLngToString(coffee.getCoordinate()))));
+    }
+
+    public static double calculationDistance(LatLng StartP, LatLng EndP) {
+        return calculationDistanceByCoord(StartP.latitude, StartP.longitude, EndP.latitude, EndP.longitude);
+    }
+
+    private static double calculationDistanceByCoord(double startPointLat, double startPointLon, double endPointLat, double endPointLon) {
+        float[] results = new float[1];
+        Location.distanceBetween(startPointLat, startPointLon, endPointLat, endPointLon, results);
+        return results[0];
     }
 }

@@ -34,8 +34,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private final LatLng DEFAULT_RED_SQUARE = new LatLng(55.753922, 37.620783);
-    private final LatLng MARKER3 = new LatLng(55.779781, 37.609029);
-    private final int DEFAULT_MAP_ZOOM = 10;
+    private final int DEFAULT_MAP_ZOOM = 13;
     private final String coffeeLatLng[] = {"38.961814, -77.036347", "38.923592, -76.975781", "38.910040, -76.971516",
             "38.897782, -77.017332", "38.904939, -77.037914", "55.780813, 37.605429", "55.779516, 37.601032", "55.781724, 37.598918",
             "55.779781, 37.609029", "55.770781, 37.609223"};
@@ -92,9 +91,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mButtonMyLocate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                float currentZoom = mMap.getCameraPosition().zoom;
                 if (mMap.getMyLocation() != null) {
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                            new LatLng(mMap.getMyLocation().getLatitude(), mMap.getMyLocation().getLongitude()), DEFAULT_MAP_ZOOM));
+                    if (currentZoom <= 13) {
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                new LatLng(mMap.getMyLocation().getLatitude(), mMap.getMyLocation().getLongitude()), DEFAULT_MAP_ZOOM));
+                    } else {
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                new LatLng(mMap.getMyLocation().getLatitude(), mMap.getMyLocation().getLongitude()), currentZoom));
+                    }
                 }
             }
         });
@@ -304,11 +309,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         tvPreviewBottomRateCount.setText(coffee.getRating());
         tvPreviewBottomRangeCount = (TextView) findViewById(R.id.tvPreviewBottomRangeCount);
         tvPreviewBottomRangeCount.setText(String.valueOf(
-                calculationDistance(mLastKnownLocation, castLatLngToString(coffee.getCoordinate()))));
+                calculationDistance(mLastKnownLocation, castLatLngToString(coffee.getCoordinate()))) + "м");
     }
 
-    public static double calculationDistance(LatLng StartP, LatLng EndP) {
-        return calculationDistanceByCoord(StartP.latitude, StartP.longitude, EndP.latitude, EndP.longitude);
+    public static int calculationDistance(LatLng StartP, LatLng EndP) {
+        double d = calculationDistanceByCoord(StartP.latitude, StartP.longitude, EndP.latitude, EndP.longitude);
+        return (int) d;
+
     }
 
     private static double calculationDistanceByCoord(double startPointLat, double startPointLon, double endPointLat, double endPointLon) {

@@ -1,5 +1,6 @@
 package com.example.adm1n.coffeescope;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,6 +22,7 @@ public class ViborNapitka extends AppCompatActivity {
     private RecyclerView recyclerview;
     private Toolbar toolbar;
     private Button mAddButton;
+    private Button mPayButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,6 +37,15 @@ public class ViborNapitka extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        mPayButton = (Button) findViewById(R.id.btn_pay_napitok);
+        mPayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Order.class);
+                startActivity(intent);
+            }
+        });
+
         recyclerview = (RecyclerView) findViewById(R.id.rv);
         mAdapter = new CoffeeAdapter(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);

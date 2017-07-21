@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_order_coffee_name"
+            style="@style/PreviewCardCoffeeName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:paddingTop="8dp"
+            android:text="Starbucks coffee"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/tv_order_coffee_address"
+            style="@style/PreviewCardCoffeeDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_order_coffee_name"
+            android:background="@color/white"
+            android:text="Ломоносовский пр-т, д. 88"
+            android:layout_marginBottom="8dp"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <View
+            android:id="@+id/viewPreviewTopHorizontalLine"
+            layout="@layout/line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/tv_order_coffee_address"
+            android:background="@color/line"
+            android:paddingTop="8dp" />
+
+        <include
+            android:id="@+id/layout_adapter_item"
+            layout="@layout/coffee_adapter_item"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_below="@+id/viewPreviewTopHorizontalLine"
+            android:background="@color/white" />
+
+        <TextView
+            android:id="@+id/tv_order_coffee_comment"
+            style="@style/PreviewCardCoffeeName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_below="@+id/layout_adapter_item"
+            android:text="@string/сomment"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="normal" />
+
+        <include
+            android:id="@+id/layout_comment_field"
+            layout="@layout/fragment_order_comment_field"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/tv_order_coffee_comment"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp" />
+
+        <TextView
+            android:id="@+id/tv_order_coffee_time_order"
+            style="@style/PreviewCardCoffeeName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_comment_field"
+            android:layout_marginTop="8dp"
+            android:text="@string/order_time"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="normal" />
+
+        <TimePicker
+            android:id="@+id/time_picker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_order_coffee_time_order"
+            android:layout_centerHorizontal="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:background="@color/white"
+            android:timePickerMode="spinner" />
+
+        <include
+            android:id="@+id/layout_how_to_pay"
+            layout="@layout/fragment_order_how_to_pay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/time_picker" />
+
+        <Button
+            android:id="@+id/btn_order_total"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/layout_how_to_pay"
+            android:background="@color/grey"
+            android:text="Итого: 125р" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/btn_order_total"
+            android:background="@color/green"
+            android:text="Оплатить" />
+    </RelativeLayout>
+</ScrollView>

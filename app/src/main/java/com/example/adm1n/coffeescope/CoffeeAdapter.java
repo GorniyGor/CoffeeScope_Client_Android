@@ -6,9 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 class CoffeeAdapter extends RecyclerView.Adapter<CoffeeAdapter.CoffeeViewHolder> {
 
@@ -39,7 +37,7 @@ class CoffeeAdapter extends RecyclerView.Adapter<CoffeeAdapter.CoffeeViewHolder>
         private Context mContext;
 
         CoffeeViewHolder(Context context) {
-            this(LayoutInflater.from(context).inflate(R.layout.coffee_adapter_item, null));
+            this(LayoutInflater.from(context).inflate(R.layout.coffee_adapter_item_with_cardview, null));
             mContext = context;
         }
 

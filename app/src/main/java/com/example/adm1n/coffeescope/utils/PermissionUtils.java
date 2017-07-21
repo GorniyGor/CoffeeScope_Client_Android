@@ -1,4 +1,4 @@
-package com.example.adm1n.coffeescope;
+package com.example.adm1n.coffeescope.utils;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -10,6 +10,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
+
+import com.example.adm1n.coffeescope.R;
 
 /**
  * Created by adm1n on 11.07.2017.

@@ -19,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.adm1n.coffeescope.utils.MapsUtils;
+import com.example.adm1n.coffeescope.utils.PermissionUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -45,6 +47,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button mButtonPlusZoom;
     private Button mButtonMinusZoom;
     private Button mButtonMyLocate;
+    private Button mButtonMyProfile;
+    private Button mButtonSearch;
+    private Button mButtonApply;
+
     private GoogleMap mMap;
     private LocationManager mLocationManager;
     private boolean mPermissionDenied = false;
@@ -66,13 +72,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private RecyclerView recyclerview;
     private CoffeeAdapter mAdapter;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contain_main);
         createCoffee();
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        //init View
         mButtonPlusZoom = (Button) findViewById(R.id.btn_plus_zoom);
         mButtonPlusZoom.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,8 +109,32 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
+
+        mButtonMyProfile = (Button) findViewById(R.id.btn_profile);
+        mButtonMyProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MapsActivity.this, "On Profile Click", Toast.LENGTH_SHORT).show();
+            }
+        });
+        mButtonSearch = (Button) findViewById(R.id.btn_search);
+        mButtonSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MapsActivity.this, "On Search Click", Toast.LENGTH_SHORT).show();
+            }
+        });
+        mButtonApply = (Button) findViewById(R.id.btn_apply);
+        mButtonApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MapsActivity.this, "On Apply Click", Toast.LENGTH_SHORT).show();
+            }
+        });
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+
+        //initRecycler
         recyclerview = (RecyclerView) findViewById(R.id.recyclerview);
         mAdapter = new CoffeeAdapter(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -112,6 +142,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SpaceItemDecoration decorator = new SpaceItemDecoration(32, true, true);
         recyclerview.addItemDecoration(decorator);
         recyclerview.setAdapter(mAdapter);
+
+        //initBottomSheet
         appBarLayout = (AppBarLayout) findViewById(R.id.peakView);
         FrameLayout parentThatHasBottomSheetBehavior = (FrameLayout) findViewById(R.id.fl_sheet_content);
         mBottomSheetBehavior = BottomSheetBehavior.from(parentThatHasBottomSheetBehavior);
@@ -279,17 +311,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    LatLng castLatLngToString(String latLng) {
-        String[] newLatLng = latLng.split(",");
-        double latitude = Double.parseDouble(newLatLng[0]);
-        double longitude = Double.parseDouble(newLatLng[1]);
-        LatLng coffeeLatLng = new LatLng(latitude, longitude);
-        return coffeeLatLng;
-    }
-
     void setMarkers() {
         for (int i = 0; i < coffeeList.size(); i++) {
-            mMap.addMarker(new MarkerOptions().position(castLatLngToString(coffeeList.get(i).getCoordinate())).snippet(String.valueOf(i)));
+            mMap.addMarker(new MarkerOptions().position(MapsUtils.castLatLngToString(coffeeList.get(i).getCoordinate()))
+                    .snippet(String.valueOf(i)));
         }
     }
 
@@ -309,18 +334,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         tvPreviewBottomRateCount.setText(coffee.getRating());
         tvPreviewBottomRangeCount = (TextView) findViewById(R.id.tvPreviewBottomRangeCount);
         tvPreviewBottomRangeCount.setText(String.valueOf(
-                calculationDistance(mLastKnownLocation, castLatLngToString(coffee.getCoordinate()))) + "м");
-    }
-
-    public static int calculationDistance(LatLng StartP, LatLng EndP) {
-        double d = calculationDistanceByCoord(StartP.latitude, StartP.longitude, EndP.latitude, EndP.longitude);
-        return (int) d;
-
-    }
-
-    private static double calculationDistanceByCoord(double startPointLat, double startPointLon, double endPointLat, double endPointLon) {
-        float[] results = new float[1];
-        Location.distanceBetween(startPointLat, startPointLon, endPointLat, endPointLon, results);
-        return results[0];
+                MapsUtils.calculationDistance(mLastKnownLocation, MapsUtils.castLatLngToString(coffee.getCoordinate()))) + "м");
     }
 }

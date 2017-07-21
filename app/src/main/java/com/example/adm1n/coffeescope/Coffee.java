@@ -1,8 +1,5 @@
 package com.example.adm1n.coffeescope;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-
 /**
  * Created by adm1n on 20.07.2017.
  */

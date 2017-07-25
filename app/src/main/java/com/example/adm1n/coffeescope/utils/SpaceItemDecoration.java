@@ -1,4 +1,4 @@
-package com.example.adm1n.coffeescope;
+package com.example.adm1n.coffeescope.utils;
 
 import android.graphics.Rect;
 import android.support.v7.widget.LinearLayoutManager;

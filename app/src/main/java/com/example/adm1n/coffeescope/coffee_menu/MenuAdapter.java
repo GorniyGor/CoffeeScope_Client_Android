@@ -17,8 +17,11 @@ import java.util.List;
 
 public class MenuAdapter extends ExpandableRecyclerViewAdapter<HeaderViewHolder, BodyViewHolder> {
 
-    public MenuAdapter(List<? extends ExpandableGroup> groups) {
+    private OnProductClick onClickListener;
+
+    public MenuAdapter(List<? extends ExpandableGroup> groups, OnProductClick listener) {
         super(groups);
+        this.onClickListener = listener;
     }
 
     @Override
@@ -30,7 +33,7 @@ public class MenuAdapter extends ExpandableRecyclerViewAdapter<HeaderViewHolder,
     @Override
     public BodyViewHolder onCreateChildViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.coffee_adapter_item_with_cardview, parent, false);
-        return new BodyViewHolder(view);
+        return new BodyViewHolder(view, onClickListener);
     }
 
     @Override
@@ -45,5 +48,9 @@ public class MenuAdapter extends ExpandableRecyclerViewAdapter<HeaderViewHolder,
                                       ExpandableGroup group) {
         holder.setHeaderName(group.getTitle());
         holder.disableListener();
+    }
+
+    public interface OnProductClick {
+        void onClick(View v);
     }
 }

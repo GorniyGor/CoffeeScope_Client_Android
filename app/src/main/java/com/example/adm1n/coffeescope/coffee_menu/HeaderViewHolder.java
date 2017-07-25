@@ -4,7 +4,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.adm1n.coffeescope.R;
-import com.thoughtbot.expandablerecyclerview.listeners.OnGroupClickListener;
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 
 /**
@@ -14,11 +13,9 @@ import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 public class HeaderViewHolder extends GroupViewHolder {
 
     private TextView headerTitle;
-    private OnGroupClickListener listener;
 
     public HeaderViewHolder(View itemView) {
         super(itemView);
-        super.setOnGroupClickListener(null);
         headerTitle = ((TextView) itemView.findViewById(R.id.tvTitle));
     }
 
@@ -26,8 +23,7 @@ public class HeaderViewHolder extends GroupViewHolder {
         headerTitle.setText(name);
     }
 
-    public void disableListener(){
-        super.expand();
+    public void disableListener() {
         super.setOnGroupClickListener(null);
     }
 }

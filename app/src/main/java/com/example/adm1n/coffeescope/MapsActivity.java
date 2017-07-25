@@ -1,7 +1,10 @@
 package com.example.adm1n.coffeescope;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -13,17 +16,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.adm1n.coffeescope.coffee_menu.custom_model.CoffeeMenu;
 import com.example.adm1n.coffeescope.coffee_menu.MenuAdapter;
 import com.example.adm1n.coffeescope.model.Categories;
 import com.example.adm1n.coffeescope.model.Products;
+import com.example.adm1n.coffeescope.utils.BlurBuilder;
 import com.example.adm1n.coffeescope.utils.MapsUtils;
 import com.example.adm1n.coffeescope.utils.PermissionUtils;
+import com.example.adm1n.coffeescope.utils.SpaceItemDecoration;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -31,14 +38,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.thoughtbot.expandablerecyclerview.listeners.GroupExpandCollapseListener;
-import com.thoughtbot.expandablerecyclerview.listeners.OnGroupClickListener;
-import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, MenuAdapter.OnProductClick {
 
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private final LatLng DEFAULT_RED_SQUARE = new LatLng(55.753922, 37.620783);
@@ -78,7 +82,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private BottomSheetBehavior mBottomSheetBehavior;
 
     private RecyclerView recyclerview;
-    private CoffeeAdapter mAdapter;
+    private MenuAdapter menuAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,14 +149,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //initRecycler
         recyclerview = (RecyclerView) findViewById(R.id.recyclerview);
-        MenuAdapter menuAdapter = new MenuAdapter(getData());
-        mAdapter = new CoffeeAdapter(this);
+        menuAdapter = new MenuAdapter(getData(), this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerview.setLayoutManager(linearLayoutManager);
         SpaceItemDecoration decorator = new SpaceItemDecoration(32, true, true);
         recyclerview.addItemDecoration(decorator);
-//        recyclerview.setAdapter(mAdapter);
         recyclerview.setAdapter(menuAdapter);
+        for (int i = menuAdapter.getGroups().size() - 1; i >= 0; i--) {
+            expandGroup(i);
+        }
 
         //initBottomSheet
         appBarLayout = (AppBarLayout) findViewById(R.id.peakView);
@@ -176,6 +181,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         tvCoffeName = (TextView) findViewById(R.id.tv_coffee_name);
         ivPreviewArrowTop = (ImageView) findViewById(R.id.ivPreviewArrowTop);
         mapFragment.getMapAsync(this);
+    }
+
+    void blur() {
+        final View content = findViewById(android.R.id.content).getRootView();
+        if (content.getWidth() > 0) {
+            Bitmap image = BlurBuilder.blur(content);
+            getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), image));
+        } else {
+            content.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    Bitmap image = BlurBuilder.blur(content);
+                    getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), image));
+                }
+            });
+        }
+    }
+
+    public void expandGroup(int gPos) {
+        if (menuAdapter.isGroupExpanded(gPos)) {
+            return;
+        }
+        menuAdapter.toggleGroup(gPos);
     }
 
     @Override
@@ -381,5 +409,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             productList.add(products);
         }
         return productList;
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent = new Intent(getApplicationContext(), ViborNapitka.class);
+        startActivity(intent);
     }
 }

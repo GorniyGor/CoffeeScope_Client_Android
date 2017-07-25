@@ -2,51 +2,46 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="80dp"
+    android:gravity="center"
+    android:background="@color/white"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="@color/white"
-        android:layout_gravity="center">
+    <TextView
+        android:id="@+id/tv_napitok_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="20dp"
+        android:text="Капучино"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tv_napitok_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="20dp"
-            android:text="Капучино"
-            android:textColor="@color/black"
-            android:textSize="25sp"
-            android:textStyle="bold" />
+    <TextView
+        android:id="@+id/tv_napitok_cost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="20dp"
+        android:layout_toLeftOf="@+id/coffee_line"
+        android:text="90Р"
+        android:textSize="20sp" />
 
-        <TextView
-            android:id="@+id/tv_napitok_cost"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="20dp"
-            android:layout_toLeftOf="@+id/coffee_line"
-            android:text="90Р"
-            android:textSize="20sp" />
+    <include
+        android:id="@+id/coffee_line"
+        layout="@layout/line"
+        android:layout_width="1dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@+id/ib_napitok_add" />
 
-        <include
-            android:id="@+id/coffee_line"
-            layout="@layout/line"
-            android:layout_width="1dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:layout_toLeftOf="@+id/ib_napitok_add" />
-
-        <ImageButton
-            android:id="@+id/ib_napitok_add"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/star_icon_1" />
-    </RelativeLayout>
+    <ImageButton
+        android:id="@+id/ib_napitok_add"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/star_icon_1" />
 </RelativeLayout>

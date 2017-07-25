@@ -333,7 +333,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         tvPreviewBottomRateCount = (TextView) findViewById(R.id.tvPreviewBottomRateCount);
         tvPreviewBottomRateCount.setText(coffee.getRating());
         tvPreviewBottomRangeCount = (TextView) findViewById(R.id.tvPreviewBottomRangeCount);
-        tvPreviewBottomRangeCount.setText(String.valueOf(
-                MapsUtils.calculationDistance(mLastKnownLocation, MapsUtils.castLatLngToString(coffee.getCoordinate()))) + "м");
+        if (mLastKnownLocation != null) {
+            tvPreviewBottomRangeCount.setText(String.valueOf(
+                    MapsUtils.calculationDistance(mLastKnownLocation, MapsUtils.castLatLngToString(coffee.getCoordinate()))) + "м");
+        } else {
+            tvPreviewBottomRangeCount.setText("fail");
+        }
     }
 }

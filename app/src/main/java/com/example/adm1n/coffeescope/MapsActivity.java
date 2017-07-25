@@ -19,6 +19,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.adm1n.coffeescope.coffee_menu.MenuAdapter;
+import com.example.adm1n.coffeescope.model.Categories;
+import com.example.adm1n.coffeescope.model.Products;
 import com.example.adm1n.coffeescope.utils.MapsUtils;
 import com.example.adm1n.coffeescope.utils.PermissionUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,6 +31,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.thoughtbot.expandablerecyclerview.listeners.GroupExpandCollapseListener;
+import com.thoughtbot.expandablerecyclerview.listeners.OnGroupClickListener;
+import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +48,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             "55.779781, 37.609029", "55.770781, 37.609223"};
 
     private ArrayList<Coffee> coffeeList = new ArrayList<>();
+    private ArrayList<CoffeeMenu> coffeeMenuList;
+    private ArrayList<Categories> categoriesList = new ArrayList<>();
 
     //map
     private Button mButtonPlusZoom;
@@ -77,6 +85,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contain_main);
         createCoffee();
+        createCategory();
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         //init View
         mButtonPlusZoom = (Button) findViewById(R.id.btn_plus_zoom);
@@ -136,12 +145,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //initRecycler
         recyclerview = (RecyclerView) findViewById(R.id.recyclerview);
+        MenuAdapter menuAdapter = new MenuAdapter(getData());
         mAdapter = new CoffeeAdapter(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         recyclerview.setLayoutManager(linearLayoutManager);
         SpaceItemDecoration decorator = new SpaceItemDecoration(32, true, true);
         recyclerview.addItemDecoration(decorator);
-        recyclerview.setAdapter(mAdapter);
+//        recyclerview.setAdapter(mAdapter);
+        recyclerview.setAdapter(menuAdapter);
 
         //initBottomSheet
         appBarLayout = (AppBarLayout) findViewById(R.id.peakView);
@@ -339,5 +350,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         } else {
             tvPreviewBottomRangeCount.setText("fail");
         }
+    }
+
+    List<CoffeeMenu> getData() {
+        coffeeMenuList = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            CoffeeMenu coffeeMenu = new CoffeeMenu(categoriesList.get(i).getName(), categoriesList.get(i).getProducts());
+            coffeeMenuList.add(coffeeMenu);
+        }
+        return coffeeMenuList;
+    }
+
+    void createCategory() {
+        for (int i = 0; i < 2; i++) {
+            Categories categories = new Categories();
+            categories.setId(i);
+            categories.setName("STALIN COFFEE" + i);
+            categories.setProducts(createProducts());
+            categoriesList.add(categories);
+        }
+    }
+
+    ArrayList<Products> createProducts() {
+        ArrayList<Products> productList = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            Products products = new Products();
+            products.setId(i);
+            products.setName("COFFEE" + i);
+            products.setPrice(i);
+            productList.add(products);
+        }
+        return productList;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.adm1n.coffeescope.coffee_menu;
 
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ public class BodyViewHolder extends ChildViewHolder {
 
     private TextView tv_napitok_cost;
     private TextView tv_napitok_name;
+    private CardView cvCoffeeAdapterItem;
     private ImageButton ib_napitok_add;
     private MenuAdapter.OnProductClick mListener;
 
@@ -25,12 +27,13 @@ public class BodyViewHolder extends ChildViewHolder {
         tv_napitok_cost = ((TextView) itemView.findViewById(R.id.tv_napitok_cost));
         tv_napitok_name = ((TextView) itemView.findViewById(R.id.tv_napitok_name));
         ib_napitok_add = (ImageButton) itemView.findViewById(R.id.ib_napitok_add);
+        cvCoffeeAdapterItem = (CardView) itemView.findViewById(R.id.cvCoffeeAdapterItem);
     }
 
     public void onBind(Products products) {
         tv_napitok_name.setText(products.getName());
         tv_napitok_cost.setText(String.valueOf(products.getPrice()));
-        ib_napitok_add.setOnClickListener(new View.OnClickListener() {
+        cvCoffeeAdapterItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mListener.onClick(v);

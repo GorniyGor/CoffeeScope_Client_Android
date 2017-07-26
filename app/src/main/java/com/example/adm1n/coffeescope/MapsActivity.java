@@ -15,7 +15,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -83,6 +85,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private RecyclerView recyclerview;
     private MenuAdapter menuAdapter;
+    private LinearLayoutManager linearLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,22 +150,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
-        //initRecycler
-        recyclerview = (RecyclerView) findViewById(R.id.recyclerview);
-        menuAdapter = new MenuAdapter(getData(), this);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        recyclerview.setLayoutManager(linearLayoutManager);
-        SpaceItemDecoration decorator = new SpaceItemDecoration(32, true, true);
-        recyclerview.addItemDecoration(decorator);
-        recyclerview.setAdapter(menuAdapter);
-        for (int i = menuAdapter.getGroups().size() - 1; i >= 0; i--) {
-            expandGroup(i);
-        }
-
         //initBottomSheet
         appBarLayout = (AppBarLayout) findViewById(R.id.peakView);
-        FrameLayout parentThatHasBottomSheetBehavior = (FrameLayout) findViewById(R.id.fl_sheet_content);
-        mBottomSheetBehavior = BottomSheetBehavior.from(parentThatHasBottomSheetBehavior);
+
+        android.view.Display display = ((android.view.WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+        FrameLayout FlBottomSheetBehavior = (FrameLayout) findViewById(R.id.fl_sheet_content);
+        ViewGroup.LayoutParams params = FlBottomSheetBehavior.getLayoutParams();
+
+//        FrameLayout.LayoutParams params = ((FrameLayout.LayoutParams) FlBottomSheetBehavior.getLayoutParams());
+
+        params.height = (int) (display.getHeight() * 0.88);
+        FlBottomSheetBehavior.setLayoutParams(params);
+        mBottomSheetBehavior = BottomSheetBehavior.from(FlBottomSheetBehavior);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -175,11 +174,37 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
+//                appBarLayout.setExpanded(true);
             }
         });
+
         tvCoffeName = (TextView) findViewById(R.id.tv_coffee_name);
         ivPreviewArrowTop = (ImageView) findViewById(R.id.ivPreviewArrowTop);
+
+        //initRecycler
+        recyclerview = (RecyclerView) findViewById(R.id.recyclerview);
+        menuAdapter = new MenuAdapter(getData(), this);
+        linearLayoutManager = new LinearLayoutManager(this);
+        recyclerview.setLayoutManager(linearLayoutManager);
+        SpaceItemDecoration decorator = new SpaceItemDecoration(32, true, true);
+        recyclerview.addItemDecoration(decorator);
+        recyclerview.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    int firstVisiblePosition = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
+                    if (firstVisiblePosition == 0) {
+                        appBarLayout.setExpanded(true, true);
+                    }
+                }
+            }
+        });
+        recyclerview.setAdapter(menuAdapter);
+        for (int i = menuAdapter.getGroups().size() - 1; i >= 0; i--) {
+            expandGroup(i);
+        }
+
         mapFragment.getMapAsync(this);
     }
 
@@ -218,7 +243,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public boolean onMarkerClick(Marker marker) {
                 peakView = findViewById(R.id.peakView);
-                mBottomSheetBehavior.setPeekHeight(peakView.getHeight() + tvCoffeName.getHeight() + ivPreviewArrowTop.getHeight());
+                View previewTopElements = findViewById(R.id.previewTopElements);
+//                mBottomSheetBehavior.setPeekHeight(peakView.getHeight() + tvCoffeName.getHeight() + ivPreviewArrowTop.getHeight());
+                mBottomSheetBehavior.setPeekHeight(peakView.getHeight() + previewTopElements.getHeight());
                 initPeakView(marker);
                 if (mBottomSheetBehavior != null) {
                     switch (mBottomSheetBehavior.getState()) {

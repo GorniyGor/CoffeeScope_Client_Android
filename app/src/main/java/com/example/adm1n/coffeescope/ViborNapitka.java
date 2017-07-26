@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +26,8 @@ public class ViborNapitka extends AppCompatActivity {
     private Toolbar toolbar;
     private Button mAddButton;
     private Button mPayButton;
+    private LinearLayoutManager linearLayoutManager;
+    private AppBarLayout app_bar_layout_vibor_napitka;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,8 +52,9 @@ public class ViborNapitka extends AppCompatActivity {
         });
 
         recyclerview = (RecyclerView) findViewById(R.id.rv);
+        app_bar_layout_vibor_napitka = (AppBarLayout) findViewById(R.id.app_bar_layout_vibor_napitka);
         mAdapter = new CoffeeAdapter(this);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(this);
         SpaceItemDecoration decorator = new SpaceItemDecoration(32, true, true);
         recyclerview.addItemDecoration(decorator);
         recyclerview.setLayoutManager(linearLayoutManager);
@@ -66,6 +70,19 @@ public class ViborNapitka extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+            }
+        });
+
+        recyclerview.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    int firstVisiblePosition = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
+                    if (firstVisiblePosition == 0) {
+                        app_bar_layout_vibor_napitka.setExpanded(true, true);
+                    }
+                }
             }
         });
     }

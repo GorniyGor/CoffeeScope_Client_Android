@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 class CoffeeAdapter extends RecyclerView.Adapter<CoffeeAdapter.CoffeeViewHolder> {
 
@@ -48,8 +49,9 @@ class CoffeeAdapter extends RecyclerView.Adapter<CoffeeAdapter.CoffeeViewHolder>
             ib_napitok_add.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mContext, ViborNapitka.class);
-                    mContext.startActivity(intent);
+                    Toast.makeText(mContext, "Добавлено", Toast.LENGTH_SHORT).show();
+//                    Intent intent = new Intent(mContext, ViborNapitka.class);
+//                    mContext.startActivity(intent);
                 }
             });
         }

@@ -3,8 +3,6 @@ package com.example.adm1n.coffeescope;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -15,21 +13,18 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.adm1n.coffeescope.coffee_menu.custom_model.CoffeeMenu;
 import com.example.adm1n.coffeescope.coffee_menu.MenuAdapter;
+import com.example.adm1n.coffeescope.coffee_menu.custom_model.CoffeeMenu;
 import com.example.adm1n.coffeescope.model.Categories;
 import com.example.adm1n.coffeescope.model.Products;
-import com.example.adm1n.coffeescope.utils.BlurBuilder;
 import com.example.adm1n.coffeescope.utils.MapsUtils;
 import com.example.adm1n.coffeescope.utils.PermissionUtils;
 import com.example.adm1n.coffeescope.utils.SpaceItemDecoration;
@@ -156,9 +151,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         android.view.Display display = ((android.view.WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
         FrameLayout FlBottomSheetBehavior = (FrameLayout) findViewById(R.id.fl_sheet_content);
         ViewGroup.LayoutParams params = FlBottomSheetBehavior.getLayoutParams();
-
-//        FrameLayout.LayoutParams params = ((FrameLayout.LayoutParams) FlBottomSheetBehavior.getLayoutParams());
-
         params.height = (int) (display.getHeight() * 0.88);
         FlBottomSheetBehavior.setLayoutParams(params);
         mBottomSheetBehavior = BottomSheetBehavior.from(FlBottomSheetBehavior);
@@ -174,7 +166,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-//                appBarLayout.setExpanded(true);
+
             }
         });
 
@@ -208,22 +200,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
     }
 
-    void blur() {
-        final View content = findViewById(android.R.id.content).getRootView();
-        if (content.getWidth() > 0) {
-            Bitmap image = BlurBuilder.blur(content);
-            getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), image));
-        } else {
-            content.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    Bitmap image = BlurBuilder.blur(content);
-                    getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), image));
-                }
-            });
-        }
-    }
-
     public void expandGroup(int gPos) {
         if (menuAdapter.isGroupExpanded(gPos)) {
             return;
@@ -244,7 +220,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public boolean onMarkerClick(Marker marker) {
                 peakView = findViewById(R.id.peakView);
                 View previewTopElements = findViewById(R.id.previewTopElements);
-//                mBottomSheetBehavior.setPeekHeight(peakView.getHeight() + tvCoffeName.getHeight() + ivPreviewArrowTop.getHeight());
                 mBottomSheetBehavior.setPeekHeight(peakView.getHeight() + previewTopElements.getHeight());
                 initPeakView(marker);
                 if (mBottomSheetBehavior != null) {

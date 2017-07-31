@@ -8,9 +8,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.RadioButton;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
-
 
 /**
  * Created by adm1n on 21.07.2017.
@@ -20,6 +23,10 @@ public class Order extends AppCompatActivity {
     private SwipeRevealLayout swipeLayout;
     private EditText etOrderCommentField;
     private Toolbar toolbar;
+    private TimePicker timePicker;
+    private RadioButton mRadioButtonFast;
+    private RadioButton mRadioButtonTime;
+    private ImageButton ib_napitok_add;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,5 +55,37 @@ public class Order extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        mRadioButtonFast = (RadioButton) findViewById(R.id.rb_1_order_coffee);
+        mRadioButtonFast.setOnClickListener(radioButtonClickListener);
+        mRadioButtonTime = (RadioButton) findViewById(R.id.rb_2_order_coffee);
+        mRadioButtonTime.setOnClickListener(radioButtonClickListener);
+        timePicker = (TimePicker) findViewById(R.id.time_picker);
+        timePicker.setEnabled(false);
+
+        ib_napitok_add = (ImageButton) findViewById(R.id.ib_napitok_add);
+        ib_napitok_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(Order.this, "Переход", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
+    View.OnClickListener radioButtonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            RadioButton rb = (RadioButton) v;
+            switch (rb.getId()) {
+                case R.id.rb_1_order_coffee:
+                    timePicker.setEnabled(false);
+                    break;
+                case R.id.rb_2_order_coffee:
+                    timePicker.setEnabled(true);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 }

@@ -1,13 +1,34 @@
 package com.example.adm1n.coffeescope.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by adm1n on 22.07.2017.
  */
 
-public class Hours {
+public class Hours implements Parcelable{
     private String day;
     private String open;
     private String close;
+
+    protected Hours(Parcel in) {
+        day = in.readString();
+        open = in.readString();
+        close = in.readString();
+    }
+
+    public static final Creator<Hours> CREATOR = new Creator<Hours>() {
+        @Override
+        public Hours createFromParcel(Parcel in) {
+            return new Hours(in);
+        }
+
+        @Override
+        public Hours[] newArray(int size) {
+            return new Hours[size];
+        }
+    };
 
     public String getDay() {
         return day;
@@ -31,5 +52,17 @@ public class Hours {
 
     public void setClose(String close) {
         this.close = close;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(day);
+        dest.writeString(open);
+        dest.writeString(close);
     }
 }

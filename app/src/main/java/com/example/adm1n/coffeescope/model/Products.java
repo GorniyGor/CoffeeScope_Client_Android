@@ -1,5 +1,7 @@
 package com.example.adm1n.coffeescope.model;
 
+import java.util.ArrayList;
+
 /**
  * Created by adm1n on 22.07.2017.
  */
@@ -8,7 +10,7 @@ public class Products {
     private Integer id;
     private String name;
     private Integer price;
-    private Sizes sizes;
+    private ArrayList<Sizes> sizes;
 
     public Integer getId() {
         return id;
@@ -34,11 +36,11 @@ public class Products {
         this.price = price;
     }
 
-    public Sizes getSizes() {
+    public ArrayList<Sizes> getSizes() {
         return sizes;
     }
 
-    public void setSizes(Sizes sizes) {
+    public void setSizes(ArrayList<Sizes> sizes) {
         this.sizes = sizes;
     }
 

@@ -1,12 +1,12 @@
-package com.example.adm1n.coffeescope.main.presenter;
+package com.example.adm1n.coffeescope.main_map.presenter;
 
 import android.content.Context;
 
-import com.example.adm1n.coffeescope.main.model.MainPlacesModel;
-import com.example.adm1n.coffeescope.main.view.IMapActivity;
-import com.example.adm1n.coffeescope.model.Place;
-import com.example.adm1n.coffeescope.network.response.PlaceResponse;
-import com.example.adm1n.coffeescope.network.response.PlacesResponse;
+import com.example.adm1n.coffeescope.main_map.model.MainPlacesModel;
+import com.example.adm1n.coffeescope.main_map.view.IMapActivity;
+import com.example.adm1n.coffeescope.models.Place;
+import com.example.adm1n.coffeescope.network.responses.PlaceResponse;
+import com.example.adm1n.coffeescope.network.responses.PlacesResponse;
 
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;

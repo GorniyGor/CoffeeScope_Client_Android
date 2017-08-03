@@ -1,4 +1,4 @@
-package com.example.adm1n.coffeescope.model;
+package com.example.adm1n.coffeescope.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,9 +1,7 @@
-package com.example.adm1n.coffeescope.model;
+package com.example.adm1n.coffeescope.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.google.android.gms.maps.model.LatLng;
 
 /**
  * Created by adm1n on 22.07.2017.
@@ -55,9 +53,5 @@ public class Coodrinates implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeDouble(longitude);
         dest.writeDouble(latitude);
-    }
-
-    public LatLng getLatLng(){
-        return new LatLng(longitude, latitude);
     }
 }

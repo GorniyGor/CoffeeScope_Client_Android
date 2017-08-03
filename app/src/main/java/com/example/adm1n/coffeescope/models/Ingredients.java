@@ -1,4 +1,4 @@
-package com.example.adm1n.coffeescope.model;
+package com.example.adm1n.coffeescope.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -11,6 +11,10 @@ public class Ingredients implements Parcelable {
     private Integer id;
     private String name;
     private Integer price;
+
+    public Ingredients() {
+        this.name = "Доп. Ингредиенты";
+    }
 
     protected Ingredients(Parcel in) {
         name = in.readString();

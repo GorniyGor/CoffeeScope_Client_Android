@@ -1,6 +1,6 @@
-package com.example.adm1n.coffeescope.main.view;
+package com.example.adm1n.coffeescope.main_map.view;
 
-import com.example.adm1n.coffeescope.model.Place;
+import com.example.adm1n.coffeescope.models.Place;
 
 import java.util.ArrayList;
 

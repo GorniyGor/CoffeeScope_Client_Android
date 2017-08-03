@@ -6,7 +6,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.adm1n.coffeescope.R;
-import com.example.adm1n.coffeescope.model.Products;
+import com.example.adm1n.coffeescope.models.Products;
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
 
 /**
@@ -20,6 +20,7 @@ public class BodyViewHolder extends ChildViewHolder {
     private CardView cvCoffeeAdapterItem;
     private ImageButton ib_napitok_add;
     private MenuAdapter.OnProductClick mListener;
+    private Products mProduct;
 
     public BodyViewHolder(View itemView, MenuAdapter.OnProductClick listener) {
         super(itemView);
@@ -31,12 +32,13 @@ public class BodyViewHolder extends ChildViewHolder {
     }
 
     public void onBind(Products products) {
+        mProduct = products;
         tv_napitok_name.setText(products.getName());
         tv_napitok_cost.setText(String.valueOf(products.getPrice()));
         cvCoffeeAdapterItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.onClick(v);
+                mListener.onClick(v, mProduct);
             }
         });
     }

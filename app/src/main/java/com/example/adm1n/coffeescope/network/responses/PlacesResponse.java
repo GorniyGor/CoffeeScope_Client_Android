@@ -1,6 +1,6 @@
-package com.example.adm1n.coffeescope.network.response;
+package com.example.adm1n.coffeescope.network.responses;
 
-import com.example.adm1n.coffeescope.model.Place;
+import com.example.adm1n.coffeescope.models.Place;
 
 import java.util.ArrayList;
 

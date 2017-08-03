@@ -1,7 +1,6 @@
 package com.example.adm1n.coffeescope;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,12 +8,18 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.adm1n.coffeescope.models.Ingredients;
+
+import java.util.ArrayList;
+
 class CoffeeAdapter extends RecyclerView.Adapter<CoffeeAdapter.CoffeeViewHolder> {
 
     private Context mContext;
+    private ArrayList<Ingredients> dataList = new ArrayList<>();
 
-    CoffeeAdapter(Context context) {
+    CoffeeAdapter(Context context, ArrayList<Ingredients> list) {
         mContext = context;
+        this.dataList = list;
     }
 
     @Override

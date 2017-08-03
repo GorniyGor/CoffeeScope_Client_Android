@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +14,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.adm1n.coffeescope.coffee_ingredients.CoffeeIngredientsAdapter;
+import com.example.adm1n.coffeescope.main_map.view.MapsActivity;
+import com.example.adm1n.coffeescope.models.Ingredients;
+import com.example.adm1n.coffeescope.models.Products;
 import com.example.adm1n.coffeescope.utils.SpaceItemDecoration;
+
+import java.util.ArrayList;
 
 /**
  * Created by adm1n on 18.07.2017.
@@ -21,19 +28,27 @@ import com.example.adm1n.coffeescope.utils.SpaceItemDecoration;
 
 public class ViborNapitka extends AppCompatActivity {
 
-    private CoffeeAdapter mAdapter;
+    private CoffeeIngredientsAdapter mAdapter;
     private RecyclerView recyclerview;
     private Toolbar toolbar;
     private Button mAddButton;
     private Button mPayButton;
     private LinearLayoutManager linearLayoutManager;
     private AppBarLayout app_bar_layout_vibor_napitka;
+    private Products mProducts;
+    private ArrayList<Ingredients> mIngredientsList;
+    private TabLayout mTabLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.napitka_vibor);
 
+        if (savedInstanceState == null) {
+            mProducts = getIntent().getParcelableExtra(MapsActivity.PRODUCT_EXTRA);
+            mIngredientsList = getIntent().getParcelableArrayListExtra(MapsActivity.INGREDIENTS_EXTRA);
+            createTabs();
+        }
         mAddButton = (Button) findViewById(R.id.btn_add_napitok);
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,7 +68,7 @@ public class ViborNapitka extends AppCompatActivity {
 
         recyclerview = (RecyclerView) findViewById(R.id.rv);
         app_bar_layout_vibor_napitka = (AppBarLayout) findViewById(R.id.app_bar_layout_vibor_napitka);
-        mAdapter = new CoffeeAdapter(this);
+        mAdapter = new CoffeeIngredientsAdapter(mIngredientsList);
         linearLayoutManager = new LinearLayoutManager(this);
         SpaceItemDecoration decorator = new SpaceItemDecoration(32, true, true);
         recyclerview.addItemDecoration(decorator);
@@ -87,5 +102,10 @@ public class ViborNapitka extends AppCompatActivity {
         });
     }
 
-
+    void createTabs() {
+        mTabLayout = ((TabLayout) findViewById(R.id.tl_coffee_size));
+        for (int i = 0; i < mProducts.getSizes().size(); i++) {
+            mTabLayout.addTab(mTabLayout.newTab().setIcon(R.drawable.star_icon_1).setText(mProducts.getSizes().get(i).getSize()));
+        }
+    }
 }

@@ -1,9 +1,9 @@
-package com.example.adm1n.coffeescope.main.model;
+package com.example.adm1n.coffeescope.main_map.model;
 
 import com.example.adm1n.coffeescope.App;
 import com.example.adm1n.coffeescope.network.ApiInterface;
-import com.example.adm1n.coffeescope.network.response.PlaceResponse;
-import com.example.adm1n.coffeescope.network.response.PlacesResponse;
+import com.example.adm1n.coffeescope.network.responses.PlaceResponse;
+import com.example.adm1n.coffeescope.network.responses.PlacesResponse;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;

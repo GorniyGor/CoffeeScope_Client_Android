@@ -1,4 +1,4 @@
-package com.example.adm1n.coffeescope.main.view;
+package com.example.adm1n.coffeescope.main_map.view;
 
 import android.Manifest;
 import android.content.Intent;
@@ -21,14 +21,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.adm1n.coffeescope.Coffee;
 import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.ViborNapitka;
 import com.example.adm1n.coffeescope.coffee_menu.MenuAdapter;
 import com.example.adm1n.coffeescope.coffee_menu.custom_model.CoffeeMenu;
-import com.example.adm1n.coffeescope.main.presenter.MainPresenter;
-import com.example.adm1n.coffeescope.model.Categories;
-import com.example.adm1n.coffeescope.model.Place;
+import com.example.adm1n.coffeescope.main_map.presenter.MainPresenter;
+import com.example.adm1n.coffeescope.models.Place;
+import com.example.adm1n.coffeescope.models.Products;
 import com.example.adm1n.coffeescope.utils.MapsUtils;
 import com.example.adm1n.coffeescope.utils.PermissionUtils;
 import com.example.adm1n.coffeescope.utils.SpaceItemDecoration;
@@ -48,6 +47,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private final LatLng DEFAULT_RED_SQUARE = new LatLng(55.753922, 37.620783);
     private final int DEFAULT_MAP_ZOOM = 13;
+    public static final String PRODUCT_EXTRA = "PRODUCT_EXTRA";
+    public static final String INGREDIENTS_EXTRA = "INGREDIENTS_EXTRA";
 
     private ArrayList<CoffeeMenu> coffeeMenuList = new ArrayList<>();
     private ArrayList<Place> placeList = new ArrayList<>();
@@ -353,8 +354,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(View v, Products product) {
         Intent intent = new Intent(getApplicationContext(), ViborNapitka.class);
+        intent.putExtra(PRODUCT_EXTRA, product);
+        intent.putParcelableArrayListExtra(INGREDIENTS_EXTRA, mLastPlace.getIngredients());
         startActivity(intent);
     }
 
@@ -392,7 +395,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         tvPreviewBottomRangeCount = (TextView) findViewById(R.id.tvPreviewBottomRangeCount);
         if (mLastKnownLocation != null) {
             tvPreviewBottomRangeCount.setText(String.valueOf(
-                    MapsUtils.calculationDistance(mLastKnownLocation, mLastPlace.getCoodrinates().getLatLng())));
+                    MapsUtils.calculationDistance(mLastKnownLocation, new LatLng(mLastPlace.getCoodrinates().getLatitude(),
+                            mLastPlace.getCoodrinates().getLongitude()))));
         } else {
             tvPreviewBottomRangeCount.setText("fail");
         }

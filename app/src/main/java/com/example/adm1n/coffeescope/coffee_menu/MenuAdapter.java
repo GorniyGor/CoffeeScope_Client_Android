@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.adm1n.coffeescope.R;
-import com.example.adm1n.coffeescope.model.Products;
+import com.example.adm1n.coffeescope.models.Products;
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter;
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 
@@ -51,6 +51,6 @@ public class MenuAdapter extends ExpandableRecyclerViewAdapter<HeaderViewHolder,
     }
 
     public interface OnProductClick {
-        void onClick(View v);
+        void onClick(View v, Products products);
     }
 }

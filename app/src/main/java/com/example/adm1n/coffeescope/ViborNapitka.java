@@ -78,7 +78,7 @@ public class ViborNapitka extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.cool_toolbar);
         toolbar.setTitleTextColor(Color.WHITE);
-        toolbar.setTitle("Капучино");
+        toolbar.setTitle(mProducts.getName());
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.star_icon_1);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -105,7 +105,13 @@ public class ViborNapitka extends AppCompatActivity {
     void createTabs() {
         mTabLayout = ((TabLayout) findViewById(R.id.tl_coffee_size));
         for (int i = 0; i < mProducts.getSizes().size(); i++) {
-            mTabLayout.addTab(mTabLayout.newTab().setIcon(R.drawable.star_icon_1).setText(mProducts.getSizes().get(i).getSize()));
+            if (mProducts.getSizes().get(i).getSize() != null) {
+                TabLayout.Tab tab = mTabLayout.newTab().setIcon(R.drawable.star_icon_1).setText(mProducts.getSizes().get(i).getSize());
+                mTabLayout.addTab(tab);
+            }
+//            if (mProducts.getSizes().get(i).getSize() != null) {
+//                Установка активной вкладки с минимальной ценой
+//            }
         }
     }
 }

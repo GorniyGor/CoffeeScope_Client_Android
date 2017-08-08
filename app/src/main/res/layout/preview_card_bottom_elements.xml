@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,25 +10,24 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:orientation="horizontal"
         android:foregroundGravity="center_horizontal"
+        android:orientation="horizontal"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/ivPreviewBottomStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/star_icon_1" />
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/open_icon" />
 
         <TextView
             android:id="@+id/tvPreviewBottomJobTime"
+            style="@style/PreviewCardCoffeeBottomDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:text="до 22-10" />
     </LinearLayout>
-
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -45,21 +43,21 @@
 
         <ImageView
             android:id="@+id/ivPreviewBottomRateIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:src="@drawable/star_icon_1" />
 
         <TextView
             android:id="@+id/tvPreviewBottomRateCount"
+            style="@style/PreviewCardCoffeeBottomDescription"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="8.1" />
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll3"
+        style="@style/PreviewCardCoffeeBottomDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -70,16 +68,15 @@
 
         <ImageView
             android:id="@+id/ivPreviewBottomRangeIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/star_icon_1" />
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/dist_icon" />
 
         <TextView
             android:id="@+id/tvPreviewBottomRangeCount"
+            style="@style/PreviewCardCoffeeBottomDescription"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="900м" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

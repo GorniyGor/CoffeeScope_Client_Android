@@ -51,7 +51,10 @@
     <Button
         android:id="@+id/btn_pay"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="72dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/bag_button"
         android:layout_alignParentBottom="true"
         android:text="3 позиции (260р)" />
 </RelativeLayout>

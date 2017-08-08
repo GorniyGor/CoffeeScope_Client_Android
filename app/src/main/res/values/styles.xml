@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:fontFamily">@color/colorAccent</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -21,19 +22,38 @@
     </style>
 
     <style name="PreviewCardCoffeeName" parent="PreviewCard">
-        <item name="android:textSize">25sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">24sp</item>
         <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="PreviewCardCoffeeDescription" parent="PreviewCard">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/grey</item>
+    </style>
+
+    <style name="PreviewCardCoffeeBottomDescription">
+        <item name="android:textSize">17sp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:layout_gravity">center</item>
     </style>
 
     <style name="PreviewCardBottomElementsText">
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/lightBlack</item>
         <item name="android:layout_marginStart">8dp</item>
+    </style>
+
+    <style name="button" parent="@android:style/Widget.Button">
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+        <item name="android:textColor">#FFFFFFFF</item>
+        <item name="android:shadowColor">#FF000000</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">-1</item>
+        <item name="android:shadowRadius">0.2</item>
+        <item name="android:textSize">16dip</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
     </style>
 </resources>

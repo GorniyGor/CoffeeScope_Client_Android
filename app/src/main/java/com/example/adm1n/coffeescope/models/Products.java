@@ -12,10 +12,10 @@ import java.util.ArrayList;
 public class Products implements Parcelable {
     private Integer id;
     private String name;
-    private Integer price;
     private ArrayList<Sizes> sizes;
 
     protected Products(Parcel in) {
+        id = in.readInt();
         name = in.readString();
         sizes = in.createTypedArrayList(Sizes.CREATOR);
     }
@@ -48,14 +48,6 @@ public class Products implements Parcelable {
         this.name = name;
     }
 
-    public Integer getPrice() {
-        return price;
-    }
-
-    public void setPrice(Integer price) {
-        this.price = price;
-    }
-
     public ArrayList<Sizes> getSizes() {
         return sizes;
     }
@@ -71,6 +63,7 @@ public class Products implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(name);
         dest.writeTypedList(sizes);
     }

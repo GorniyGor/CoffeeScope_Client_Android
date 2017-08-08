@@ -16,12 +16,21 @@ public class Place implements Parcelable {
     private String phone;
     private double rating;
     private String average_time;
-    private Integer active;
+    private Active active;
+    private String who_deactivated;
     private Coodrinates coodrinates;
     private Image image;
     private ArrayList<Categories> categories;
     private ArrayList<Ingredients> ingredients;
     private ArrayList<Hours> hours;
+
+    public String getWho_deactivated() {
+        return who_deactivated;
+    }
+
+    public void setWho_deactivated(String who_deactivated) {
+        this.who_deactivated = who_deactivated;
+    }
 
     public Integer getId() {
         return id;
@@ -71,11 +80,11 @@ public class Place implements Parcelable {
         this.average_time = average_time;
     }
 
-    public Integer getActive() {
+    public Active getActive() {
         return active;
     }
 
-    public void setActive(Integer active) {
+    public void setActive(Active active) {
         this.active = active;
     }
 

@@ -15,11 +15,17 @@ public class Sizes implements Parcelable {
 
     protected Sizes(Parcel in) {
         size = in.readString();
+        id = in.readInt();
+        discount = in.readInt();
+        price = in.readInt();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(size);
+        dest.writeInt(id);
+        dest.writeInt(discount);
+        dest.writeInt(price);
     }
 
     @Override
@@ -63,12 +69,12 @@ public class Sizes implements Parcelable {
         this.price = price;
     }
 
-    public Integer getPercent() {
+    public Integer getDiscount() {
         return discount;
     }
 
-    public void setPercent(Integer percent) {
-        this.discount = percent;
+    public void setDiscount(Integer discount) {
+        this.discount = discount;
     }
 
 }

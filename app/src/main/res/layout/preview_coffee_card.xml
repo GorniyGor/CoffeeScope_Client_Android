@@ -1,31 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rl_preview_coffee_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tv_coffe_address"
-        style="@style/PreviewCardCoffeeDescription"
+    <LinearLayout
+        android:id="@+id/lllllllllll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Адрес кофейни"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:orientation="horizontal"
+        android:weightSum="10">
 
-    <TextView
-        android:id="@+id/tv_coffe_phone_number"
-        style="@style/PreviewCardCoffeeDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_coffe_address"
-        android:text="Телефон кофейни"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_coffe_address"
+                style="@style/PreviewCardCoffeeDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="Адрес кофейни"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/tv_coffe_phone_number"
+                style="@style/PreviewCardCoffeeDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_coffe_address"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Телефон кофейни"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="4"
+            android:layout_marginEnd="16dp"
+            android:gravity="center">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="120dp"
+                android:layout_height="48dp"
+                app:cardCornerRadius="12dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/alpha_grey">
+
+                    <ImageView
+                        android:id="@+id/ivTime"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/time_icon" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10 min"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/ivTime" />
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+    </LinearLayout>
 
     <View
         android:id="@+id/viewPreviewBottomHorizontalLine"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/tv_coffe_phone_number"
+        android:layout_below="@+id/lllllllllll"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
@@ -35,7 +91,7 @@
         layout="@layout/preview_card_bottom_elements"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
         android:layout_below="@id/viewPreviewBottomHorizontalLine"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="8dp"
+        android:background="@color/white" />
 </RelativeLayout>

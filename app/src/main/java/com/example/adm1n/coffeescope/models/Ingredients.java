@@ -18,6 +18,20 @@ public class Ingredients implements Parcelable {
 
     protected Ingredients(Parcel in) {
         name = in.readString();
+        id = in.readInt();
+        price = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeInt(id);
+        dest.writeInt(price);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<Ingredients> CREATOR = new Creator<Ingredients>() {
@@ -54,15 +68,5 @@ public class Ingredients implements Parcelable {
 
     public void setPrice(Integer price) {
         this.price = price;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
     }
 }

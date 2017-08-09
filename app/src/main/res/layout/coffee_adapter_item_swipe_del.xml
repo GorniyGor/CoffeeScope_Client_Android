@@ -58,10 +58,10 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
-            android:layout_toLeftOf="@+id/ib_napitok_add" />
+            android:layout_toLeftOf="@+id/iv_napitok_add" />
 
         <ImageButton
-            android:id="@+id/ib_napitok_add"
+            android:id="@+id/iv_napitok_add"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"

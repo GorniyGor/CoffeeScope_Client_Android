@@ -63,7 +63,7 @@ public class Order extends AppCompatActivity {
         timePicker = (TimePicker) findViewById(R.id.time_picker);
         timePicker.setEnabled(false);
 
-        ib_napitok_add = (ImageButton) findViewById(R.id.ib_napitok_add);
+        ib_napitok_add = (ImageButton) findViewById(R.id.iv_napitok_add);
         ib_napitok_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

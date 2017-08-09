@@ -49,7 +49,7 @@ class CoffeeAdapter extends RecyclerView.Adapter<CoffeeAdapter.CoffeeViewHolder>
 
         private CoffeeViewHolder(View itemView) {
             super(itemView);
-            ib_napitok_add = (ImageButton) itemView.findViewById(R.id.ib_napitok_add);
+            ib_napitok_add = (ImageButton) itemView.findViewById(R.id.iv_napitok_add);
 
             ib_napitok_add.setOnClickListener(new View.OnClickListener() {
                 @Override

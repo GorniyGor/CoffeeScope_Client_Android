@@ -7,14 +7,31 @@
         android:id="@+id/cool_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/black" />
+        android:background="@color/primaryRed">
+
+        <ImageView
+            android:id="@+id/ivActionBarBackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/back_button" />
+
+        <TextView
+            android:id="@+id/tvActionBarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="TITLE"
+            android:textColor="@color/white"
+            android:textSize="24sp" />
+
+    </android.support.v7.widget.Toolbar>
 
     <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/coordinator_vibor"
         android:layout_width="match_parent"
-        android:layout_above="@+id/llBottomButton"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/llBottomButton"
         android:layout_below="@id/cool_toolbar">
 
         <android.support.design.widget.AppBarLayout
@@ -39,6 +56,7 @@
             android:id="@+id/rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:overScrollMode="never"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
     </android.support.design.widget.CoordinatorLayout>
 

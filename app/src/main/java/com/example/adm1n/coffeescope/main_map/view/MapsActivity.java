@@ -38,6 +38,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.jakewharton.rxbinding2.view.RxView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +46,6 @@ import java.util.List;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, MenuAdapter.OnProductClick, IMapActivity {
 
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private final LatLng DEFAULT_RED_SQUARE = new LatLng(55.753922, 37.620783);
     private final int DEFAULT_MAP_ZOOM = 13;
     public static final String PRODUCT_EXTRA = "PRODUCT_EXTRA";
     public static final String INGREDIENTS_EXTRA = "INGREDIENTS_EXTRA";
@@ -67,7 +67,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //preViewCardView
     private View peakView;
-    private TextView tvCoffeName;
     private TextView tvPreviewBottomJobTime;
     private TextView tvPreviewBottomRateCount;
     private TextView tvPreviewBottomRangeCount;
@@ -75,13 +74,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView tv_coffee_address;
     private TextView tv_coffee_phone_number;
     private AppBarLayout appBarLayout;
-    private ImageView ivPreviewArrowTop;
     private BottomSheetBehavior mBottomSheetBehavior;
 
     private RecyclerView recyclerview;
     private MenuAdapter menuAdapter;
     private LinearLayoutManager linearLayoutManager;
     private Place mLastPlace;
+    private Button mBtnPayCoffee;
 
     private MainPresenter presenter;
 
@@ -91,7 +90,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.contain_main);
         presenter = new MainPresenter(getApplicationContext(), this);
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        //init View
+        //init map control button
         mButtonPlusZoom = (Button) findViewById(R.id.btn_plus_zoom);
         mButtonPlusZoom.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,9 +171,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        tvCoffeName = (TextView) findViewById(R.id.tv_coffee_name);
-        ivPreviewArrowTop = (ImageView) findViewById(R.id.ivPreviewArrowTop);
-
         //initRecycler
         recyclerview = (RecyclerView) findViewById(R.id.recyclerview);
         linearLayoutManager = new LinearLayoutManager(this);
@@ -191,6 +187,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         appBarLayout.setExpanded(true, true);
                     }
                 }
+            }
+        });
+        mBtnPayCoffee = (Button) findViewById(R.id.btn_pay);
+        mBtnPayCoffee.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MapsActivity.this, "Click Click", Toast.LENGTH_SHORT).show();
             }
         });
         mapFragment.getMapAsync(this);

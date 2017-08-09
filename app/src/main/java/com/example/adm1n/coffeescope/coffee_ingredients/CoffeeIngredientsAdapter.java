@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.adm1n.coffeescope.R;
@@ -21,8 +22,10 @@ public class CoffeeIngredientsAdapter extends RecyclerView.Adapter<RecyclerView.
     private List<Ingredients> ingredients = new ArrayList<>();
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
+    private OnIngredientsClick onClickListener;
 
-    public CoffeeIngredientsAdapter(List<Ingredients> list) {
+    public CoffeeIngredientsAdapter(List<Ingredients> list, OnIngredientsClick onClickListener) {
+        this.onClickListener = onClickListener;
         if (ingredients != null) {
             ingredients.clear();
             Ingredients fakeIngredients = new Ingredients();
@@ -41,7 +44,7 @@ public class CoffeeIngredientsAdapter extends RecyclerView.Adapter<RecyclerView.
             return new HeaderViewHolder(v);
         } else if (viewType == TYPE_ITEM) {
             View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.coffee_adapter_item, viewGroup, false);
-            return new ItemViewHolder(v);
+            return new ItemViewHolder(v, onClickListener);
         }
         throw new RuntimeException("No match for " + viewType + ".");
     }
@@ -57,7 +60,7 @@ public class CoffeeIngredientsAdapter extends RecyclerView.Adapter<RecyclerView.
             ((HeaderViewHolder) viewHolder).headerTitle.setText(ingredient.getName());
         } else if (viewHolder instanceof ItemViewHolder) {
             ((ItemViewHolder) viewHolder).name.setText(ingredient.getName());
-            ((ItemViewHolder) viewHolder).cost.setText(String.valueOf(ingredient.getPrice()));
+            ((ItemViewHolder) viewHolder).cost.setText("+ " + String.valueOf(ingredient.getPrice() + " P"));
         }
     }
 
@@ -83,11 +86,22 @@ public class CoffeeIngredientsAdapter extends RecyclerView.Adapter<RecyclerView.
     class ItemViewHolder extends RecyclerView.ViewHolder {
         private TextView name;
         private TextView cost;
+        private RelativeLayout rlCoffeeAdapterFrame;
+        private OnIngredientsClick onIngredientsClick;
 
-        public ItemViewHolder(View itemView) {
+
+        public ItemViewHolder(View itemView, OnIngredientsClick onClick) {
             super(itemView);
+            this.onIngredientsClick = onClick;
             name = (TextView) itemView.findViewById(R.id.tv_napitok_name);
             cost = (TextView) itemView.findViewById(R.id.tv_napitok_cost);
+            rlCoffeeAdapterFrame = (RelativeLayout) itemView.findViewById(R.id.rlCoffeeAdapterFrame);
+            rlCoffeeAdapterFrame.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onIngredientsClick.onClick(v);
+                }
+            });
         }
     }
 
@@ -98,5 +112,9 @@ public class CoffeeIngredientsAdapter extends RecyclerView.Adapter<RecyclerView.
             super(itemView);
             headerTitle = (TextView) itemView.findViewById(R.id.tvTitle);
         }
+    }
+
+    public interface OnIngredientsClick {
+        void onClick(View v);
     }
 }

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/lllllllllll"
+        android:id="@+id/ll_preview_card_top_elements"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -19,7 +19,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_coffe_address"
+                android:id="@+id/tv_preview_card_place_address"
                 style="@style/PreviewCardCoffeeDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -29,11 +29,11 @@
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
-                android:id="@+id/tv_coffe_phone_number"
+                android:id="@+id/tv_preview_card_place_phone_number"
                 style="@style/PreviewCardCoffeeDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_coffe_address"
+                android:layout_below="@+id/tv_preview_card_place_address"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="Телефон кофейни"
@@ -44,8 +44,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="4"
-            android:layout_marginEnd="16dp">
+            android:layout_marginEnd="16dp"
+            android:layout_weight="4">
 
             <android.support.v7.widget.CardView
                 android:layout_width="120dp"
@@ -55,22 +55,23 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:background="@color/alpha_grey">
+                    android:background="@color/alpha_grey"
+                    android:gravity="center">
 
                     <ImageView
-                        android:id="@+id/ivTime"
+                        android:id="@+id/iv_preview_card_place_average_time"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
                         android:layout_centerVertical="true"
                         android:src="@drawable/time_icon" />
 
                     <TextView
+                        android:id="@+id/tv_preview_card_place_average_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="10 min"
                         android:layout_centerVertical="true"
-                        android:layout_toEndOf="@+id/ivTime" />
+                        android:layout_toEndOf="@+id/iv_preview_card_place_average_time"
+                        android:text="10 min" />
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
 
@@ -78,10 +79,10 @@
     </LinearLayout>
 
     <View
-        android:id="@+id/viewPreviewBottomHorizontalLine"
+        android:id="@+id/divider_line_preview_card"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/lllllllllll"
+        android:layout_below="@+id/ll_preview_card_top_elements"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
@@ -91,7 +92,7 @@
         layout="@layout/preview_card_bottom_elements"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/viewPreviewBottomHorizontalLine"
+        android:layout_below="@id/divider_line_preview_card"
         android:layout_marginBottom="8dp"
         android:background="@color/white" />
 </RelativeLayout>

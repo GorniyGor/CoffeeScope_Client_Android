@@ -6,7 +6,7 @@
     <android.support.v7.widget.Toolbar
         android:id="@+id/order_toolbar"
         android:layout_width="match_parent"
-        android:background="@color/black"
+        android:background="@color/primaryRed"
         android:layout_height="wrap_content" />
 
     <ScrollView
@@ -55,7 +55,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <View
-                android:id="@+id/viewPreviewTopHorizontalLine"
+                android:id="@+id/line_divider"
                 layout="@layout/line"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -68,7 +68,7 @@
                 layout="@layout/coffee_adapter_item_swipe_del"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:layout_below="@+id/viewPreviewTopHorizontalLine"
+                android:layout_below="@+id/line_divider"
                 android:background="@color/white" />
 
             <include

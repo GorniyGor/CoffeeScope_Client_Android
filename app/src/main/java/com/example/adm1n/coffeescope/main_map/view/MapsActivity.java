@@ -17,7 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +38,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.jakewharton.rxbinding2.view.RxView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +65,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LatLng mLastKnownLocation;
 
     //preViewCardView
-    private View peakView;
+    private AppBarLayout peakView;
     private TextView tvPreviewBottomJobTime;
     private TextView tvPreviewBottomRateCount;
     private TextView tvPreviewBottomRangeCount;
@@ -147,7 +146,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
 
         //initBottomSheet
-        appBarLayout = (AppBarLayout) findViewById(R.id.peakView);
+        appBarLayout = (AppBarLayout) findViewById(R.id.peak_view);
 
         android.view.Display display = ((android.view.WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
         FrameLayout FlBottomSheetBehavior = (FrameLayout) findViewById(R.id.fl_sheet_content);
@@ -172,7 +171,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         //initRecycler
-        recyclerview = (RecyclerView) findViewById(R.id.recyclerview);
+        recyclerview = (RecyclerView) findViewById(R.id.rv_coffee_menu);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerview.setLayoutManager(linearLayoutManager);
         SpaceItemDecoration decorator = new SpaceItemDecoration(32, true, true);
@@ -189,7 +188,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
-        mBtnPayCoffee = (Button) findViewById(R.id.btn_pay);
+        mBtnPayCoffee = (Button) findViewById(R.id.btn_coffee_menu_pay);
         mBtnPayCoffee.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -229,9 +228,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public boolean onMarkerClick(Marker marker) {
                 presenter.getPlace(marker.getSnippet());
-                peakView = findViewById(R.id.peakView);
-                View previewTopElements = findViewById(R.id.previewTopElements);
-                mBottomSheetBehavior.setPeekHeight(peakView.getHeight() + previewTopElements.getHeight());
+                peakView = (AppBarLayout) findViewById(R.id.peak_view);
+                View previewTopElements = findViewById(R.id.preview_top_elements);
+                mBottomSheetBehavior.setPeekHeight(previewTopElements.getHeight() + peakView.getHeight() + 75);
                 if (mBottomSheetBehavior != null) {
                     switch (mBottomSheetBehavior.getState()) {
                         case (BottomSheetBehavior.STATE_HIDDEN):
@@ -384,18 +383,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void showPeakView(Place place) {
         mLastPlace = place;
         setAdapter(place);
-        tv_coffee_name = (TextView) findViewById(R.id.tv_coffee_name);
+        tv_coffee_name = (TextView) findViewById(R.id.tv_preview_card_product_name);
         tv_coffee_name.setText(mLastPlace.getName());
-        tv_coffee_address = (TextView) findViewById(R.id.tv_coffe_address);
+        tv_coffee_address = (TextView) findViewById(R.id.tv_preview_card_place_address);
         tv_coffee_address.setText(mLastPlace.getAddress());
-        tv_coffee_phone_number = (TextView) findViewById(R.id.tv_coffe_phone_number);
+        tv_coffee_phone_number = (TextView) findViewById(R.id.tv_preview_card_place_phone_number);
         tv_coffee_phone_number.setText(mLastPlace.getPhone());
 
         tvPreviewBottomJobTime = (TextView) findViewById(R.id.tvPreviewBottomJobTime);
 //        tvPreviewBottomJobTime.setText(mLastPlace.getJobTime());
-        tvPreviewBottomRateCount = (TextView) findViewById(R.id.tvPreviewBottomRateCount);
+        tvPreviewBottomRateCount = (TextView) findViewById(R.id.tv_preview_card_place_rate_count);
         tvPreviewBottomRateCount.setText(String.valueOf(mLastPlace.getRating()));
-        tvPreviewBottomRangeCount = (TextView) findViewById(R.id.tvPreviewBottomRangeCount);
+        tvPreviewBottomRangeCount = (TextView) findViewById(R.id.tv_preview_card_place_range_count);
         if (mLastKnownLocation != null) {
             tvPreviewBottomRangeCount.setText(String.valueOf(
                     MapsUtils.calculationDistance(mLastKnownLocation, new LatLng(mLastPlace.getCoodrinates().getLatitude(),

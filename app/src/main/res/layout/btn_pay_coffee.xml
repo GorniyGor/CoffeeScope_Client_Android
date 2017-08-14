@@ -7,7 +7,8 @@
     <Button
         android:id="@+id/btn_coffee_menu_pay"
         android:layout_width="match_parent"
-        android:layout_height="88dp"
+        android:layout_height="80dp"
+        android:enabled="false"
         style="@style/button"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"

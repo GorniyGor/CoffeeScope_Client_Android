@@ -2,7 +2,6 @@ package com.example.adm1n.coffeescope.coffee_menu;
 
 import android.support.v7.widget.CardView;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.adm1n.coffeescope.R;

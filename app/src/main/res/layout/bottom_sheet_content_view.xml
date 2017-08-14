@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <include
         android:id="@+id/preview_top_elements"
         layout="@layout/preview_card_top_elements"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:layout_alignParentTop="true"
         android:paddingBottom="8dp" />
 
@@ -17,7 +17,6 @@
         android:id="@+id/coffee_menu_coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_coffee_menu_pay"
         android:layout_below="@+id/preview_top_elements">
 
         <android.support.design.widget.AppBarLayout
@@ -42,15 +41,25 @@
             android:id="@+id/rv_coffee_menu"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@drawable/image_blur"
+            android:overScrollMode="never"
             android:layout_below="@+id/coffee_menu_coordinator_layout"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
     </android.support.design.widget.CoordinatorLayout>
 
-    <include
-        layout="@layout/btn_pay_coffee"
+    <Button
+        android:id="@+id/btn_coffee_menu_pay"
+        style="@style/button"
         android:layout_width="match_parent"
-        android:layout_height="88dp"
-        android:layout_alignParentBottom="true" />
+        android:enabled="false"
+        android:layout_height="80dp"
+        android:layout_marginEnd="16dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginStart="16dp"
+        android:text="3 позиции (260р)" />
+
 </RelativeLayout>

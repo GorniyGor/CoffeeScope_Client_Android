@@ -230,22 +230,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 presenter.getPlace(marker.getSnippet());
                 peakView = (AppBarLayout) findViewById(R.id.peak_view);
                 View previewTopElements = findViewById(R.id.preview_top_elements);
-                mBottomSheetBehavior.setPeekHeight(previewTopElements.getHeight() + peakView.getHeight() + 75);
+                mBottomSheetBehavior.setPeekHeight(previewTopElements.getHeight() + peakView.getHeight());
                 if (mBottomSheetBehavior != null) {
                     switch (mBottomSheetBehavior.getState()) {
                         case (BottomSheetBehavior.STATE_HIDDEN):
                             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                            peakView.requestLayout();
                             break;
                         case (BottomSheetBehavior.STATE_COLLAPSED):
                             break;
                         case (BottomSheetBehavior.STATE_EXPANDED):
                             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                            peakView.requestLayout();
                             break;
                         default:
                             break;
                     }
+                    peakView.requestLayout();
                 }
                 return false;
             }

@@ -6,34 +6,20 @@
     android:layout_alignParentBottom="true"
     android:orientation="vertical">
 
-    <TextView
+    <Button
+        android:id="@+id/btn_add_napitok"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:gravity="center"
-        android:text="Итого: 125P"
-        android:textSize="20sp" />
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:text="Добавить" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:weightSum="2">
-
-        <Button
-            android:id="@+id/btn_add_napitok"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Добавить" />
-
-        <Button
-            android:id="@+id/btn_pay_napitok"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@color/green"
-            android:text="Оплатить" />
-    </LinearLayout>
-
+    <Button
+        android:id="@+id/btn_pay_napitok"
+        style="@style/button"
+        android:layout_width="273dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:text="3 позиции (260р)" />
 
 </LinearLayout>

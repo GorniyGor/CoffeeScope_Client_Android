@@ -64,7 +64,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         android:layout_marginStart="8dp"
-                        android:src="@drawable/time_icon" />
+                        android:src="@drawable/time_icon_2" />
 
                     <TextView
                         android:id="@+id/tv_preview_card_place_average_time"

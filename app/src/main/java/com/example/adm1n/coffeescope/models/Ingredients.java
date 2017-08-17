@@ -3,11 +3,13 @@ package com.example.adm1n.coffeescope.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import io.realm.RealmObject;
+
 /**
  * Created by adm1n on 22.07.2017.
  */
 
-public class Ingredients implements Parcelable {
+public class Ingredients extends RealmObject implements Parcelable {
     private Integer id;
     private String name;
     private Integer price;

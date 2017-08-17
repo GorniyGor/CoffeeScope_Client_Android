@@ -16,11 +16,17 @@
             android:src="@drawable/back_button" />
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/menu"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <TextView
             android:id="@+id/tvActionBarTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="TITLE"
             android:textColor="@color/white"
             android:textSize="24sp" />
 
@@ -46,22 +52,49 @@
                 android:layout_height="match_parent"
                 app:layout_scrollFlags="scroll">
 
-                <include layout="@layout/coffee_tabs_size" />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <include
+                        android:id="@+id/layout_coffee_tabs_size"
+                        layout="@layout/coffee_tabs_size"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp" />
+
+                    <include
+                        android:id="@+id/layout_product_count_control"
+                        layout="@layout/product_count_control"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/layout_coffee_tabs_size" />
+                </RelativeLayout>
 
             </android.support.design.widget.CollapsingToolbarLayout>
 
-            <include layout="@layout/product_count_control" />
-
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:overScrollMode="never"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:layout_height="match_parent"
+            android:layout_below="@+id/app_bar_layout_vibor_napitka"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingBottom="105dp" />
+        </RelativeLayout>
     </android.support.design.widget.CoordinatorLayout>
 
-    <include layout="@layout/btn__vibor_napitka" />
+    <include
+        android:id="@+id/layout_btn_vibor_napitka"
+        layout="@layout/btn__vibor_napitka"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="17dp" />
 </RelativeLayout>

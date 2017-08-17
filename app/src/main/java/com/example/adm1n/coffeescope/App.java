@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.example.adm1n.coffeescope.network.ApiInterface;
 
+import io.realm.Realm;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -19,7 +20,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        Realm.init(this);
         retrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl("http://coffeescope.istomin.im/api/v1/")

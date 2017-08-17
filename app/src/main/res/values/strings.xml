@@ -8,5 +8,6 @@
     <string name="enter_сomment">Введите комментарий</string>
     <string name="order_time">Время заказа</string>
     <string name="how_to_pay">С помощью карты</string>
-    <string name="count_position">Кол-во позиций</string>
+    <string name="count_position">Кол-во напитков</string>
+    <string name="menu">Меню</string>
 </resources>

@@ -8,11 +8,11 @@ import android.os.Parcelable;
  */
 
 public class Image implements Parcelable{
-    private String lable;
+    private String label;
     private String menu;
 
     protected Image(Parcel in) {
-        lable = in.readString();
+        label = in.readString();
         menu = in.readString();
     }
 
@@ -29,11 +29,11 @@ public class Image implements Parcelable{
     };
 
     public String getLable() {
-        return lable;
+        return label;
     }
 
     public void setLable(String lable) {
-        this.lable = lable;
+        this.label = lable;
     }
 
     public String getMenu() {
@@ -51,7 +51,7 @@ public class Image implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(lable);
+        dest.writeString(label);
         dest.writeString(menu);
     }
 }

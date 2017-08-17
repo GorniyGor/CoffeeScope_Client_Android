@@ -8,10 +8,19 @@ import android.os.Parcelable;
  */
 
 public class Active implements Parcelable {
-    private Integer place;
-    private Integer manager;
+    private Boolean place;
+    private Boolean manager;
 
     protected Active(Parcel in) {
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<Active> CREATOR = new Creator<Active>() {
@@ -26,28 +35,19 @@ public class Active implements Parcelable {
         }
     };
 
-    public Integer getPlace() {
+    public Boolean getPlace() {
         return place;
     }
 
-    public void setPlace(Integer place) {
+    public void setPlace(Boolean place) {
         this.place = place;
     }
 
-    public Integer getManager() {
+    public Boolean getManager() {
         return manager;
     }
 
-    public void setManager(Integer manager) {
+    public void setManager(Boolean manager) {
         this.manager = manager;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
     }
 }

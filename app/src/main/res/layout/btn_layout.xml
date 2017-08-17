@@ -9,8 +9,8 @@
         android:layout_height="56dp"
         android:layout_above="@+id/btn_minus_zoom"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="12dp"
         android:background="@drawable/zoom_in_icon" />
 
     <Button
@@ -19,7 +19,7 @@
         android:layout_height="56dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="12dp"
         android:background="@drawable/zoom_out_icon" />
 
     <Button
@@ -28,8 +28,8 @@
         android:layout_height="56dp"
         android:layout_alignParentEnd="true"
         android:layout_below="@+id/btn_minus_zoom"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/nav_icon" />
 
     <Button

@@ -12,7 +12,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/primaryRed</item>
         <item name="colorPrimaryDark">@color/primaryDarkRed</item>
-        <item name="colorAccent">@color/green</item>
+        <item name="colorAccent">@color/white</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:statusBarColor">@color/primaryDarkRed</item>

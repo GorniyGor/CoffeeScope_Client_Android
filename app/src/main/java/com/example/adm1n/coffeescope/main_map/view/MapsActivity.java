@@ -3,6 +3,10 @@ package com.example.adm1n.coffeescope.main_map.view;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -17,15 +21,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.adm1n.coffeescope.models.Basket;
 import com.example.adm1n.coffeescope.R;
-import com.example.adm1n.coffeescope.ViborNapitka;
+import com.example.adm1n.coffeescope.coffee_ingredients.CoffeeIngredientsActivity;
 import com.example.adm1n.coffeescope.coffee_menu.MenuAdapter;
 import com.example.adm1n.coffeescope.coffee_menu.custom_model.CoffeeMenu;
 import com.example.adm1n.coffeescope.main_map.presenter.MainPresenter;
+import com.example.adm1n.coffeescope.models.Hours;
 import com.example.adm1n.coffeescope.models.Place;
 import com.example.adm1n.coffeescope.models.Products;
 import com.example.adm1n.coffeescope.utils.MapsUtils;
@@ -39,8 +45,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+
+import io.reactivex.Observable;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, MenuAdapter.OnProductClick, IMapActivity {
 
@@ -48,6 +61,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private final int DEFAULT_MAP_ZOOM = 13;
     public static final String PRODUCT_EXTRA = "PRODUCT_EXTRA";
     public static final String INGREDIENTS_EXTRA = "INGREDIENTS_EXTRA";
+    public static final String PLACE_ID_EXTRA = "PLACE_ID_EXTRA";
 
     private ArrayList<CoffeeMenu> coffeeMenuList = new ArrayList<>();
     private ArrayList<Place> placeList = new ArrayList<>();
@@ -63,6 +77,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LocationManager mLocationManager;
     private boolean mPermissionDenied = false;
     private LatLng mLastKnownLocation;
+    private Location bestLocation;
 
     //preViewCardView
     private AppBarLayout peakView;
@@ -72,6 +87,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private TextView tv_coffee_name;
     private TextView tv_coffee_address;
     private TextView tv_coffee_phone_number;
+    private TextView tv_preview_card_place_average_time;
+    private ImageView iv_preview_card_top_arrow;
+    private ImageView ivPreviewBottomStatus;
     private AppBarLayout appBarLayout;
     private BottomSheetBehavior mBottomSheetBehavior;
 
@@ -82,6 +100,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button mBtnPayCoffee;
 
     private MainPresenter presenter;
+    private Observable<Basket> basketObservable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +139,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
             }
         });
-
+        iv_preview_card_top_arrow = (ImageView) findViewById(R.id.iv_preview_card_top_arrow);
         mButtonMyProfile = (Button) findViewById(R.id.btn_profile);
         mButtonMyProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,7 +185,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
+                if (slideOffset > 0.5) {
+                    iv_preview_card_top_arrow.setImageResource(R.drawable.arrow_down_icon2);
+                } else {
+                    iv_preview_card_top_arrow.setImageResource(R.drawable.arrow_down_icon);
+                }
             }
         });
 
@@ -223,14 +246,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         getLastKnownLocation();
         mMap.getUiSettings().setRotateGesturesEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
+        mMap.getUiSettings().setMapToolbarEnabled(false);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+//                basketObservable = presenter.getBasket(marker.getSnippet());
                 presenter.getPlace(marker.getSnippet());
                 peakView = (AppBarLayout) findViewById(R.id.peak_view);
                 View previewTopElements = findViewById(R.id.preview_top_elements);
-                mBottomSheetBehavior.setPeekHeight(previewTopElements.getHeight() + peakView.getHeight());
+                mBottomSheetBehavior.setPeekHeight(previewTopElements.getHeight() + peakView.getHeight() + 75);
                 if (mBottomSheetBehavior != null) {
                     switch (mBottomSheetBehavior.getState()) {
                         case (BottomSheetBehavior.STATE_HIDDEN):
@@ -316,7 +341,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void getLastKnownLocation() {
         List<String> providers = mLocationManager.getProviders(false);
-        Location bestLocation = null;
+        bestLocation = null;
         for (String provider : providers) {
             Location l = mLocationManager.getLastKnownLocation(provider);
             if (l == null) {
@@ -356,9 +381,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onClick(View v, Products product) {
-        Intent intent = new Intent(getApplicationContext(), ViborNapitka.class);
+        Intent intent = new Intent(getApplicationContext(), CoffeeIngredientsActivity.class);
         intent.putExtra(PRODUCT_EXTRA, product);
         intent.putParcelableArrayListExtra(INGREDIENTS_EXTRA, mLastPlace.getIngredients());
+        intent.putExtra(PLACE_ID_EXTRA, mLastPlace.getId());
         startActivity(intent);
     }
 
@@ -366,9 +392,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void setMarkers(ArrayList<Place> list) {
         for (int i = 0; i < list.size(); i++) {
             Place place = list.get(i);
+//            if (place.getImage().getLable() != null) {
+//                Drawable drawable = Drawable.createFromPath(place.getImage().getLable());
+//                Bitmap bitmap = drawableToBitmap(drawable);
+//                mMap.addMarker(new MarkerOptions()
+//                        .position(new LatLng(place.getCoodrinates().getLongitude(), place.getCoodrinates().getLatitude()))
+//                        .icon(BitmapDescriptorFactory.fromBitmap(bitmap))
+//                        .snippet(String.valueOf(place.getId())));
+//            } else {
             mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(place.getCoodrinates().getLongitude(), place.getCoodrinates().getLatitude()))
+                    .position(new LatLng(place.getCoodrinates().getLatitude(), place.getCoodrinates().getLongitude()))
                     .snippet(String.valueOf(place.getId())));
+//            }
         }
         placeList.addAll(list);
     }
@@ -384,22 +419,99 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setAdapter(place);
         tv_coffee_name = (TextView) findViewById(R.id.tv_preview_card_product_name);
         tv_coffee_name.setText(mLastPlace.getName());
+        ivPreviewBottomStatus = (ImageView) findViewById(R.id.ivPreviewBottomStatus);
         tv_coffee_address = (TextView) findViewById(R.id.tv_preview_card_place_address);
         tv_coffee_address.setText(mLastPlace.getAddress());
         tv_coffee_phone_number = (TextView) findViewById(R.id.tv_preview_card_place_phone_number);
         tv_coffee_phone_number.setText(mLastPlace.getPhone());
+        tv_preview_card_place_average_time = (TextView) findViewById(R.id.tv_preview_card_place_average_time);
+        tv_preview_card_place_average_time.setText(mLastPlace.getAverage_time() + " мин");
 
         tvPreviewBottomJobTime = (TextView) findViewById(R.id.tvPreviewBottomJobTime);
-//        tvPreviewBottomJobTime.setText(mLastPlace.getJobTime());
         tvPreviewBottomRateCount = (TextView) findViewById(R.id.tv_preview_card_place_rate_count);
         tvPreviewBottomRateCount.setText(String.valueOf(mLastPlace.getRating()));
         tvPreviewBottomRangeCount = (TextView) findViewById(R.id.tv_preview_card_place_range_count);
         if (mLastKnownLocation != null) {
-            tvPreviewBottomRangeCount.setText(String.valueOf(
-                    MapsUtils.calculationDistance(mLastKnownLocation, new LatLng(mLastPlace.getCoodrinates().getLatitude(),
-                            mLastPlace.getCoodrinates().getLongitude()))));
+            int distance = MapsUtils.calculationDistance(mLastKnownLocation, new LatLng(mLastPlace.getCoodrinates().getLatitude(),
+                    mLastPlace.getCoodrinates().getLongitude()));
+            tvPreviewBottomRangeCount.setText(MapsUtils.castDistance(distance));
         } else {
             tvPreviewBottomRangeCount.setText("fail");
         }
+        initDate();
+        //вешаем настройки на кнопку оплаты
+//        RxView.enabled(mBtnPayCoffee)
+    }
+
+    @Override
+    protected void onStop() {
+        //выключаем обс
+        super.onStop();
+    }
+
+    void initDate() {
+        Date current = null;
+        Date placeOpenTime = null;
+        Date placeCloseTime = null;
+        Date currentDate = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+
+        // 1) получаем текущую дату
+        Calendar calendar = GregorianCalendar.getInstance();
+        // 2) определяем день недели
+        int currentDay = calendar.get(Calendar.DAY_OF_WEEK) - calendar.getFirstDayOfWeek();
+        // 3) получаем расписание по этому дню
+        Hours hours = mLastPlace.getHours().get(currentDay);
+        String open = hours.getOpen();      //"17:31"
+        String close = hours.getClose();    //"20:31"
+        // 4) преобразую в нужный мне формат
+        try {
+            current = dateFormat.parse(dateFormat.format(currentDate));
+            placeOpenTime = dateFormat.parse(open);
+            placeCloseTime = dateFormat.parse(close);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        //проверяю условия
+        if (placeCloseTime != null && placeOpenTime != null) {
+            if (current.after(placeOpenTime) && current.before(placeCloseTime)) {
+                ivPreviewBottomStatus.setImageResource(R.drawable.open_icon);
+                tvPreviewBottomJobTime.setText("до " + mLastPlace.getHours().get(currentDay).getClose());
+            } else {
+                if (current.before(placeOpenTime)) {
+                    tvPreviewBottomJobTime.setText("до " + mLastPlace.getHours().get(currentDay).getOpen());
+                } else if (current.after(placeCloseTime)) {
+                    //достать след день
+                    if (mLastPlace.getHours().size() != currentDay) {
+                        tvPreviewBottomJobTime.setText("до " + mLastPlace.getHours().get(currentDay + 1).getOpen());
+                    } else {
+                        tvPreviewBottomJobTime.setText("до " + mLastPlace.getHours().get(0).getOpen());
+                    }
+                }
+                ivPreviewBottomStatus.setImageResource(R.drawable.close_icon);
+            }
+        }
+    }
+
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        Bitmap bitmap = null;
+
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if (bitmapDrawable.getBitmap() != null) {
+                return bitmapDrawable.getBitmap();
+            }
+        }
+
+        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        }
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
     }
 }

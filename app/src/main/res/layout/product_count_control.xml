@@ -60,6 +60,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="15dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_below="@+id/ll_product_count" />
 
 </RelativeLayout>

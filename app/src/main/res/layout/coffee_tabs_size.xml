@@ -8,7 +8,7 @@
         android:id="@+id/tl_coffee_size"
         android:background="@color/primaryRed"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
     </android.support.design.widget.TabLayout>
 

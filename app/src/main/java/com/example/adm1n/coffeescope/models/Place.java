@@ -24,6 +24,9 @@ public class Place implements Parcelable {
     private ArrayList<Ingredients> ingredients;
     private ArrayList<Hours> hours;
 
+    public Place() {
+    }
+
     public String getWho_deactivated() {
         return who_deactivated;
     }

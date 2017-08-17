@@ -55,7 +55,7 @@ class CoffeeAdapter extends RecyclerView.Adapter<CoffeeAdapter.CoffeeViewHolder>
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(mContext, "Добавлено", Toast.LENGTH_SHORT).show();
-//                    Intent intent = new Intent(mContext, ViborNapitka.class);
+//                    Intent intent = new Intent(mContext, CoffeeIngredientsActivity.class);
 //                    mContext.startActivity(intent);
                 }
             });

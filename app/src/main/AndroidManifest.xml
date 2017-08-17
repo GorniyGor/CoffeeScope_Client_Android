@@ -46,7 +46,7 @@
         </activity>
 
         <activity
-            android:name=".ViborNapitka"
+            android:name=".coffee_ingredients.CoffeeIngredientsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeRed"
             android:label="@string/app_name">

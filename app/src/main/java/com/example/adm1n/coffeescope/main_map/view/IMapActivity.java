@@ -13,5 +13,5 @@ public interface IMapActivity {
 
     void showError(String s);
 
-    void showPeakView(Place place);
+    void setMenuAdapter(Place place);
 }

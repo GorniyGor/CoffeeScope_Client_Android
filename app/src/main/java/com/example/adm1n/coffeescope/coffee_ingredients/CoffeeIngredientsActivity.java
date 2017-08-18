@@ -1,17 +1,11 @@
 package com.example.adm1n.coffeescope.coffee_ingredients;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -21,21 +15,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.adm1n.coffeescope.Order;
+import com.example.adm1n.coffeescope.BaseActivity;
+import com.example.adm1n.coffeescope.OrderActivity;
 import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.main_map.view.MapsActivity;
-import com.example.adm1n.coffeescope.models.Basket;
+import com.example.adm1n.coffeescope.models.basket.Basket;
 import com.example.adm1n.coffeescope.models.Ingredients;
+import com.example.adm1n.coffeescope.models.Place;
 import com.example.adm1n.coffeescope.models.Products;
+import com.example.adm1n.coffeescope.models.basket.BasketProducts;
 import com.example.adm1n.coffeescope.utils.SpaceItemDecoration;
+import com.jakewharton.rxbinding2.view.RxView;
 
-import java.util.ArrayList;
+import org.w3c.dom.Text;
+
+import io.reactivex.functions.Consumer;
+import io.realm.RealmList;
 
 /**
  * Created by adm1n on 18.07.2017.
  */
 
-public class CoffeeIngredientsActivity extends AppCompatActivity implements CoffeeIngredientsAdapter.OnIngredientsClick {
+public class CoffeeIngredientsActivity extends BaseActivity implements CoffeeIngredientsAdapter.OnIngredientsClick {
 
     private CoffeeIngredientsAdapter mAdapter;
     private RecyclerView recyclerview;
@@ -45,10 +46,15 @@ public class CoffeeIngredientsActivity extends AppCompatActivity implements Coff
     private LinearLayoutManager linearLayoutManager;
     private AppBarLayout app_bar_layout_vibor_napitka;
     private Products mProducts;
-    private ArrayList<Ingredients> mIngredientsList;
+    private RealmList<Ingredients> mIngredientsList;
     private TabLayout mTabLayout;
-    private Basket basket;
+    private Basket mBasket = new Basket();
+    private BasketProducts mBasketProducts = new BasketProducts();
     private Integer mPlaceId;
+
+    private ImageView ivAddProductCount;
+    private ImageView ivRemoveProductCount;
+    private TextView tvProductCount;
 
 
     @Override
@@ -57,15 +63,21 @@ public class CoffeeIngredientsActivity extends AppCompatActivity implements Coff
         setContentView(R.layout.napitka_vibor);
         if (savedInstanceState == null) {
             mProducts = getIntent().getParcelableExtra(MapsActivity.PRODUCT_EXTRA);
-            mIngredientsList = getIntent().getParcelableArrayListExtra(MapsActivity.INGREDIENTS_EXTRA);
             mPlaceId = getIntent().getIntExtra(MapsActivity.PLACE_ID_EXTRA, 0);
-            initBasket(mPlaceId);
-            createTabs();
+            getIngredients();
+            if (mProducts.getSizes() != null) {
+                createTabs();
+            }
+            createBasket(mProducts);
         }
+        ivAddProductCount = (ImageView) findViewById(R.id.iv_count_control_plus);
+        ivRemoveProductCount = (ImageView) findViewById(R.id.iv_count_control_minus);
+        tvProductCount = (TextView) findViewById(R.id.tv_product_count_product_count);
         mAddButton = (ImageView) findViewById(R.id.btn_add_napitok);
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //добавляем заказ
                 Toast.makeText(CoffeeIngredientsActivity.this, "Напиток добавлен!", Toast.LENGTH_SHORT).show();
                 onBackPressed();
             }
@@ -74,17 +86,15 @@ public class CoffeeIngredientsActivity extends AppCompatActivity implements Coff
         mPayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Order.class);
+                Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
                 intent.putExtra(MapsActivity.PLACE_ID_EXTRA, mPlaceId);
-                basket = new Basket(mPlaceId);
-                //создаем в реалме запись корзины
                 startActivity(intent);
             }
         });
 
         recyclerview = (RecyclerView) findViewById(R.id.rv);
         app_bar_layout_vibor_napitka = (AppBarLayout) findViewById(R.id.app_bar_layout_vibor_napitka);
-        mAdapter = new CoffeeIngredientsAdapter(mIngredientsList, this);
+        mAdapter = new CoffeeIngredientsAdapter(mLastPlace.getIngredients(), this);
         linearLayoutManager = new LinearLayoutManager(this);
         SpaceItemDecoration decorator = new SpaceItemDecoration(32, true, true);
         recyclerview.addItemDecoration(decorator);
@@ -114,16 +124,7 @@ public class CoffeeIngredientsActivity extends AppCompatActivity implements Coff
                 }
             }
         });
-        new Handler().postDelayed(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mTabLayout.getTabCount() != 0) {
-                            TabLayout.Tab tabAt = mTabLayout.getTabAt(0);
-                            tabAt.select();
-                        }
-                    }
-                }, 100);
+        setRxView();
     }
 
     void createTabs() {
@@ -212,11 +213,54 @@ public class CoffeeIngredientsActivity extends AppCompatActivity implements Coff
     }
 
     void initBasket(Integer basketId) {
-
+        Basket mBasketId = mRealm.where(Basket.class).equalTo("mBasketId", String.valueOf(basketId)).findFirst();
     }
 
     @Override
-    public void onClick(View v) {
+    //Клик по ингредиенту
+    public void onIngredientsClick(View v) {
         Toast.makeText(this, "Ингридиент добавлен", Toast.LENGTH_SHORT).show();
+    }
+
+    void getIngredients() {
+        Place place = mRealm.where(Place.class)
+                .equalTo("id", mPlaceId)
+                .findFirst();
+        mLastPlace = mRealm.copyFromRealm(place);
+    }
+
+    void createBasket(Products product) {
+        mBasket.setmBasketId(mLastPlace.getId());
+        RealmList<BasketProducts> basketProductses = mBasket.getmBasketProductsList();
+        BasketProducts basketProducts = new BasketProducts();
+//        mTabLayout.getTabAt(mTabLayout.getSelectedTabPosition())
+//        basketProducts.set
+    }
+
+
+    void setRxView() {
+        RxView.clicks(ivAddProductCount).subscribe(new Consumer<Object>() {
+            @Override
+            public void accept(Object o) throws Exception {
+                int i = Integer.parseInt(tvProductCount.getText().toString());
+                i++;
+                tvProductCount.setText(String.valueOf(i));
+                mBasketProducts.setCount(i);
+            }
+        });
+
+        RxView.clicks(ivRemoveProductCount).subscribe(new Consumer<Object>() {
+            @Override
+            public void accept(Object o) throws Exception {
+                int i = Integer.parseInt(tvProductCount.getText().toString());
+                if (i != 1) {
+                    i--;
+                    tvProductCount.setText(String.valueOf(i));
+                    mBasketProducts.setCount(i);
+                } else {
+                    Toast.makeText(CoffeeIngredientsActivity.this, "ТЫ НА ДНЕ", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

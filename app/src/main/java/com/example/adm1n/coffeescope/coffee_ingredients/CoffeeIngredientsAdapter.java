@@ -13,18 +13,20 @@ import com.example.adm1n.coffeescope.models.Ingredients;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.RealmList;
+
 /**
  * Created by adm1n on 02.08.2017.
  */
 
 public class CoffeeIngredientsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<Ingredients> ingredients = new ArrayList<>();
+    private RealmList<Ingredients> ingredients = new RealmList<>();
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
     private OnIngredientsClick onClickListener;
 
-    public CoffeeIngredientsAdapter(List<Ingredients> list, OnIngredientsClick onClickListener) {
+    public CoffeeIngredientsAdapter(RealmList<Ingredients> list, OnIngredientsClick onClickListener) {
         this.onClickListener = onClickListener;
         if (ingredients != null) {
             ingredients.clear();
@@ -99,7 +101,7 @@ public class CoffeeIngredientsAdapter extends RecyclerView.Adapter<RecyclerView.
             rlCoffeeAdapterFrame.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onIngredientsClick.onClick(v);
+                    onIngredientsClick.onIngredientsClick(v);
                 }
             });
         }
@@ -115,6 +117,6 @@ public class CoffeeIngredientsAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
     public interface OnIngredientsClick {
-        void onClick(View v);
+        void onIngredientsClick(View v);
     }
 }

@@ -10,16 +10,25 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
+import com.example.adm1n.coffeescope.main_map.view.MapsActivity;
+import com.example.adm1n.coffeescope.models.Place;
 
 /**
  * Created by adm1n on 21.07.2017.
  */
 
-public class Order extends AppCompatActivity {
+public class OrderActivity extends BaseActivity {
+
+    private TextView tv_order_place_name;
+    private TextView tv_order_place_address;
+    private TextView tv_order_place_phone_number;
+    private TextView tv_order_place_average_time;
+
     private SwipeRevealLayout swipeLayout;
     private EditText etOrderCommentField;
     private Toolbar toolbar;
@@ -32,7 +41,7 @@ public class Order extends AppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_order);
-
+        initView();
         swipeLayout = (SwipeRevealLayout) findViewById(R.id.swipeLayout);
         etOrderCommentField = (EditText) findViewById(R.id.et_order_comment_field);
         etOrderCommentField.setOnTouchListener(new View.OnTouchListener() {
@@ -67,7 +76,7 @@ public class Order extends AppCompatActivity {
         ib_napitok_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(Order.this, "Переход", Toast.LENGTH_SHORT).show();
+                Toast.makeText(OrderActivity.this, "Переход", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -88,4 +97,15 @@ public class Order extends AppCompatActivity {
             }
         }
     };
+
+    void initView() {
+        tv_order_place_name = (TextView) findViewById(R.id.tv_order_place_name);
+        tv_order_place_name.setText(mLastPlace.getName());
+        tv_order_place_address = (TextView) findViewById(R.id.tv_order_place_address);
+        tv_order_place_address.setText(mLastPlace.getAddress());
+        tv_order_place_phone_number = (TextView) findViewById(R.id.tv_order_place_phone_number);
+        tv_order_place_phone_number.setText(mLastPlace.getPhone());
+        tv_order_place_average_time = (TextView) findViewById(R.id.tv_order_place_average_time);
+        tv_order_place_average_time.setText(mLastPlace.getAverage_time());
+    }
 }

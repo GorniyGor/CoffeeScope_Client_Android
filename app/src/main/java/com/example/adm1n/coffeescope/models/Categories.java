@@ -5,18 +5,40 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 
+import io.realm.RealmList;
+import io.realm.RealmObject;
+
 /**
  * Created by adm1n on 22.07.2017.
  */
 
-public class Categories implements Parcelable {
+public class Categories extends RealmObject implements Parcelable {
 
     private Integer id;
     private String name;
-    private ArrayList<Products> products;
+    private RealmList<Products> products;
+
+    public Categories() {
+    }
+
 
     protected Categories(Parcel in) {
         name = in.readString();
+        id = in.readInt();
+        this.products = new RealmList<>();
+        this.products.addAll(in.createTypedArrayList(Products.CREATOR));
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeInt(id);
+        dest.writeTypedList(this.products);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<Categories> CREATOR = new Creator<Categories>() {
@@ -47,21 +69,12 @@ public class Categories implements Parcelable {
         this.name = name;
     }
 
-    public ArrayList<Products> getProducts() {
+    public RealmList<Products> getProducts() {
         return products;
     }
 
-    public void setProducts(ArrayList<Products> products) {
+    public void setProducts(RealmList<Products> products) {
         this.products = products;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-    }
 }

@@ -2,7 +2,7 @@ package com.example.adm1n.coffeescope.main_map.presenter;
 
 import android.content.Context;
 
-import com.example.adm1n.coffeescope.models.Basket;
+import com.example.adm1n.coffeescope.models.basket.Basket;
 import com.example.adm1n.coffeescope.main_map.model.MainPlacesModel;
 import com.example.adm1n.coffeescope.main_map.view.IMapActivity;
 import com.example.adm1n.coffeescope.models.Place;
@@ -53,7 +53,8 @@ public class MainPresenter implements IMainPresenter {
                     @Override
                     public void accept(@NonNull PlaceResponse placeResponse) throws Exception {
                         Place data = placeResponse.getData();
-                        mView.showPeakView(data);
+                        mView.setMenuAdapter(data);
+                        savePlace(data);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -73,5 +74,12 @@ public class MainPresenter implements IMainPresenter {
             }
         };
         //Идем в реалм и возвращаем корзину
+    }
+
+    @Override
+    public void savePlace(Place place) {
+        mRealm.beginTransaction();
+        mRealm.copyToRealmOrUpdate(place);
+        mRealm.commitTransaction();
     }
 }

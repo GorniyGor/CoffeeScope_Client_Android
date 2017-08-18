@@ -5,6 +5,7 @@ import android.app.Application;
 import com.example.adm1n.coffeescope.network.ApiInterface;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -21,6 +22,14 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         Realm.init(this);
+        RealmConfiguration realmConfig = new RealmConfiguration
+                .Builder()
+                .deleteRealmIfMigrationNeeded()
+                .name("myRealmFile")
+                .build();
+
+        Realm.setDefaultConfiguration(realmConfig);
+
         retrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl("http://coffeescope.istomin.im/api/v1/")

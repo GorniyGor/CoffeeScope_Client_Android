@@ -3,14 +3,19 @@ package com.example.adm1n.coffeescope.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import io.realm.RealmObject;
+
 /**
  * Created by adm1n on 22.07.2017.
  */
 
-public class Hours implements Parcelable{
+public class Hours extends RealmObject implements Parcelable{
     private String day;
     private String open;
     private String close;
+
+    public Hours() {
+    }
 
     protected Hours(Parcel in) {
         day = in.readString();

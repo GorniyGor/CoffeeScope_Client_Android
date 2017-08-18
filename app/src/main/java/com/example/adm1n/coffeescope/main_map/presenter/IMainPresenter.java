@@ -1,6 +1,7 @@
 package com.example.adm1n.coffeescope.main_map.presenter;
 
-import com.example.adm1n.coffeescope.models.Basket;
+import com.example.adm1n.coffeescope.models.basket.Basket;
+import com.example.adm1n.coffeescope.models.Place;
 
 import io.reactivex.Observable;
 
@@ -11,5 +12,6 @@ import io.reactivex.Observable;
 public interface IMainPresenter {
     void getPlaces();
     void getPlace(String placeId);
+    void savePlace(Place place);
     Observable<Basket> getBasket(String PlaceId);
 }

@@ -3,13 +3,18 @@ package com.example.adm1n.coffeescope.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import io.realm.RealmObject;
+
 /**
  * Created by adm1n on 22.07.2017.
  */
 
-public class Coodrinates implements Parcelable {
+public class Coodrinates extends RealmObject implements Parcelable {
     private double longitude;
     private double latitude;
+
+    public Coodrinates() {
+    }
 
     protected Coodrinates(Parcel in) {
         longitude = in.readDouble();

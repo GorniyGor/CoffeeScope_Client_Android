@@ -5,11 +5,16 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
 /**
  * Created by adm1n on 22.07.2017.
  */
 
-public class Place implements Parcelable {
+public class Place extends RealmObject implements Parcelable {
+    @PrimaryKey
     private Integer id;
     private String name;
     private String address;
@@ -20,12 +25,67 @@ public class Place implements Parcelable {
     private String who_deactivated;
     private Coodrinates coodrinates;
     private Image image;
-    private ArrayList<Categories> categories;
-    private ArrayList<Ingredients> ingredients;
-    private ArrayList<Hours> hours;
+    private RealmList<Categories> categories;
+    private RealmList<Ingredients> ingredients;
+    private RealmList<Hours> hours;
 
     public Place() {
     }
+
+    protected Place(Parcel in) {
+        name = in.readString();
+        address = in.readString();
+        phone = in.readString();
+        rating = in.readDouble();
+        average_time = in.readString();
+        active = in.readParcelable(Active.class.getClassLoader());
+        who_deactivated = in.readString();
+        coodrinates = in.readParcelable(Coodrinates.class.getClassLoader());
+        image = in.readParcelable(Image.class.getClassLoader());
+
+        this.categories = new RealmList<>();
+        this.categories.addAll(in.createTypedArrayList(Categories.CREATOR));
+
+        this.ingredients = new RealmList<>();
+        this.ingredients.addAll(in.createTypedArrayList(Ingredients.CREATOR));
+
+        this.hours = new RealmList<>();
+        this.hours.addAll(in.createTypedArrayList(Hours.CREATOR));
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(address);
+        dest.writeString(phone);
+        dest.writeDouble(rating);
+        dest.writeString(average_time);
+        dest.writeParcelable(active, flags);
+        dest.writeString(who_deactivated);
+        dest.writeParcelable(coodrinates, flags);
+        dest.writeParcelable(image, flags);
+
+        dest.writeTypedList(this.categories);
+        dest.writeTypedList(this.ingredients);
+        dest.writeTypedList(this.hours);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Place> CREATOR = new Creator<Place>() {
+        @Override
+        public Place createFromParcel(Parcel in) {
+            return new Place(in);
+        }
+
+        @Override
+        public Place[] newArray(int size) {
+            return new Place[size];
+        }
+    };
 
     public String getWho_deactivated() {
         return who_deactivated;
@@ -107,71 +167,27 @@ public class Place implements Parcelable {
         this.image = image;
     }
 
-    public ArrayList<Categories> getCategories() {
+    public RealmList<Categories> getCategories() {
         return categories;
     }
 
-    public void setCategories(ArrayList<Categories> categories) {
+    public void setCategories(RealmList<Categories> categories) {
         this.categories = categories;
     }
 
-    public ArrayList<Ingredients> getIngredients() {
+    public RealmList<Ingredients> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(ArrayList<Ingredients> ingredients) {
+    public void setIngredients(RealmList<Ingredients> ingredients) {
         this.ingredients = ingredients;
     }
 
-    public ArrayList<Hours> getHours() {
+    public RealmList<Hours> getHours() {
         return hours;
     }
 
-    public void setHours(ArrayList<Hours> hours) {
+    public void setHours(RealmList<Hours> hours) {
         this.hours = hours;
     }
-
-    protected Place(Parcel in) {
-        name = in.readString();
-        address = in.readString();
-        phone = in.readString();
-        rating = in.readDouble();
-        average_time = in.readString();
-        coodrinates = in.readParcelable(Coodrinates.class.getClassLoader());
-        image = in.readParcelable(Image.class.getClassLoader());
-        categories = in.createTypedArrayList(Categories.CREATOR);
-        ingredients = in.createTypedArrayList(Ingredients.CREATOR);
-        hours = in.createTypedArrayList(Hours.CREATOR);
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeString(address);
-        dest.writeString(phone);
-        dest.writeDouble(rating);
-        dest.writeString(average_time);
-        dest.writeParcelable(coodrinates, flags);
-        dest.writeParcelable(image, flags);
-        dest.writeTypedList(categories);
-        dest.writeTypedList(ingredients);
-        dest.writeTypedList(hours);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Place> CREATOR = new Creator<Place>() {
-        @Override
-        public Place createFromParcel(Parcel in) {
-            return new Place(in);
-        }
-
-        @Override
-        public Place[] newArray(int size) {
-            return new Place[size];
-        }
-    };
 }

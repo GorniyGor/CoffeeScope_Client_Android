@@ -14,7 +14,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -25,7 +24,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.adm1n.coffeescope.models.Basket;
+import com.example.adm1n.coffeescope.BaseActivity;
+import com.example.adm1n.coffeescope.models.basket.Basket;
 import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.coffee_ingredients.CoffeeIngredientsActivity;
 import com.example.adm1n.coffeescope.coffee_menu.MenuAdapter;
@@ -34,6 +34,7 @@ import com.example.adm1n.coffeescope.main_map.presenter.MainPresenter;
 import com.example.adm1n.coffeescope.models.Hours;
 import com.example.adm1n.coffeescope.models.Place;
 import com.example.adm1n.coffeescope.models.Products;
+import com.example.adm1n.coffeescope.models.basket.BasketProducts;
 import com.example.adm1n.coffeescope.utils.MapsUtils;
 import com.example.adm1n.coffeescope.utils.PermissionUtils;
 import com.example.adm1n.coffeescope.utils.SpaceItemDecoration;
@@ -54,8 +55,9 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.realm.RealmList;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, MenuAdapter.OnProductClick, IMapActivity {
+public class MapsActivity extends BaseActivity implements OnMapReadyCallback, MenuAdapter.OnProductClick, IMapActivity {
 
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private final int DEFAULT_MAP_ZOOM = 13;
@@ -96,14 +98,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private RecyclerView recyclerview;
     private MenuAdapter menuAdapter;
     private LinearLayoutManager linearLayoutManager;
-    private Place mLastPlace;
     private Button mBtnPayCoffee;
 
     private MainPresenter presenter;
     private Observable<Basket> basketObservable;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contain_main);
         presenter = new MainPresenter(getApplicationContext(), this);
@@ -251,7 +252,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-//                basketObservable = presenter.getBasket(marker.getSnippet());
+                showPeakView(mRealm.copyFromRealm(mRealm.where(Place.class).equalTo("id", Integer.valueOf(marker.getSnippet())).findFirst()));
                 presenter.getPlace(marker.getSnippet());
                 peakView = (AppBarLayout) findViewById(R.id.peak_view);
                 View previewTopElements = findViewById(R.id.preview_top_elements);
@@ -383,13 +384,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onClick(View v, Products product) {
         Intent intent = new Intent(getApplicationContext(), CoffeeIngredientsActivity.class);
         intent.putExtra(PRODUCT_EXTRA, product);
-        intent.putParcelableArrayListExtra(INGREDIENTS_EXTRA, mLastPlace.getIngredients());
+        intent.putExtra(INGREDIENTS_EXTRA, mLastPlace);
         intent.putExtra(PLACE_ID_EXTRA, mLastPlace.getId());
         startActivity(intent);
     }
 
     @Override
     public void setMarkers(ArrayList<Place> list) {
+        putDataInRealm(list);
         for (int i = 0; i < list.size(); i++) {
             Place place = list.get(i);
 //            if (place.getImage().getLable() != null) {
@@ -413,10 +415,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
     public void showPeakView(Place place) {
         mLastPlace = place;
-        setAdapter(place);
         tv_coffee_name = (TextView) findViewById(R.id.tv_preview_card_product_name);
         tv_coffee_name.setText(mLastPlace.getName());
         ivPreviewBottomStatus = (ImageView) findViewById(R.id.ivPreviewBottomStatus);
@@ -513,5 +513,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
         return bitmap;
+    }
+
+    void putDataInRealm(ArrayList<Place> list) {
+        mRealm.beginTransaction();
+        for (int i = 0; i < list.size(); i++) {
+            Place place = list.get(i);
+            mRealm.copyToRealmOrUpdate(place);
+        }
+        mRealm.commitTransaction();
+    }
+
+    @Override
+    public void setMenuAdapter(Place place) {
+        setAdapter(place);
     }
 }

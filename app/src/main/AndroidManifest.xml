@@ -53,7 +53,7 @@
         </activity>
 
         <activity
-            android:name=".Order"
+            android:name=".OrderActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeRed"
             android:label="@string/app_name">

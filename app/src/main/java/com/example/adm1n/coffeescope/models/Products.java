@@ -5,19 +5,38 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 
+import io.realm.RealmList;
+import io.realm.RealmObject;
+
 /**
  * Created by adm1n on 22.07.2017.
  */
 
-public class Products implements Parcelable {
+public class Products extends RealmObject implements Parcelable {
     private Integer id;
     private String name;
-    private ArrayList<Sizes> sizes;
+    private RealmList<Sizes> sizes;
+
+    public Products() {
+    }
 
     protected Products(Parcel in) {
-        id = in.readInt();
         name = in.readString();
-        sizes = in.createTypedArrayList(Sizes.CREATOR);
+        id = in.readInt();
+        this.sizes = new RealmList<>();
+        this.sizes.addAll(in.createTypedArrayList(Sizes.CREATOR));
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeInt(id);
+        dest.writeTypedList(this.sizes);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<Products> CREATOR = new Creator<Products>() {
@@ -48,23 +67,12 @@ public class Products implements Parcelable {
         this.name = name;
     }
 
-    public ArrayList<Sizes> getSizes() {
+    public RealmList<Sizes> getSizes() {
         return sizes;
     }
 
-    public void setSizes(ArrayList<Sizes> sizes) {
+    public void setSizes(RealmList<Sizes> sizes) {
         this.sizes = sizes;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(name);
-        dest.writeTypedList(sizes);
-    }
 }

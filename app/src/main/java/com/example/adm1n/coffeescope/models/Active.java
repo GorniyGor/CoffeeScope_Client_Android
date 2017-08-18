@@ -3,13 +3,19 @@ package com.example.adm1n.coffeescope.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import io.realm.RealmModel;
+import io.realm.RealmObject;
+
 /**
  * Created by adm1n on 08.08.2017.
  */
 
-public class Active implements Parcelable {
+public class Active extends RealmObject implements Parcelable {
     private Boolean place;
     private Boolean manager;
+
+    public Active() {
+    }
 
     protected Active(Parcel in) {
     }

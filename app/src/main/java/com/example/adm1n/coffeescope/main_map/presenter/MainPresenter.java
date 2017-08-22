@@ -6,14 +6,19 @@ import com.example.adm1n.coffeescope.models.basket.Basket;
 import com.example.adm1n.coffeescope.main_map.model.MainPlacesModel;
 import com.example.adm1n.coffeescope.main_map.view.IMapActivity;
 import com.example.adm1n.coffeescope.models.Place;
+import com.example.adm1n.coffeescope.models.basket.BasketProducts;
 import com.example.adm1n.coffeescope.network.responses.PlaceResponse;
 import com.example.adm1n.coffeescope.network.responses.PlacesResponse;
+
+import java.util.ArrayList;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.realm.Realm;
+import io.realm.RealmList;
+import io.realm.RealmResults;
 
 /**
  * Created by adm1n on 01.08.2017.
@@ -23,7 +28,8 @@ public class MainPresenter implements IMainPresenter {
     private Context mContext;
     private IMapActivity mView;
     private MainPlacesModel model = new MainPlacesModel();
-    Realm mRealm = Realm.getDefaultInstance();
+    private Realm mRealm = Realm.getDefaultInstance();
+    private Place myPlace;
 
     public MainPresenter(Context mContext, IMapActivity mView) {
         this.mContext = mContext;
@@ -36,6 +42,7 @@ public class MainPresenter implements IMainPresenter {
                 .subscribe(new Consumer<PlacesResponse>() {
                     @Override
                     public void accept(@NonNull PlacesResponse placesResponse) throws Exception {
+                        savePlaces(placesResponse.getPlaceList());
                         mView.setMarkers(placesResponse.getPlaceList());
                     }
                 }, new Consumer<Throwable>() {
@@ -53,8 +60,8 @@ public class MainPresenter implements IMainPresenter {
                     @Override
                     public void accept(@NonNull PlaceResponse placeResponse) throws Exception {
                         Place data = placeResponse.getData();
-                        mView.setMenuAdapter(data);
                         savePlace(data);
+                        mView.setMenuAdapter(data);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -77,9 +84,31 @@ public class MainPresenter implements IMainPresenter {
     }
 
     @Override
-    public void savePlace(Place place) {
+    public void savePlaces(ArrayList<Place> list) {
         mRealm.beginTransaction();
-        mRealm.copyToRealmOrUpdate(place);
+        for (int i = 0; i < list.size(); i++) {
+            Place place = list.get(i);
+            mRealm.copyToRealmOrUpdate(place);
+        }
         mRealm.commitTransaction();
+    }
+
+    @Override
+    public void savePlace(Place place) {
+        myPlace = place;
+        mRealm.beginTransaction();
+        mRealm.copyToRealmOrUpdate(myPlace);
+        mRealm.commitTransaction();
+
+        Basket mBasket = mRealm.where(Basket.class).equalTo("mBasketId", place.getId()).findFirst();
+        if (mBasket == null) {
+            mRealm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    Basket basket = realm.createObject(Basket.class, myPlace.getId());
+                    basket.setmBasketProductsList(new RealmList<BasketProducts>());
+                }
+            });
+        }
     }
 }

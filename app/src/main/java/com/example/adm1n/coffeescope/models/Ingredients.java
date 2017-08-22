@@ -15,7 +15,7 @@ public class Ingredients extends RealmObject implements Parcelable {
     private Integer price;
 
     public Ingredients() {
-//        this.name = "Доп. Ингредиенты";
+        this.name = "Доп. Ингредиенты";
     }
 
     protected Ingredients(Parcel in) {

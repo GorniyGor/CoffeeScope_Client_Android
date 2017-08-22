@@ -7,16 +7,32 @@ import com.example.adm1n.coffeescope.models.Ingredients;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by adm1n on 18.08.2017.
  */
 
 public class BasketProducts extends RealmObject implements Parcelable {
+    @PrimaryKey
+    private Integer productId;
     private String sizeId;
+    private String name;
     private Integer cost;
     private Integer count;
+    private Integer costSumm;
     private RealmList<Ingredients> mIngredientsList = new RealmList<>();
+
+    public Integer getSumma() {
+        Integer summ = 0;
+        for (int j = 0; j < this.mIngredientsList.size(); j++) {
+            Ingredients ingredients = this.mIngredientsList.get(j);
+            summ += ingredients.getPrice();
+        }
+        summ += cost;
+        summ *= count;
+        return summ;
+    }
 
     public BasketProducts() {
     }
@@ -25,6 +41,9 @@ public class BasketProducts extends RealmObject implements Parcelable {
         sizeId = in.readString();
         cost = in.readInt();
         count = in.readInt();
+        productId = in.readInt();
+        name = in.readString();
+        costSumm = in.readInt();
         this.mIngredientsList = new RealmList<>();
         this.mIngredientsList.addAll(in.createTypedArrayList(Ingredients.CREATOR));
     }
@@ -35,6 +54,9 @@ public class BasketProducts extends RealmObject implements Parcelable {
         dest.writeInt(cost);
         dest.writeInt(count);
         dest.writeTypedList(this.mIngredientsList);
+        dest.writeInt(productId);
+        dest.writeString(name);
+        dest.writeInt(costSumm);
     }
 
     @Override
@@ -86,11 +108,27 @@ public class BasketProducts extends RealmObject implements Parcelable {
         this.mIngredientsList = mIngredientsList;
     }
 
-    public void incrementCount() {
-        this.count++;
+    public Integer getProductId() {
+        return productId;
     }
 
-    public void decrementCount() {
-        this.count--;
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getCostSumm() {
+        return getSumma();
+    }
+
+    public void setCostSumm(Integer costSumm) {
+        this.costSumm = costSumm;
     }
 }

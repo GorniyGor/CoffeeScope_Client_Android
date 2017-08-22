@@ -3,52 +3,69 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipeLayout"
     android:layout_width="match_parent"
-    app:mode="same_level"
+    android:layout_height="80dp"
     app:dragEdge="right"
-    android:layout_height="80dp">
+    app:mode="same_level">
 
     <LinearLayout
         android:id="@+id/llDragDelete"
-        android:layout_width="120dp"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@color/red"
+        android:background="@android:color/transparent"
         android:foregroundGravity="center"
         android:gravity="center">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="УДАЛИТЬ"
-            android:textColor="@color/black" />
+        <ImageView
+            android:id="@+id/iv_order_confirm_del_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/done_icon" />
+
+        <ImageView
+            android:id="@+id/iv_order_cancel_del_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/close_button" />
+
     </LinearLayout>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="72dp"
         android:background="@color/white"
         android:gravity="center"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tv_napitok_name"
+            android:id="@+id/tv_order_napitok_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_marginStart="20dp"
             android:text="Капучино"
             android:textColor="@color/black"
-            android:textSize="25sp"
-            android:textStyle="bold" />
+            android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/tv_napitok_cost"
+            android:id="@+id/tv_order_ingredients"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_order_napitok_name"
+            android:layout_marginStart="20dp"
+            android:text="adsfjsdfisjadf"
+            android:textColor="@color/grey"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_order_product_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginEnd="20dp"
             android:layout_toLeftOf="@+id/coffee_line"
-            android:text="90Р"
+            android:background="@color/grey"
+            android:text="M"
             android:textSize="20sp" />
 
         <include
@@ -58,15 +75,17 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
-            android:layout_toLeftOf="@+id/iv_napitok_add" />
+            android:layout_marginEnd="10dp"
+            android:layout_toLeftOf="@+id/tv_order_product_cost" />
 
-        <ImageButton
-            android:id="@+id/iv_napitok_add"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+        <TextView
+            android:id="@+id/tv_order_product_cost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
-            android:src="@drawable/star_icon_1" />
+            android:text="140"
+            android:textSize="20sp" />
     </RelativeLayout>
 </com.chauthai.swipereveallayout.SwipeRevealLayout>

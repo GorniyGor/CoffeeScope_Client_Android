@@ -2,7 +2,6 @@ package com.example.adm1n.coffeescope.coffee_ingredients;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
@@ -16,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.adm1n.coffeescope.BaseActivity;
-import com.example.adm1n.coffeescope.OrderActivity;
+import com.example.adm1n.coffeescope.order.OrderActivity;
 import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.main_map.view.MapsActivity;
 import com.example.adm1n.coffeescope.models.basket.Basket;
@@ -26,8 +25,6 @@ import com.example.adm1n.coffeescope.models.Products;
 import com.example.adm1n.coffeescope.models.basket.BasketProducts;
 import com.example.adm1n.coffeescope.utils.SpaceItemDecoration;
 import com.jakewharton.rxbinding2.view.RxView;
-
-import org.w3c.dom.Text;
 
 import io.reactivex.functions.Consumer;
 import io.realm.RealmList;
@@ -46,11 +43,12 @@ public class CoffeeIngredientsActivity extends BaseActivity implements CoffeeIng
     private LinearLayoutManager linearLayoutManager;
     private AppBarLayout app_bar_layout_vibor_napitka;
     private Products mProducts;
-    private RealmList<Ingredients> mIngredientsList;
+    private RealmList<Ingredients> mIngredientsList = new RealmList<>();
     private TabLayout mTabLayout;
-    private Basket mBasket = new Basket();
+    private Basket mBasket;
     private BasketProducts mBasketProducts = new BasketProducts();
     private Integer mPlaceId;
+    private Integer mProductId;
 
     private ImageView ivAddProductCount;
     private ImageView ivRemoveProductCount;
@@ -64,11 +62,12 @@ public class CoffeeIngredientsActivity extends BaseActivity implements CoffeeIng
         if (savedInstanceState == null) {
             mProducts = getIntent().getParcelableExtra(MapsActivity.PRODUCT_EXTRA);
             mPlaceId = getIntent().getIntExtra(MapsActivity.PLACE_ID_EXTRA, 0);
+            mProductId = mProducts.getId();
             getIngredients();
             if (mProducts.getSizes() != null) {
                 createTabs();
             }
-            createBasket(mProducts);
+            initBasket(mPlaceId);
         }
         ivAddProductCount = (ImageView) findViewById(R.id.iv_count_control_plus);
         ivRemoveProductCount = (ImageView) findViewById(R.id.iv_count_control_minus);
@@ -78,6 +77,7 @@ public class CoffeeIngredientsActivity extends BaseActivity implements CoffeeIng
             @Override
             public void onClick(View v) {
                 //добавляем заказ
+                saveBasket();
                 Toast.makeText(CoffeeIngredientsActivity.this, "Напиток добавлен!", Toast.LENGTH_SHORT).show();
                 onBackPressed();
             }
@@ -86,12 +86,15 @@ public class CoffeeIngredientsActivity extends BaseActivity implements CoffeeIng
         mPayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                saveBasket();
                 Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
                 intent.putExtra(MapsActivity.PLACE_ID_EXTRA, mPlaceId);
                 startActivity(intent);
             }
         });
-
+        if (mBasket != null) {
+            showSumma();
+        }
         recyclerview = (RecyclerView) findViewById(R.id.rv);
         app_bar_layout_vibor_napitka = (AppBarLayout) findViewById(R.id.app_bar_layout_vibor_napitka);
         mAdapter = new CoffeeIngredientsAdapter(mLastPlace.getIngredients(), this);
@@ -136,21 +139,21 @@ public class CoffeeIngredientsActivity extends BaseActivity implements CoffeeIng
                         View viewS = getLayoutInflater().inflate(R.layout.customtab, null);
                         viewS.findViewById(R.id.icon).setBackgroundResource(R.drawable.size_s_inactive);
                         TextView tvS = ((TextView) viewS.findViewById(R.id.tvCost));
-                        tvS.setText(mProducts.getSizes().get(i).getPrice() + " P");
+                        tvS.setText(String.valueOf(mProducts.getSizes().get(i).getPrice()));
                         mTabLayout.addTab(mTabLayout.newTab().setCustomView(viewS).setContentDescription("s"));
                         break;
                     case "m":
                         View viewM = getLayoutInflater().inflate(R.layout.customtab, null);
                         viewM.findViewById(R.id.icon).setBackgroundResource(R.drawable.size_m_inactive);
                         TextView tvM = ((TextView) viewM.findViewById(R.id.tvCost));
-                        tvM.setText(mProducts.getSizes().get(i).getPrice() + " P");
+                        tvM.setText(String.valueOf(mProducts.getSizes().get(i).getPrice()));
                         mTabLayout.addTab(mTabLayout.newTab().setCustomView(viewM).setContentDescription("m"));
                         break;
                     case "l":
                         View viewL = getLayoutInflater().inflate(R.layout.customtab, null);
                         viewL.findViewById(R.id.icon).setBackgroundResource(R.drawable.size_l_inactive);
                         TextView tvL = ((TextView) viewL.findViewById(R.id.tvCost));
-                        tvL.setText(mProducts.getSizes().get(i).getPrice() + " P");
+                        tvL.setText(String.valueOf(mProducts.getSizes().get(i).getPrice()));
                         mTabLayout.addTab(mTabLayout.newTab().setCustomView(viewL).setContentDescription("l"));
                         break;
                     default:
@@ -163,23 +166,24 @@ public class CoffeeIngredientsActivity extends BaseActivity implements CoffeeIng
             public void onTabSelected(TabLayout.Tab tab) {
                 switch (String.valueOf(tab.getContentDescription())) {
                     case "s":
-//                        ImageView viewByIdS = (ImageView) tab.getCustomView().findViewById(R.id.icon);
                         tab.getCustomView().findViewById(R.id.icon).setBackgroundResource(R.drawable.size_s_active);
-//                        viewByIdS.setImageResource(R.drawable.size_s_active);
+                        TextView viewByIdS = (TextView) tab.getCustomView().findViewById(R.id.tvCost);
+                        mBasketProducts.setCost(Integer.valueOf(viewByIdS.getText().toString()));
                         break;
                     case "m":
-//                        ImageView viewByIdM = (ImageView) tab.getCustomView().findViewById(R.id.icon);
                         tab.getCustomView().findViewById(R.id.icon).setBackgroundResource(R.drawable.size_m_active);
-//                        viewByIdM.setImageResource(R.drawable.size_m_active);
+                        TextView viewByIdM = (TextView) tab.getCustomView().findViewById(R.id.tvCost);
+                        mBasketProducts.setCost(Integer.valueOf(viewByIdM.getText().toString()));
                         break;
                     case "l":
-//                        ImageView viewByIdL = (ImageView) tab.getCustomView().findViewById(R.id.icon);
                         tab.getCustomView().findViewById(R.id.icon).setBackgroundResource(R.drawable.size_l_active);
-//                        viewByIdL.setImageResource(R.drawable.size_l_active);
+                        TextView viewByIdL = (TextView) tab.getCustomView().findViewById(R.id.tvCost);
+                        mBasketProducts.setCost(Integer.valueOf(viewByIdL.getText().toString()));
                         break;
                     default:
                         break;
                 }
+                showSumma();
             }
 
             @Override
@@ -187,18 +191,12 @@ public class CoffeeIngredientsActivity extends BaseActivity implements CoffeeIng
                 switch (String.valueOf(tab.getContentDescription())) {
                     case "s":
                         tab.getCustomView().findViewById(R.id.icon).setBackgroundResource(R.drawable.size_s_inactive);
-//                        ImageView viewByIdS = (ImageView) tab.getCustomView().findViewById(R.id.icon);
-//                        viewByIdS.setImageResource(R.drawable.size_s_inactive);
                         break;
                     case "m":
                         tab.getCustomView().findViewById(R.id.icon).setBackgroundResource(R.drawable.size_m_inactive);
-//                        ImageView viewByIdM = (ImageView) tab.getCustomView().findViewById(R.id.icon);
-//                        viewByIdM.setImageResource(R.drawable.size_m_inactive);
                         break;
                     case "l":
                         tab.getCustomView().findViewById(R.id.icon).setBackgroundResource(R.drawable.size_l_inactive);
-//                        ImageView viewByIdL = (ImageView) tab.getCustomView().findViewById(R.id.icon);
-//                        viewByIdL.setImageResource(R.drawable.size_l_inactive);
                         break;
                     default:
                         break;
@@ -213,13 +211,33 @@ public class CoffeeIngredientsActivity extends BaseActivity implements CoffeeIng
     }
 
     void initBasket(Integer basketId) {
-        Basket mBasketId = mRealm.where(Basket.class).equalTo("mBasketId", String.valueOf(basketId)).findFirst();
+        mBasket = mRealm.copyFromRealm(mRealm.where(Basket.class).equalTo("mBasketId", basketId).findFirst());
+
+        mBasketProducts = new BasketProducts();
+        mBasketProducts.setProductId(mProductId);
+        mBasketProducts.setCount(1);
+        mBasketProducts.setCost(0);
+        mBasketProducts.setName(mProducts.getName());
+        mBasket.getmBasketProductsList().add(mBasketProducts);
     }
 
     @Override
     //Клик по ингредиенту
-    public void onIngredientsClick(View v) {
-        Toast.makeText(this, "Ингридиент добавлен", Toast.LENGTH_SHORT).show();
+    public void onIngredientsClick(View v, int position) {
+        int realPosotion = position - 1;
+        //Ингредиент по которому мы кликнули
+        Ingredients ingredients = mIngredientsList.get(realPosotion);
+        //Ингредиенты в корзине
+        RealmList<Ingredients> ingredientsList = mBasketProducts.getmIngredientsList();
+        ImageView viewById = (ImageView) v.findViewById(R.id.iv_napitok_add);
+        if (!ingredientsList.contains(ingredients)) {
+            mBasketProducts.getmIngredientsList().add(ingredients);
+            viewById.setImageResource(R.drawable.done_icon);
+        } else {
+            viewById.setImageResource(R.drawable.add_icon);
+            mBasketProducts.getmIngredientsList().remove(ingredients);
+        }
+        showSumma();
     }
 
     void getIngredients() {
@@ -227,16 +245,10 @@ public class CoffeeIngredientsActivity extends BaseActivity implements CoffeeIng
                 .equalTo("id", mPlaceId)
                 .findFirst();
         mLastPlace = mRealm.copyFromRealm(place);
+        if (mLastPlace.getIngredients() != null) {
+            mIngredientsList.addAll(mLastPlace.getIngredients());
+        }
     }
-
-    void createBasket(Products product) {
-        mBasket.setmBasketId(mLastPlace.getId());
-        RealmList<BasketProducts> basketProductses = mBasket.getmBasketProductsList();
-        BasketProducts basketProducts = new BasketProducts();
-//        mTabLayout.getTabAt(mTabLayout.getSelectedTabPosition())
-//        basketProducts.set
-    }
-
 
     void setRxView() {
         RxView.clicks(ivAddProductCount).subscribe(new Consumer<Object>() {
@@ -246,6 +258,7 @@ public class CoffeeIngredientsActivity extends BaseActivity implements CoffeeIng
                 i++;
                 tvProductCount.setText(String.valueOf(i));
                 mBasketProducts.setCount(i);
+                showSumma();
             }
         });
 
@@ -260,7 +273,18 @@ public class CoffeeIngredientsActivity extends BaseActivity implements CoffeeIng
                 } else {
                     Toast.makeText(CoffeeIngredientsActivity.this, "ТЫ НА ДНЕ", Toast.LENGTH_SHORT).show();
                 }
+                showSumma();
             }
         });
+    }
+
+    void showSumma() {
+        mPayButton.setText("Оплатить (" + String.valueOf(mBasket.getSumma(mBasket)) + ")");
+    }
+
+    void saveBasket() {
+        mRealm.beginTransaction();
+        mRealm.copyToRealmOrUpdate(mBasket);
+        mRealm.commitTransaction();
     }
 }

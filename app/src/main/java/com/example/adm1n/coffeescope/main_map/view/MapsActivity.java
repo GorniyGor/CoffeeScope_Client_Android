@@ -35,6 +35,7 @@ import com.example.adm1n.coffeescope.models.Hours;
 import com.example.adm1n.coffeescope.models.Place;
 import com.example.adm1n.coffeescope.models.Products;
 import com.example.adm1n.coffeescope.models.basket.BasketProducts;
+import com.example.adm1n.coffeescope.order.OrderActivity;
 import com.example.adm1n.coffeescope.utils.MapsUtils;
 import com.example.adm1n.coffeescope.utils.PermissionUtils;
 import com.example.adm1n.coffeescope.utils.SpaceItemDecoration;
@@ -45,6 +46,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.jakewharton.rxbinding2.view.RxView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -101,7 +103,7 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
     private Button mBtnPayCoffee;
 
     private MainPresenter presenter;
-    private Observable<Basket> basketObservable;
+    private Basket mBasket;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -171,7 +173,7 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
         android.view.Display display = ((android.view.WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
         FrameLayout FlBottomSheetBehavior = (FrameLayout) findViewById(R.id.fl_sheet_content);
         ViewGroup.LayoutParams params = FlBottomSheetBehavior.getLayoutParams();
-        params.height = (int) (display.getHeight() * 0.88);
+        params.height = (int) (display.getHeight() * 0.90);
         FlBottomSheetBehavior.setLayoutParams(params);
         mBottomSheetBehavior = BottomSheetBehavior.from(FlBottomSheetBehavior);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -216,7 +218,9 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
         mBtnPayCoffee.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MapsActivity.this, "Click Click", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
+                intent.putExtra(MapsActivity.PLACE_ID_EXTRA, mLastPlace.getId());
+                startActivity(intent);
             }
         });
         mapFragment.getMapAsync(this);
@@ -256,7 +260,7 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
                 presenter.getPlace(marker.getSnippet());
                 peakView = (AppBarLayout) findViewById(R.id.peak_view);
                 View previewTopElements = findViewById(R.id.preview_top_elements);
-                mBottomSheetBehavior.setPeekHeight(previewTopElements.getHeight() + peakView.getHeight() + 75);
+                mBottomSheetBehavior.setPeekHeight(previewTopElements.getHeight() + peakView.getHeight() + 65);
                 if (mBottomSheetBehavior != null) {
                     switch (mBottomSheetBehavior.getState()) {
                         case (BottomSheetBehavior.STATE_HIDDEN):
@@ -391,7 +395,6 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
 
     @Override
     public void setMarkers(ArrayList<Place> list) {
-        putDataInRealm(list);
         for (int i = 0; i < list.size(); i++) {
             Place place = list.get(i);
 //            if (place.getImage().getLable() != null) {
@@ -439,8 +442,6 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
             tvPreviewBottomRangeCount.setText("fail");
         }
         initDate();
-        //вешаем настройки на кнопку оплаты
-//        RxView.enabled(mBtnPayCoffee)
     }
 
     @Override
@@ -493,39 +494,38 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
         }
     }
 
-    public static Bitmap drawableToBitmap(Drawable drawable) {
-        Bitmap bitmap = null;
-
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if (bitmapDrawable.getBitmap() != null) {
-                return bitmapDrawable.getBitmap();
-            }
-        }
-
-        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
-        } else {
-            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        }
-
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
-    }
-
-    void putDataInRealm(ArrayList<Place> list) {
-        mRealm.beginTransaction();
-        for (int i = 0; i < list.size(); i++) {
-            Place place = list.get(i);
-            mRealm.copyToRealmOrUpdate(place);
-        }
-        mRealm.commitTransaction();
-    }
-
     @Override
     public void setMenuAdapter(Place place) {
         setAdapter(place);
+        getBasket(place.getId());
+    }
+
+    private void getBasket(Integer id) {
+        mBasket = mRealm.copyFromRealm(mRealm.where(Basket.class).equalTo("mBasketId", id).findFirst());
+        mBtnPayCoffee.setText(String.valueOf(mBasket.getmBasketProductsList().size())
+                + " Позиции " + mBasket.getSumma(mBasket));
+        if (mBasket.getmBasketProductsList().size() == 0) {
+            mBtnPayCoffee.setEnabled(false);
+        } else {
+            mBtnPayCoffee.setEnabled(true);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        updateUI();
+        super.onResume();
+    }
+
+    void updateUI() {
+        if (mBasket != null) {
+            mBtnPayCoffee.setText(String.valueOf(mBasket.getmBasketProductsList().size())
+                    + " Позиции " + mBasket.getSumma(mBasket));
+            if (mBasket.getmBasketProductsList().size() == 0) {
+                mBtnPayCoffee.setEnabled(false);
+            } else {
+                mBtnPayCoffee.setEnabled(true);
+            }
+        }
     }
 }

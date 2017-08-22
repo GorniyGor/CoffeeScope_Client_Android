@@ -65,4 +65,24 @@ public class Basket extends RealmObject implements Parcelable {
     public void setmBasketId(Integer mBasketId) {
         this.mBasketId = mBasketId;
     }
+
+    public Integer getSumma(Basket basket) {
+        Integer summ = 0;
+        for (int i = 0; i < this.getmBasketProductsList().size(); i++) {
+            BasketProducts basketProducts = this.getmBasketProductsList().get(i);
+            Integer summa = basketProducts.getSumma();
+            summ += summa;
+        }
+        return summ;
+    }
+
+    public Integer getSumma() {
+        Integer summ = 0;
+        for (int i = 0; i < this.getmBasketProductsList().size(); i++) {
+            BasketProducts basketProducts = this.getmBasketProductsList().get(i);
+            Integer summa = basketProducts.getSumma();
+            summ += summa;
+        }
+        return summ;
+    }
 }

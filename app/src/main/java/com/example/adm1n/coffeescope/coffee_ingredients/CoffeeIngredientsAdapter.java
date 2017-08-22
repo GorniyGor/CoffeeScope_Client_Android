@@ -9,11 +9,15 @@ import android.widget.TextView;
 
 import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.models.Ingredients;
+import com.example.adm1n.coffeescope.models.basket.Basket;
+import com.example.adm1n.coffeescope.models.basket.BasketProducts;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 
 /**
  * Created by adm1n on 02.08.2017.
@@ -21,6 +25,9 @@ import io.realm.RealmList;
 
 public class CoffeeIngredientsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private Realm mRealm = Realm.getDefaultInstance();
+
+    private int bId;
     private RealmList<Ingredients> ingredients = new RealmList<>();
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
@@ -61,8 +68,11 @@ public class CoffeeIngredientsAdapter extends RecyclerView.Adapter<RecyclerView.
         if (viewHolder instanceof HeaderViewHolder) {
             ((HeaderViewHolder) viewHolder).headerTitle.setText(ingredient.getName());
         } else if (viewHolder instanceof ItemViewHolder) {
+            checkIcon(i);
             ((ItemViewHolder) viewHolder).name.setText(ingredient.getName());
             ((ItemViewHolder) viewHolder).cost.setText("+ " + String.valueOf(ingredient.getPrice() + " P"));
+            ((ItemViewHolder) viewHolder).setPosition(i);
+
         }
     }
 
@@ -90,7 +100,7 @@ public class CoffeeIngredientsAdapter extends RecyclerView.Adapter<RecyclerView.
         private TextView cost;
         private RelativeLayout rlCoffeeAdapterFrame;
         private OnIngredientsClick onIngredientsClick;
-
+        private Integer mPosition;
 
         public ItemViewHolder(View itemView, OnIngredientsClick onClick) {
             super(itemView);
@@ -101,9 +111,13 @@ public class CoffeeIngredientsAdapter extends RecyclerView.Adapter<RecyclerView.
             rlCoffeeAdapterFrame.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onIngredientsClick.onIngredientsClick(v);
+                    onIngredientsClick.onIngredientsClick(v, mPosition);
                 }
             });
+        }
+
+        void setPosition(int position) {
+            this.mPosition = position;
         }
     }
 
@@ -117,6 +131,13 @@ public class CoffeeIngredientsAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
     public interface OnIngredientsClick {
-        void onIngredientsClick(View v);
+        void onIngredientsClick(View v, int position);
+    }
+
+    void checkIcon(int id) {
+        RealmResults<Basket> mBasketId = mRealm.where(Basket.class).equalTo("mBasketId", bId).findAll();
+//        mBasketId.where().equalTo("")
+        RealmResults<BasketProducts> all = mRealm.where(BasketProducts.class).equalTo("mIngredientsList.id", id).findAll();
+        all.size();
     }
 }

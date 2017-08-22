@@ -24,7 +24,7 @@
                 android:layout_height="40dp"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="16dp"
-                android:src="@drawable/star_icon_1" />
+                android:src="@drawable/done_icon" />
 
             <TextView
                 style="@style/PreviewCardCoffeeName"

@@ -28,6 +28,7 @@ import com.example.adm1n.coffeescope.models.basket.Basket;
 import com.example.adm1n.coffeescope.models.basket.BasketProducts;
 import com.example.adm1n.coffeescope.utils.SpaceItemDecoration;
 
+import io.reactivex.Observable;
 import io.realm.RealmList;
 
 /**
@@ -54,6 +55,7 @@ public class OrderActivity extends BaseActivity implements OrderAdapter.OnOrderC
     private OrderAdapter mAdapter;
     private Basket mBasket;
     private Integer mPlaceId;
+    private Observable<Basket> mBasketOBS;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

@@ -10,12 +10,18 @@ import com.example.adm1n.coffeescope.models.basket.BasketProducts;
 import com.example.adm1n.coffeescope.network.responses.PlaceResponse;
 import com.example.adm1n.coffeescope.network.responses.PlacesResponse;
 
+import org.reactivestreams.Subscriber;
+
 import java.util.ArrayList;
 
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
@@ -28,7 +34,7 @@ public class MainPresenter implements IMainPresenter {
     private Context mContext;
     private IMapActivity mView;
     private MainPlacesModel model = new MainPlacesModel();
-    private Realm mRealm = Realm.getDefaultInstance();
+    private Realm mRealm = null;
     private Place myPlace;
 
     public MainPresenter(Context mContext, IMapActivity mView) {
@@ -72,43 +78,57 @@ public class MainPresenter implements IMainPresenter {
     }
 
     @Override
-    public Observable<Basket> getBasket(String basketId) {
-//        Basket basket = mRealm.where(Basket.class).equalTo("mBasketId", basketId).findFirst();
-        return new Observable<Basket>() {
-            @Override
-            protected void subscribeActual(Observer<? super Basket> observer) {
-
-            }
-        };
-        //Идем в реалм и возвращаем корзину
+    public Observable<Basket> getBasket(Integer basketId) {
+        return model.getBasket(basketId);
     }
 
     @Override
-    public void savePlaces(ArrayList<Place> list) {
-        mRealm.beginTransaction();
-        for (int i = 0; i < list.size(); i++) {
-            Place place = list.get(i);
-            mRealm.copyToRealmOrUpdate(place);
+    public void savePlaces(final ArrayList<Place> list) {
+        try { // I could use try-with-resources here
+            mRealm = Realm.getDefaultInstance();
+            mRealm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    for (int i = 0; i < list.size(); i++) {
+                        Place place = list.get(i);
+                        mRealm.copyToRealmOrUpdate(place);
+                    }
+                }
+            });
+        } finally {
+            if (mRealm != null) {
+                mRealm.close();
+            }
         }
-        mRealm.commitTransaction();
     }
 
     @Override
     public void savePlace(Place place) {
         myPlace = place;
-        mRealm.beginTransaction();
-        mRealm.copyToRealmOrUpdate(myPlace);
-        mRealm.commitTransaction();
 
-        Basket mBasket = mRealm.where(Basket.class).equalTo("mBasketId", place.getId()).findFirst();
-        if (mBasket == null) {
+        try { // I could use try-with-resources here
+            mRealm = Realm.getDefaultInstance();
             mRealm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    Basket basket = realm.createObject(Basket.class, myPlace.getId());
-                    basket.setmBasketProductsList(new RealmList<BasketProducts>());
+                    mRealm.copyToRealmOrUpdate(myPlace);
                 }
             });
+
+            Basket mBasket = mRealm.where(Basket.class).equalTo("mBasketId", place.getId()).findFirst();
+            if (mBasket == null) {
+                mRealm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        Basket basket = realm.createObject(Basket.class, myPlace.getId());
+                        basket.setmBasketProductsList(new RealmList<BasketProducts>());
+                    }
+                });
+            }
+        } finally {
+            if (mRealm != null) {
+                mRealm.close();
+            }
         }
     }
 }

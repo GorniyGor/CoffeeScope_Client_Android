@@ -48,6 +48,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.jakewharton.rxbinding2.view.RxView;
 
+import org.reactivestreams.Subscription;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,6 +59,11 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import io.realm.RealmList;
 
 public class MapsActivity extends BaseActivity implements OnMapReadyCallback, MenuAdapter.OnProductClick, IMapActivity {
@@ -69,13 +76,6 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
 
     private ArrayList<CoffeeMenu> coffeeMenuList = new ArrayList<>();
     private ArrayList<Place> placeList = new ArrayList<>();
-    //map
-    private Button mButtonPlusZoom;
-    private Button mButtonMinusZoom;
-    private Button mButtonMyLocate;
-    private Button mButtonMyProfile;
-    private Button mButtonSearch;
-    private Button mButtonApply;
 
     private GoogleMap mMap;
     private LocationManager mLocationManager;
@@ -104,6 +104,9 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
 
     private MainPresenter presenter;
     private Basket mBasket;
+    private Observable<Basket> mBasketOBS;
+    private Subscription subscription;
+    private CompositeDisposable disposable;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,21 +115,21 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
         presenter = new MainPresenter(getApplicationContext(), this);
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         //init map control button
-        mButtonPlusZoom = (Button) findViewById(R.id.btn_plus_zoom);
+        Button mButtonPlusZoom = (Button) findViewById(R.id.btn_plus_zoom);
         mButtonPlusZoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mMap.animateCamera(CameraUpdateFactory.zoomIn());
             }
         });
-        mButtonMinusZoom = (Button) findViewById(R.id.btn_minus_zoom);
+        Button mButtonMinusZoom = (Button) findViewById(R.id.btn_minus_zoom);
         mButtonMinusZoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mMap.animateCamera(CameraUpdateFactory.zoomOut());
             }
         });
-        mButtonMyLocate = (Button) findViewById(R.id.btn_my_location);
+        Button mButtonMyLocate = (Button) findViewById(R.id.btn_my_location);
         mButtonMyLocate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,21 +146,21 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
             }
         });
         iv_preview_card_top_arrow = (ImageView) findViewById(R.id.iv_preview_card_top_arrow);
-        mButtonMyProfile = (Button) findViewById(R.id.btn_profile);
+        Button mButtonMyProfile = (Button) findViewById(R.id.btn_profile);
         mButtonMyProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MapsActivity.this, "On Profile Click", Toast.LENGTH_SHORT).show();
             }
         });
-        mButtonSearch = (Button) findViewById(R.id.btn_search);
+        Button mButtonSearch = (Button) findViewById(R.id.btn_search);
         mButtonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MapsActivity.this, "On Search Click", Toast.LENGTH_SHORT).show();
             }
         });
-        mButtonApply = (Button) findViewById(R.id.btn_apply);
+        Button mButtonApply = (Button) findViewById(R.id.btn_apply);
         mButtonApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -234,6 +237,7 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
             expandGroup(i);
         }
         menuAdapter.notifyDataSetChanged();
+        initBasket();
     }
 
     public void expandGroup(int gPos) {
@@ -442,12 +446,23 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
             tvPreviewBottomRangeCount.setText("fail");
         }
         initDate();
+        initBasket();
     }
 
     @Override
     protected void onStop() {
-        //выключаем обс
+        if (disposable != null) {
+            disposable.dispose();
+        }
         super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mLastPlace != null) {
+            initBasket();
+        }
     }
 
     void initDate() {
@@ -497,35 +512,32 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
     @Override
     public void setMenuAdapter(Place place) {
         setAdapter(place);
-        getBasket(place.getId());
     }
 
-    private void getBasket(Integer id) {
-        mBasket = mRealm.copyFromRealm(mRealm.where(Basket.class).equalTo("mBasketId", id).findFirst());
-        mBtnPayCoffee.setText(String.valueOf(mBasket.getmBasketProductsList().size())
-                + " Позиции " + mBasket.getSumma(mBasket));
-        if (mBasket.getmBasketProductsList().size() == 0) {
-            mBtnPayCoffee.setEnabled(false);
-        } else {
-            mBtnPayCoffee.setEnabled(true);
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        updateUI();
-        super.onResume();
-    }
-
-    void updateUI() {
-        if (mBasket != null) {
-            mBtnPayCoffee.setText(String.valueOf(mBasket.getmBasketProductsList().size())
-                    + " Позиции " + mBasket.getSumma(mBasket));
-            if (mBasket.getmBasketProductsList().size() == 0) {
-                mBtnPayCoffee.setEnabled(false);
-            } else {
-                mBtnPayCoffee.setEnabled(true);
-            }
-        }
+    void initBasket() {
+        mBasketOBS = presenter.getBasket(mLastPlace.getId());
+        disposable = new CompositeDisposable();
+        disposable.add(mBasketOBS
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Basket>() {
+                    @Override
+                    public void accept(@io.reactivex.annotations.NonNull Basket basket) throws Exception {
+                        mBasket = basket;
+                        if (mBasket != null) {
+                            mBtnPayCoffee.setText(String.valueOf(mBasket.getmBasketProductsList().size())
+                                    + " Позиции " + mBasket.getSumma(mBasket));
+                            if (mBasket.getmBasketProductsList().size() == 0) {
+                                mBtnPayCoffee.setEnabled(false);
+                            } else {
+                                mBtnPayCoffee.setEnabled(true);
+                            }
+                        } else {
+                            mBtnPayCoffee.setEnabled(false);
+                        }
+                        mBtnPayCoffee.setText("В заказе " + String.valueOf(mBasket.getmBasketProductsList().size())
+                                + " напитка (" + mBasket.getSumma(mBasket) + "Р)");
+                    }
+                }));
     }
 }

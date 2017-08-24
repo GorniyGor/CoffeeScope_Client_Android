@@ -16,5 +16,5 @@ public interface IMainPresenter {
     void getPlace(String placeId);
     void savePlace(Place place);
     void savePlaces(ArrayList<Place> list);
-    Observable<Basket> getBasket(String PlaceId);
+    Observable<Basket> getBasket(Integer PlaceId);
 }

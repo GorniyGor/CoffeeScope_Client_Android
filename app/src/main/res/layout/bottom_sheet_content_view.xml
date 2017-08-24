@@ -9,8 +9,7 @@
         layout="@layout/preview_card_top_elements"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:layout_alignParentTop="true"
-        android:paddingBottom="8dp" />
+        android:layout_alignParentTop="true" />
 
     <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -40,7 +39,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_coffee_menu"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_below="@+id/coffee_menu_coordinator_layout"
             android:background="@drawable/image_blur"
             android:clipToPadding="false"

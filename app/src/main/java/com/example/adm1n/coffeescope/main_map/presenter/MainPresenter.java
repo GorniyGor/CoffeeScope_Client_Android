@@ -34,7 +34,7 @@ public class MainPresenter implements IMainPresenter {
     private Context mContext;
     private IMapActivity mView;
     private MainPlacesModel model = new MainPlacesModel();
-    private Realm mRealm = null;
+    private Realm mRealm = Realm.getDefaultInstance();
     private Place myPlace;
 
     public MainPresenter(Context mContext, IMapActivity mView) {
@@ -83,52 +83,81 @@ public class MainPresenter implements IMainPresenter {
     }
 
     @Override
-    public void savePlaces(final ArrayList<Place> list) {
-        try { // I could use try-with-resources here
-            mRealm = Realm.getDefaultInstance();
-            mRealm.executeTransaction(new Realm.Transaction() {
-                @Override
-                public void execute(Realm realm) {
-                    for (int i = 0; i < list.size(); i++) {
-                        Place place = list.get(i);
-                        mRealm.copyToRealmOrUpdate(place);
-                    }
-                }
-            });
-        } finally {
-            if (mRealm != null) {
-                mRealm.close();
-            }
+    public void savePlaces(ArrayList<Place> list) {
+        mRealm.beginTransaction();
+        for (int i = 0; i < list.size(); i++) {
+            Place place = list.get(i);
+            mRealm.copyToRealmOrUpdate(place);
         }
+        mRealm.commitTransaction();
     }
 
     @Override
     public void savePlace(Place place) {
         myPlace = place;
+        mRealm.beginTransaction();
+        mRealm.copyToRealmOrUpdate(myPlace);
+        mRealm.commitTransaction();
 
-        try { // I could use try-with-resources here
-            mRealm = Realm.getDefaultInstance();
+        Basket mBasket = mRealm.where(Basket.class).equalTo("mBasketId", place.getId()).findFirst();
+        if (mBasket == null) {
             mRealm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    mRealm.copyToRealmOrUpdate(myPlace);
+                    Basket basket = realm.createObject(Basket.class, myPlace.getId());
+                    basket.setmBasketProductsList(new RealmList<BasketProducts>());
                 }
             });
-
-            Basket mBasket = mRealm.where(Basket.class).equalTo("mBasketId", place.getId()).findFirst();
-            if (mBasket == null) {
-                mRealm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        Basket basket = realm.createObject(Basket.class, myPlace.getId());
-                        basket.setmBasketProductsList(new RealmList<BasketProducts>());
-                    }
-                });
-            }
-        } finally {
-            if (mRealm != null) {
-                mRealm.close();
-            }
         }
     }
+
+//    @Override
+//    public void savePlaces(final ArrayList<Place> list) {
+//        try { // I could use try-with-resources here
+//            mRealm = Realm.getDefaultInstance();
+//            mRealm.executeTransaction(new Realm.Transaction() {
+//                @Override
+//                public void execute(Realm realm) {
+//                    for (int i = 0; i < list.size(); i++) {
+//                        Place place = list.get(i);
+//                        mRealm.copyToRealmOrUpdate(place);
+//                    }
+//                }
+//            });
+//        } finally {
+//            if (mRealm != null) {
+//                mRealm.close();
+//            }
+//        }
+//    }
+//
+//    @Override
+//    public void savePlace(Place place) {
+//        myPlace = place;
+//
+//        try { // I could use try-with-resources here
+//            mRealm = Realm.getDefaultInstance();
+//            mRealm.executeTransaction(new Realm.Transaction() {
+//                @Override
+//                public void execute(Realm realm) {
+//                    mRealm.copyToRealmOrUpdate(myPlace);
+//                }
+//            });
+//
+//            Basket mBasket = mRealm.where(Basket.class).equalTo("mBasketId", place.getId()).findFirst();
+//            if (mBasket == null) {
+//                mRealm.executeTransaction(new Realm.Transaction() {
+//                    @Override
+//                    public void execute(Realm realm) {
+//                        Basket basket = realm.createObject(Basket.class, myPlace.getId());
+//                        basket.setmBasketProductsList(new RealmList<BasketProducts>());
+//                    }
+//                });
+//            }
+//        } finally {
+//            if (mRealm != null) {
+//                mRealm.close();
+//            }
+//        }
+//    }
 }

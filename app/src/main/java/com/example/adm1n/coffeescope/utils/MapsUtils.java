@@ -4,6 +4,8 @@ import android.location.Location;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.math.BigDecimal;
+
 /**
  * Created by adm1n on 21.07.2017.
  */
@@ -30,13 +32,23 @@ public class MapsUtils {
     }
 
     public static String castDistance(float distance) {
-        if (distance < 1000) {
-            return String.valueOf(distance + "м");
+        if (distance <= 10 && distance >= 0) {
+            return ("10 м");
+        }
+        if (distance >= 100 && distance < 1000) {
+            float newDistance = distance % 10;
+            return String.valueOf(distance - newDistance + " м");
         }
         if (distance >= 1000) {
-            return String.valueOf(distance / 1000 + "км");
-        } else {
-            return "error";
+            BigDecimal bd = new BigDecimal(Float.toString(distance / 1000));
+            bd = bd.setScale(1, BigDecimal.ROUND_HALF_UP);
+            return String.valueOf(bd.floatValue() + " км");
         }
+        if (distance >= 10000) {
+            BigDecimal bd = new BigDecimal(Float.toString(distance / 1000));
+            bd = bd.setScale(0, BigDecimal.ROUND_HALF_UP);
+            return String.valueOf(bd.floatValue() + " км");
+        }
+        return "";
     }
 }

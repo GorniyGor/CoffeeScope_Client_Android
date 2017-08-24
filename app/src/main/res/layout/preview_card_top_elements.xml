@@ -18,7 +18,7 @@
     <View
         android:id="@+id/line_divider"
         android:layout_width="wrap_content"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:layout_below="@+id/iv_preview_card_top_arrow"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
@@ -34,7 +34,5 @@
         android:background="@color/white"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="Название кофейни"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
+        android:text="Название кофейни" />
 </RelativeLayout>

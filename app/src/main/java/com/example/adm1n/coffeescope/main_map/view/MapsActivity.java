@@ -3,10 +3,6 @@ package com.example.adm1n.coffeescope.main_map.view;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -25,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.adm1n.coffeescope.BaseActivity;
-import com.example.adm1n.coffeescope.models.basket.Basket;
 import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.coffee_ingredients.CoffeeIngredientsActivity;
 import com.example.adm1n.coffeescope.coffee_menu.MenuAdapter;
@@ -34,7 +29,7 @@ import com.example.adm1n.coffeescope.main_map.presenter.MainPresenter;
 import com.example.adm1n.coffeescope.models.Hours;
 import com.example.adm1n.coffeescope.models.Place;
 import com.example.adm1n.coffeescope.models.Products;
-import com.example.adm1n.coffeescope.models.basket.BasketProducts;
+import com.example.adm1n.coffeescope.models.basket.Basket;
 import com.example.adm1n.coffeescope.order.OrderActivity;
 import com.example.adm1n.coffeescope.utils.MapsUtils;
 import com.example.adm1n.coffeescope.utils.PermissionUtils;
@@ -46,7 +41,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.jakewharton.rxbinding2.view.RxView;
 
 import org.reactivestreams.Subscription;
 
@@ -61,10 +55,8 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import io.realm.RealmList;
 
 public class MapsActivity extends BaseActivity implements OnMapReadyCallback, MenuAdapter.OnProductClick, IMapActivity {
 
@@ -106,7 +98,7 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
     private Basket mBasket;
     private Observable<Basket> mBasketOBS;
     private Subscription subscription;
-    private CompositeDisposable disposable;
+    private CompositeDisposable disposable = new CompositeDisposable();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -252,7 +244,6 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
         mMap = googleMap;
         presenter.getPlaces();
         enableMyLocation();
-        getLastKnownLocation();
         mMap.getUiSettings().setRotateGesturesEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.getUiSettings().setMapToolbarEnabled(false);
@@ -348,28 +339,6 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
     }
 
-    private void getLastKnownLocation() {
-        List<String> providers = mLocationManager.getProviders(false);
-        bestLocation = null;
-        for (String provider : providers) {
-            Location l = mLocationManager.getLastKnownLocation(provider);
-            if (l == null) {
-                continue;
-            }
-            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                bestLocation = l;
-            }
-        }
-        if (bestLocation != null) {
-            mLastKnownLocation = new LatLng(bestLocation.getLatitude(), bestLocation.getLongitude());
-        }
-        if (mMap != null && mLastKnownLocation != null) {
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLastKnownLocation, DEFAULT_MAP_ZOOM));
-        } else {
-            Toast.makeText(this, "Неудалось определить местоположение", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     @Override
     public void onBackPressed() {
         if (mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN) {
@@ -425,22 +394,23 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
     public void showPeakView(Place place) {
         mLastPlace = place;
         tv_coffee_name = (TextView) findViewById(R.id.tv_preview_card_product_name);
-        tv_coffee_name.setText(mLastPlace.getName());
         ivPreviewBottomStatus = (ImageView) findViewById(R.id.ivPreviewBottomStatus);
         tv_coffee_address = (TextView) findViewById(R.id.tv_preview_card_place_address);
-        tv_coffee_address.setText(mLastPlace.getAddress());
         tv_coffee_phone_number = (TextView) findViewById(R.id.tv_preview_card_place_phone_number);
-        tv_coffee_phone_number.setText(mLastPlace.getPhone());
         tv_preview_card_place_average_time = (TextView) findViewById(R.id.tv_preview_card_place_average_time);
-        tv_preview_card_place_average_time.setText(mLastPlace.getAverage_time() + " мин");
-
+        tvPreviewBottomRangeCount = (TextView) findViewById(R.id.tv_preview_card_place_range_count);
         tvPreviewBottomJobTime = (TextView) findViewById(R.id.tvPreviewBottomJobTime);
         tvPreviewBottomRateCount = (TextView) findViewById(R.id.tv_preview_card_place_rate_count);
+
+        tv_coffee_name.setText(mLastPlace.getName());
+        tv_coffee_address.setText(mLastPlace.getAddress());
+        tv_coffee_phone_number.setText(mLastPlace.getPhone());
+        tv_preview_card_place_average_time.setText(mLastPlace.getAverage_time() + " мин");
         tvPreviewBottomRateCount.setText(String.valueOf(mLastPlace.getRating()));
-        tvPreviewBottomRangeCount = (TextView) findViewById(R.id.tv_preview_card_place_range_count);
-        if (mLastKnownLocation != null) {
-            int distance = MapsUtils.calculationDistance(mLastKnownLocation, new LatLng(mLastPlace.getCoodrinates().getLatitude(),
-                    mLastPlace.getCoodrinates().getLongitude()));
+        if (mMap.getMyLocation() != null) {
+            int distance = MapsUtils.calculationDistance(new LatLng(mMap.getMyLocation().getLatitude(), mMap.getMyLocation().getLongitude())
+                    , new LatLng(mLastPlace.getCoodrinates().getLatitude(),
+                            mLastPlace.getCoodrinates().getLongitude()));
             tvPreviewBottomRangeCount.setText(MapsUtils.castDistance(distance));
         } else {
             tvPreviewBottomRangeCount.setText("fail");
@@ -516,7 +486,7 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
 
     void initBasket() {
         mBasketOBS = presenter.getBasket(mLastPlace.getId());
-        disposable = new CompositeDisposable();
+        disposable.clear();
         disposable.add(mBasketOBS
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

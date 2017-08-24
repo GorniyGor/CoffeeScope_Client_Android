@@ -28,6 +28,7 @@ public class MainPlacesModel implements IMainPlacesModel {
     private ApiInterface apiInterface = App.getApiInterface();
     private Realm mRealm = null;
     private Basket mBasket;
+    private Integer mBasketId;
 
     public Observable<PlacesResponse> getPlaces() {
         return apiInterface.getPlaces()
@@ -44,18 +45,19 @@ public class MainPlacesModel implements IMainPlacesModel {
 
     @Override
     public Observable<Basket> getBasket(final Integer id) {
-        return Observable.fromCallable(new Callable<Basket>() {
+        mBasketId = id;
+        return new ObservableFromCallable<>(new Callable<Basket>() {
             @Override
             public Basket call() throws Exception {
                 try (Realm r = Realm.getDefaultInstance()) {
                     r.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
-                            Basket mBasketId = realm.where(Basket.class)
-                                    .equalTo("mBasketId", id)
+                            Basket realmBaket = realm.where(Basket.class)
+                                    .equalTo("mBasketId", mBasketId)
                                     .findFirst();
-                            if (mBasketId != null) {
-                                mBasket = realm.copyFromRealm(mBasketId);
+                            if (realmBaket != null) {
+                                mBasket = realm.copyFromRealm(realmBaket);
                             }
                         }
                     });

@@ -422,7 +422,7 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
     @Override
     protected void onStop() {
         if (disposable != null) {
-            disposable.dispose();
+            disposable.clear();
         }
         super.onStop();
     }
@@ -486,15 +486,14 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
 
     void initBasket() {
         mBasketOBS = presenter.getBasket(mLastPlace.getId());
-        disposable.clear();
         disposable.add(mBasketOBS
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<Basket>() {
                     @Override
-                    public void accept(@io.reactivex.annotations.NonNull Basket basket) throws Exception {
-                        mBasket = basket;
-                        if (mBasket != null) {
+                    public void accept(Basket basket) throws Exception {
+                        if (basket != null) {
+                            mBasket = basket;
                             mBtnPayCoffee.setText(String.valueOf(mBasket.getmBasketProductsList().size())
                                     + " Позиции " + mBasket.getSumma(mBasket));
                             if (mBasket.getmBasketProductsList().size() == 0) {
@@ -502,11 +501,11 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
                             } else {
                                 mBtnPayCoffee.setEnabled(true);
                             }
+                            mBtnPayCoffee.setText("В заказе " + String.valueOf(mBasket.getmBasketProductsList().size())
+                                    + " напитка (" + mBasket.getSumma(mBasket) + "Р)");
                         } else {
                             mBtnPayCoffee.setEnabled(false);
                         }
-                        mBtnPayCoffee.setText("В заказе " + String.valueOf(mBasket.getmBasketProductsList().size())
-                                + " напитка (" + mBasket.getSumma(mBasket) + "Р)");
                     }
                 }));
     }

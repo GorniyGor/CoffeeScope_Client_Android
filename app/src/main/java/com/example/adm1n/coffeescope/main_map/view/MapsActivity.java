@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.adm1n.coffeescope.BaseActivity;
+import com.example.adm1n.coffeescope.BaseActivityWithoutToolbar;
 import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.coffee_ingredients.CoffeeIngredientsActivity;
 import com.example.adm1n.coffeescope.coffee_menu.MenuAdapter;
@@ -57,14 +59,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import io.realm.Realm;
 
-public class MapsActivity extends BaseActivity implements OnMapReadyCallback, MenuAdapter.OnProductClick, IMapActivity {
+public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapReadyCallback, MenuAdapter.OnProductClick, IMapActivity {
 
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private final int DEFAULT_MAP_ZOOM = 13;
-    public static final String PRODUCT_EXTRA = "PRODUCT_EXTRA";
-    public static final String INGREDIENTS_EXTRA = "INGREDIENTS_EXTRA";
-    public static final String PLACE_ID_EXTRA = "PLACE_ID_EXTRA";
 
     private ArrayList<CoffeeMenu> coffeeMenuList = new ArrayList<>();
     private ArrayList<Place> placeList = new ArrayList<>();
@@ -97,7 +97,6 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
     private MainPresenter presenter;
     private Basket mBasket;
     private Observable<Basket> mBasketOBS;
-    private Subscription subscription;
     private CompositeDisposable disposable = new CompositeDisposable();
 
     @Override
@@ -214,7 +213,7 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
-                intent.putExtra(MapsActivity.PLACE_ID_EXTRA, mLastPlace.getId());
+                intent.putExtra(BaseActivity.PLACE_ID_EXTRA, mLastPlace.getId());
                 startActivity(intent);
             }
         });
@@ -360,9 +359,9 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
     @Override
     public void onClick(View v, Products product) {
         Intent intent = new Intent(getApplicationContext(), CoffeeIngredientsActivity.class);
-        intent.putExtra(PRODUCT_EXTRA, product);
-        intent.putExtra(INGREDIENTS_EXTRA, mLastPlace);
-        intent.putExtra(PLACE_ID_EXTRA, mLastPlace.getId());
+        intent.putExtra(BaseActivity.PRODUCT_EXTRA, product);
+        intent.putExtra(BaseActivity.PLACE_NAME_EXTRA, mLastPlace.getName());
+        intent.putExtra(BaseActivity.PLACE_ID_EXTRA, mLastPlace.getId());
         startActivity(intent);
     }
 
@@ -486,27 +485,31 @@ public class MapsActivity extends BaseActivity implements OnMapReadyCallback, Me
 
     void initBasket() {
         mBasketOBS = presenter.getBasket(mLastPlace.getId());
-        disposable.add(mBasketOBS
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Basket>() {
-                    @Override
-                    public void accept(Basket basket) throws Exception {
-                        if (basket != null) {
-                            mBasket = basket;
-                            mBtnPayCoffee.setText(String.valueOf(mBasket.getmBasketProductsList().size())
-                                    + " Позиции " + mBasket.getSumma(mBasket));
-                            if (mBasket.getmBasketProductsList().size() == 0) {
-                                mBtnPayCoffee.setEnabled(false);
+        if (mBasketOBS != null) {
+            disposable.add(mBasketOBS
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Basket>() {
+                        @Override
+                        public void accept(Basket basket) throws Exception {
+                            if (basket != null) {
+                                mBasket = basket;
+                                mBtnPayCoffee.setText(String.valueOf(mBasket.getmBasketProductsList().size())
+                                        + " Позиции " + mBasket.getSumma(mBasket));
+                                if (mBasket.getmBasketProductsList().size() == 0) {
+                                    mBtnPayCoffee.setEnabled(false);
+                                } else {
+                                    mBtnPayCoffee.setEnabled(true);
+                                }
+                                mBtnPayCoffee.setText("В заказе " + String.valueOf(mBasket.getmBasketProductsList().size())
+                                        + " напитка (" + mBasket.getSumma(mBasket) + "Р)");
                             } else {
-                                mBtnPayCoffee.setEnabled(true);
+                                mBtnPayCoffee.setEnabled(false);
                             }
-                            mBtnPayCoffee.setText("В заказе " + String.valueOf(mBasket.getmBasketProductsList().size())
-                                    + " напитка (" + mBasket.getSumma(mBasket) + "Р)");
-                        } else {
-                            mBtnPayCoffee.setEnabled(false);
                         }
-                    }
-                }));
+                    }));
+        } else {
+            Toast.makeText(this, "Ошибка RX", Toast.LENGTH_SHORT).show();
+        }
     }
 }

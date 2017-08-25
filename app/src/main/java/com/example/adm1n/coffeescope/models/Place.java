@@ -38,6 +38,7 @@ public class Place extends RealmObject implements Parcelable {
         phone = in.readString();
         rating = in.readDouble();
         average_time = in.readString();
+        id = in.readInt();
         active = in.readParcelable(Active.class.getClassLoader());
         who_deactivated = in.readString();
         coodrinates = in.readParcelable(Coodrinates.class.getClassLoader());
@@ -64,6 +65,7 @@ public class Place extends RealmObject implements Parcelable {
         dest.writeString(who_deactivated);
         dest.writeParcelable(coodrinates, flags);
         dest.writeParcelable(image, flags);
+        dest.writeInt(id);
 
         dest.writeTypedList(this.categories);
         dest.writeTypedList(this.ingredients);

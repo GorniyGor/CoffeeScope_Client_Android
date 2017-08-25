@@ -4,6 +4,10 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.adm1n.coffeescope.models.Place;
 
@@ -15,22 +19,33 @@ import io.realm.Realm;
 
 public class BaseActivity extends AppCompatActivity {
     public static final String PLACE_EXTRA = "PLACE_EXTRA";
+    public static final String PRODUCT_EXTRA = "PRODUCT_EXTRA";
+    public static final String PLACE_ID_EXTRA = "PLACE_ID_EXTRA";
+    public static final String PLACE_NAME_EXTRA = "PLACE_NAME_EXTRA";
 
     protected Place mLastPlace;
     protected Realm mRealm;
+    protected Toolbar toolbar;
+
+    //toolbar
+    protected TextView toolbarTitle;
+    protected ImageView toolbarBackButton;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mRealm = Realm.getDefaultInstance();
-        if (savedInstanceState != null) {
-            mLastPlace = savedInstanceState.getParcelable(PLACE_EXTRA);
-        }
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mLastPlace = savedInstanceState.getParcelable(PLACE_EXTRA);
+    }
+
+    @Override
+    protected void onStop() {
+        mRealm.close();
+        super.onStop();
     }
 }

@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -24,15 +23,16 @@ import android.widget.Toast;
 import com.example.adm1n.coffeescope.BaseActivity;
 import com.example.adm1n.coffeescope.BaseActivityWithoutToolbar;
 import com.example.adm1n.coffeescope.R;
-import com.example.adm1n.coffeescope.coffee_ingredients.CoffeeIngredientsActivity;
+import com.example.adm1n.coffeescope.coffee_ingredients.view.CoffeeIngredientsActivity;
+import com.example.adm1n.coffeescope.coffee_ingredients.view.CoffeeIngredientsFragment;
 import com.example.adm1n.coffeescope.coffee_menu.MenuAdapter;
 import com.example.adm1n.coffeescope.coffee_menu.custom_model.CoffeeMenu;
 import com.example.adm1n.coffeescope.main_map.presenter.MainPresenter;
 import com.example.adm1n.coffeescope.models.Hours;
 import com.example.adm1n.coffeescope.models.Place;
-import com.example.adm1n.coffeescope.models.Products;
+import com.example.adm1n.coffeescope.models.Product;
 import com.example.adm1n.coffeescope.models.basket.Basket;
-import com.example.adm1n.coffeescope.order.OrderActivity;
+import com.example.adm1n.coffeescope.order.view.OrderActivity;
 import com.example.adm1n.coffeescope.utils.MapsUtils;
 import com.example.adm1n.coffeescope.utils.PermissionUtils;
 import com.example.adm1n.coffeescope.utils.SpaceItemDecoration;
@@ -43,8 +43,6 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import org.reactivestreams.Subscription;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -59,7 +57,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import io.realm.Realm;
 
 public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapReadyCallback, MenuAdapter.OnProductClick, IMapActivity {
 
@@ -250,7 +247,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                showPeakView(mRealm.copyFromRealm(mRealm.where(Place.class).equalTo("id", Integer.valueOf(marker.getSnippet())).findFirst()));
+                showPeakView(presenter.getPlaceFromRealm(Integer.valueOf(marker.getSnippet())));
                 presenter.getPlace(marker.getSnippet());
                 peakView = (AppBarLayout) findViewById(R.id.peak_view);
                 View previewTopElements = findViewById(R.id.preview_top_elements);
@@ -357,11 +354,12 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
     }
 
     @Override
-    public void onClick(View v, Products product) {
+    public void onClick(View v, Product product) {
         Intent intent = new Intent(getApplicationContext(), CoffeeIngredientsActivity.class);
-        intent.putExtra(BaseActivity.PRODUCT_EXTRA, product);
-        intent.putExtra(BaseActivity.PLACE_NAME_EXTRA, mLastPlace.getName());
-        intent.putExtra(BaseActivity.PLACE_ID_EXTRA, mLastPlace.getId());
+        intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
+        intent.putExtra(PRODUCT_ID_EXTRA, product.getId());
+        intent.putExtra(PARAM_EXTRA, CoffeeIngredientsFragment.Param.Add);
+        intent.putExtra(PLACE_ID_EXTRA, mLastPlace.getId());
         startActivity(intent);
     }
 

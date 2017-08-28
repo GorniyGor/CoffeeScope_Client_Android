@@ -53,11 +53,13 @@ public class MainPlacesModel implements IMainPlacesModel {
                     r.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
-                            Basket realmBaket = realm.where(Basket.class)
+                            Basket realmBasket = realm.where(Basket.class)
                                     .equalTo("mBasketId", mBasketId)
                                     .findFirst();
-                            if (realmBaket != null) {
-                                mBasket = realm.copyFromRealm(realmBaket);
+                            if (realmBasket != null) {
+                                mBasket = realm.copyFromRealm(realmBasket);
+                            } else {
+                                mBasket = new Basket();
                             }
                         }
                     });

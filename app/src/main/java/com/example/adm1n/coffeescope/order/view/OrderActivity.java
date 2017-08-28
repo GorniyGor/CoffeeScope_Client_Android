@@ -1,4 +1,4 @@
-package com.example.adm1n.coffeescope.order;
+package com.example.adm1n.coffeescope.order.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

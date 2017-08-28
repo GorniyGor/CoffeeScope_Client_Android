@@ -1,4 +1,4 @@
-package com.example.adm1n.coffeescope.coffee_ingredients.fragment;
+package com.example.adm1n.coffeescope.coffee_ingredients.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,47 +19,51 @@ import com.example.adm1n.coffeescope.BaseActivity;
 import com.example.adm1n.coffeescope.BaseFragment;
 import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.coffee_ingredients.CoffeeIngredientsAdapter;
+import com.example.adm1n.coffeescope.coffee_ingredients.presenter.CoffeeIngredientsPresenter;
 import com.example.adm1n.coffeescope.models.Ingredients;
-import com.example.adm1n.coffeescope.models.Place;
-import com.example.adm1n.coffeescope.models.Products;
+import com.example.adm1n.coffeescope.models.Product;
 import com.example.adm1n.coffeescope.models.basket.Basket;
 import com.example.adm1n.coffeescope.models.basket.BasketProducts;
-import com.example.adm1n.coffeescope.order.OrderActivity;
+import com.example.adm1n.coffeescope.order.view.OrderActivity;
+import com.example.adm1n.coffeescope.utils.OnBackPressedListener;
 import com.example.adm1n.coffeescope.utils.SpaceItemDecoration;
 import com.jakewharton.rxbinding2.view.RxView;
 
 import io.reactivex.functions.Consumer;
 import io.realm.RealmList;
 
-/**
- * Created by adm1n on 25.08.2017.
- */
+public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIngredientsAdapter.OnIngredientsClick, OnBackPressedListener {
 
-public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIngredientsAdapter.OnIngredientsClick {
+    public enum Param {Add, Edit}
 
+    private Param mParam;
     private CoffeeIngredientsAdapter mAdapter;
     private RecyclerView recyclerview;
     private ImageView mAddButton;
     private Button mPayButton;
     private LinearLayoutManager linearLayoutManager;
     private AppBarLayout app_bar_layout_vibor_napitka;
-    private Products mProducts;
+    private Product mProduct;
     private RealmList<Ingredients> mIngredientsList = new RealmList<>();
     private TabLayout mTabLayout;
     private Basket mBasket;
     private BasketProducts mBasketProducts = new BasketProducts();
     private Integer mPlaceId;
     private Integer mProductId;
+    private CoffeeIngredientsPresenter presenter;
 
     private ImageView ivAddProductCount;
     private ImageView ivRemoveProductCount;
     private TextView tvProductCount;
     private TextView tvActionBarTitle;
+    private int mEditProductPosition;
 
-    public static CoffeeIngredientsFragment newInstance(Integer placeId, Products products) {
+    public static CoffeeIngredientsFragment newInstance(Integer placeId, Integer productId, Param param, int position) {
         Bundle args = new Bundle();
         args.putInt(PLACE_ID_EXTRA, placeId);
-        args.putParcelable(PRODUCT_EXTRA, products);
+        args.putSerializable(PARAM_EXTRA, param);
+        args.putInt(PRODUCT_EXTRA, productId);
+        args.putInt(PRODUCT_POSITION_EDIT_EXTRA, position);
         CoffeeIngredientsFragment fragment = new CoffeeIngredientsFragment();
         fragment.setArguments(args);
         return fragment;
@@ -69,12 +72,20 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        presenter = new CoffeeIngredientsPresenter();
         if (savedInstanceState == null) {
-            mProducts = getArguments().getParcelable(PRODUCT_EXTRA);
+            mParam = (Param) getArguments().getSerializable(PARAM_EXTRA);
+            mProductId = getArguments().getInt(PRODUCT_EXTRA);
+            mProduct = presenter.getProduct(mProductId);
             mPlaceId = getArguments().getInt(PLACE_ID_EXTRA);
-            mProductId = mProducts.getId();
-            getIngredients();
-            initBasket(mPlaceId);
+            mEditProductPosition = getArguments().getInt(PRODUCT_POSITION_EDIT_EXTRA);
+            mBasket = presenter.getBasket(mPlaceId);
+            mIngredientsList = presenter.getIngredients(mPlaceId);
+            if (mParam != null && mParam.equals(Param.Add)) {
+                createProduct();
+            } else {
+                mBasketProducts = mBasket.getmBasketProductsList().get(mEditProductPosition);
+            }
         }
     }
 
@@ -99,7 +110,11 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
     }
 
     void initRecycler() {
-        mAdapter = new CoffeeIngredientsAdapter(mLastPlace.getIngredients(), this);
+        if (mParam != null && mParam.equals(Param.Edit)) {
+            mAdapter = new CoffeeIngredientsAdapter(mIngredientsList, this, mBasket.getmBasketProductsList().get(mEditProductPosition).getmIngredientsList());
+        } else {
+            mAdapter = new CoffeeIngredientsAdapter(mIngredientsList, this);
+        }
         linearLayoutManager = new LinearLayoutManager(getContext());
         SpaceItemDecoration decorator = new SpaceItemDecoration(32, true, true);
         recyclerview.setLayoutManager(linearLayoutManager);
@@ -123,26 +138,25 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initRecycler();
-        tvActionBarTitle.setText(mProducts.getName());
+        tvActionBarTitle.setText(mProduct.getName());
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //добавляем заказ
-                saveBasket();
-                //// TODO: 25.08.2017 добавить бекер
-//                super.onBackPressed();
+                presenter.saveBasket(mBasket);
+                onBackPressed();
             }
         });
         mPayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveBasket();
+                presenter.saveBasket(mBasket);
                 Intent intent = new Intent(getContext(), OrderActivity.class);
                 intent.putExtra(BaseActivity.PLACE_ID_EXTRA, mPlaceId);
                 startActivity(intent);
             }
         });
-        if (mProducts.getSizes() != null) {
+        if (mProduct.getSizes() != null) {
             createTabs();
         }
         setRxView();
@@ -151,28 +165,28 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
 
 
     void createTabs() {
-        for (int i = 0; i < mProducts.getSizes().size(); i++) {
-            if (mProducts.getSizes().get(i).getSize() != null) {
-                switch (mProducts.getSizes().get(i).getSize()) {
+        for (int i = 0; i < mProduct.getSizes().size(); i++) {
+            if (mProduct.getSizes().get(i).getSize() != null) {
+                switch (mProduct.getSizes().get(i).getSize()) {
                     case "s":
                         View viewS = LayoutInflater.from(getContext()).inflate(R.layout.customtab, null);
                         viewS.findViewById(R.id.icon).setBackgroundResource(R.drawable.size_s_inactive);
                         TextView tvS = ((TextView) viewS.findViewById(R.id.tvCost));
-                        tvS.setText(String.valueOf(mProducts.getSizes().get(i).getPrice()));
+                        tvS.setText(String.valueOf(mProduct.getSizes().get(i).getPrice()));
                         mTabLayout.addTab(mTabLayout.newTab().setCustomView(viewS).setContentDescription("s"));
                         break;
                     case "m":
                         View viewM = LayoutInflater.from(getContext()).inflate(R.layout.customtab, null);
                         viewM.findViewById(R.id.icon).setBackgroundResource(R.drawable.size_m_inactive);
                         TextView tvM = ((TextView) viewM.findViewById(R.id.tvCost));
-                        tvM.setText(String.valueOf(mProducts.getSizes().get(i).getPrice()));
+                        tvM.setText(String.valueOf(mProduct.getSizes().get(i).getPrice()));
                         mTabLayout.addTab(mTabLayout.newTab().setCustomView(viewM).setContentDescription("m"));
                         break;
                     case "l":
                         View viewL = LayoutInflater.from(getContext()).inflate(R.layout.customtab, null);
                         viewL.findViewById(R.id.icon).setBackgroundResource(R.drawable.size_l_inactive);
                         TextView tvL = ((TextView) viewL.findViewById(R.id.tvCost));
-                        tvL.setText(String.valueOf(mProducts.getSizes().get(i).getPrice()));
+                        tvL.setText(String.valueOf(mProduct.getSizes().get(i).getPrice()));
                         mTabLayout.addTab(mTabLayout.newTab().setCustomView(viewL).setContentDescription("l"));
                         break;
                     default:
@@ -251,44 +265,61 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
         }
     }
 
-    void initBasket(Integer basketId) {
-        mBasket = mRealm.copyFromRealm(mRealm.where(Basket.class).equalTo("mBasketId", basketId).findFirst());
-
+    void createProduct() {
         mBasketProducts = new BasketProducts();
         mBasketProducts.setProductId(mProductId);
         mBasketProducts.setCount(1);
         mBasketProducts.setCost(0);
-        mBasketProducts.setName(mProducts.getName());
-        mBasket.getmBasketProductsList().add(mBasketProducts);
+        mBasketProducts.setName(mProduct.getName());
+        if (mBasket != null) {
+            mBasket.getmBasketProductsList().add(mBasketProducts);
+        } else {
+            mBasket = presenter.getBasket(mPlaceId);
+            mBasket.getmBasketProductsList().add(mBasketProducts);
+        }
     }
 
     @Override
     //Клик по ингредиенту
     public void onIngredientsClick(View v, int position) {
-        int realPosotion = position - 1;
-        //Ингредиент по которому мы кликнули
-        Ingredients ingredients = mIngredientsList.get(realPosotion);
-        //Ингредиенты в корзине
-        RealmList<Ingredients> ingredientsList = mBasketProducts.getmIngredientsList();
+        int realPosition = position - 1;
+        Ingredients ingredientClick = mIngredientsList.get(realPosition);
+        RealmList<Ingredients> ingredientsInBasket = mBasket.getmBasketProductsList().get(mEditProductPosition).getmIngredientsList();
         ImageView viewById = (ImageView) v.findViewById(R.id.iv_napitok_add);
-        if (!ingredientsList.contains(ingredients)) {
-            mBasketProducts.getmIngredientsList().add(ingredients);
-            viewById.setImageResource(R.drawable.done_icon);
-        } else {
+
+
+        if (checkIcon(realPosition)) {
+            if (mParam != null && mParam.equals(Param.Add)) {
+                mBasketProducts.getmIngredientsList().remove(realPosition);
+            } else {
+                for (int i = 0; i < ingredientsInBasket.size(); i++) {
+                    if (ingredientClick.getId().equals(ingredientsInBasket.get(i).getId())) {
+                        mBasket.getmBasketProductsList().get(mEditProductPosition).getmIngredientsList().remove(i);
+                    }
+                }
+            }
             viewById.setImageResource(R.drawable.add_icon);
-            mBasketProducts.getmIngredientsList().remove(ingredients);
+        } else {
+            if (mParam != null && mParam.equals(Param.Add)) {
+                mBasketProducts.getmIngredientsList().add(ingredientClick);
+            } else {
+                mBasket.getmBasketProductsList().get(mEditProductPosition).getmIngredientsList().add(ingredientClick);
+            }
+            viewById.setImageResource(R.drawable.done_icon);
         }
         showSumma();
     }
 
-    void getIngredients() {
-        Place place = mRealm.where(Place.class)
-                .equalTo("id", mPlaceId)
-                .findFirst();
-        mLastPlace = mRealm.copyFromRealm(place);
-        if (mLastPlace.getIngredients() != null) {
-            mIngredientsList.addAll(mLastPlace.getIngredients());
+    Boolean checkIcon(int position) {
+        Ingredients ingredientClick = mIngredientsList.get(position);
+
+        RealmList<Ingredients> ingredientsInBasketList = mBasketProducts.getmIngredientsList();
+        for (Ingredients ingredient : ingredientsInBasketList) {
+            if (ingredient.getId().equals(ingredientClick.getId())) {
+                return true;
+            }
         }
+        return false;
     }
 
     void setRxView() {
@@ -325,9 +356,8 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
         }
     }
 
-    void saveBasket() {
-        mRealm.beginTransaction();
-        mRealm.copyToRealmOrUpdate(mBasket);
-        mRealm.commitTransaction();
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(getActivity(), "TOASTASTAT", Toast.LENGTH_SHORT).show();
     }
 }

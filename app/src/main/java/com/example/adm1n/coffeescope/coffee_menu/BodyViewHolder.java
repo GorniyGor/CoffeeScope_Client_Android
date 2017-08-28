@@ -1,16 +1,12 @@
 package com.example.adm1n.coffeescope.coffee_menu;
 
-import android.graphics.Paint;
 import android.support.v7.widget.CardView;
-import android.text.Spannable;
-import android.text.Spanned;
-import android.text.style.StrikethroughSpan;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.custom_view.CustomTextView;
-import com.example.adm1n.coffeescope.models.Products;
+import com.example.adm1n.coffeescope.models.Product;
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
 
 /**
@@ -24,7 +20,7 @@ public class BodyViewHolder extends ChildViewHolder {
     private TextView tv_napitok_cost_with_discount;
     private CardView cvCoffeeAdapterItem;
     private MenuAdapter.OnProductClick mListener;
-    private Products mProduct;
+    private Product mProduct;
     private Integer mTheRealCost;
 
     public BodyViewHolder(View itemView, MenuAdapter.OnProductClick listener) {
@@ -36,10 +32,10 @@ public class BodyViewHolder extends ChildViewHolder {
         tv_napitok_cost_with_discount = (TextView) itemView.findViewById(R.id.tv_napitok_cost_with_discount);
     }
 
-    public void onBind(Products products) {
-        mProduct = products;
+    public void onBind(Product product) {
+        mProduct = product;
         Integer lowCostWithDiscount = null;
-        tv_napitok_name.setText(products.getName());
+        tv_napitok_name.setText(product.getName());
         if (mProduct.getSizes() != null) {
             for (int i = 0; i < mProduct.getSizes().size(); i++) {
                 if (mProduct.getSizes().get(i).getPrice_with_discount() != null) {

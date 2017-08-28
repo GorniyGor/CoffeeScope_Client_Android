@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import com.example.adm1n.coffeescope.models.basket.BasketProducts;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -25,16 +27,25 @@ import io.realm.RealmResults;
 
 public class CoffeeIngredientsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private Realm mRealm = Realm.getDefaultInstance();
-
-    private int bId;
     private RealmList<Ingredients> ingredients = new RealmList<>();
+    private RealmList<Ingredients> ingredientsInBasket = new RealmList<>();
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_ITEM = 1;
     private OnIngredientsClick onClickListener;
 
     public CoffeeIngredientsAdapter(RealmList<Ingredients> list, OnIngredientsClick onClickListener) {
         this.onClickListener = onClickListener;
+        if (ingredients != null) {
+            ingredients.clear();
+            Ingredients fakeIngredients = new Ingredients();
+            ingredients.add(fakeIngredients);
+            ingredients.addAll(list);
+        }
+    }
+
+    public CoffeeIngredientsAdapter(RealmList<Ingredients> list, OnIngredientsClick onClickListener, RealmList<Ingredients> basketIngredientsList) {
+        this.onClickListener = onClickListener;
+        this.ingredientsInBasket.addAll(basketIngredientsList);
         if (ingredients != null) {
             ingredients.clear();
             Ingredients fakeIngredients = new Ingredients();
@@ -68,9 +79,13 @@ public class CoffeeIngredientsAdapter extends RecyclerView.Adapter<RecyclerView.
         if (viewHolder instanceof HeaderViewHolder) {
             ((HeaderViewHolder) viewHolder).headerTitle.setText(ingredient.getName());
         } else if (viewHolder instanceof ItemViewHolder) {
-            checkIcon(i);
             ((ItemViewHolder) viewHolder).name.setText(ingredient.getName());
             ((ItemViewHolder) viewHolder).cost.setText("+ " + String.valueOf(ingredient.getPrice() + " P"));
+            if (!ingredientsInBasket.isEmpty()) {
+                ((ItemViewHolder) viewHolder).ivAddProduct.setImageResource(checkIcon(i) ? R.drawable.done_icon : R.drawable.add_icon);
+            } else {
+                ((ItemViewHolder) viewHolder).ivAddProduct.setImageResource(R.drawable.add_icon);
+            }
             ((ItemViewHolder) viewHolder).setPosition(i);
 
         }
@@ -95,18 +110,20 @@ public class CoffeeIngredientsAdapter extends RecyclerView.Adapter<RecyclerView.
     /**
      * Реализация класса ViewHolder, хранящего ссылки на виджеты.
      */
-    class ItemViewHolder extends RecyclerView.ViewHolder {
+    private class ItemViewHolder extends RecyclerView.ViewHolder {
         private TextView name;
         private TextView cost;
         private RelativeLayout rlCoffeeAdapterFrame;
         private OnIngredientsClick onIngredientsClick;
         private Integer mPosition;
+        private ImageView ivAddProduct;
 
         public ItemViewHolder(View itemView, OnIngredientsClick onClick) {
             super(itemView);
             this.onIngredientsClick = onClick;
             name = (TextView) itemView.findViewById(R.id.tv_napitok_name);
             cost = (TextView) itemView.findViewById(R.id.tv_napitok_cost);
+            ivAddProduct = (ImageView) itemView.findViewById(R.id.iv_napitok_add);
             rlCoffeeAdapterFrame = (RelativeLayout) itemView.findViewById(R.id.rlCoffeeAdapterFrame);
             rlCoffeeAdapterFrame.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -121,10 +138,10 @@ public class CoffeeIngredientsAdapter extends RecyclerView.Adapter<RecyclerView.
         }
     }
 
-    public class HeaderViewHolder extends RecyclerView.ViewHolder {
-        public TextView headerTitle;
+    private class HeaderViewHolder extends RecyclerView.ViewHolder {
+        TextView headerTitle;
 
-        public HeaderViewHolder(View itemView) {
+        HeaderViewHolder(View itemView) {
             super(itemView);
             headerTitle = (TextView) itemView.findViewById(R.id.tvTitle);
         }
@@ -134,10 +151,13 @@ public class CoffeeIngredientsAdapter extends RecyclerView.Adapter<RecyclerView.
         void onIngredientsClick(View v, int position);
     }
 
-    void checkIcon(int id) {
-        RealmResults<Basket> mBasketId = mRealm.where(Basket.class).equalTo("mBasketId", bId).findAll();
-//        mBasketId.where().equalTo("")
-        RealmResults<BasketProducts> all = mRealm.where(BasketProducts.class).equalTo("mIngredientsList.id", id).findAll();
-        all.size();
+    private boolean checkIcon(int position) {
+        Integer id = ingredients.get(position).getId();
+        for (Ingredients ingredient : ingredientsInBasket) {
+            if (ingredient.getId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

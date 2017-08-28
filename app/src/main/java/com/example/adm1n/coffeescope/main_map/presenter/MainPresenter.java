@@ -36,6 +36,8 @@ public class MainPresenter implements IMainPresenter {
     private MainPlacesModel model = new MainPlacesModel();
     private Realm mRealm = Realm.getDefaultInstance();
     private Place myPlace;
+    private Integer myPlaceId;
+    private Integer mBasketId;
 
     public MainPresenter(Context mContext, IMapActivity mView) {
         this.mContext = mContext;
@@ -78,38 +80,29 @@ public class MainPresenter implements IMainPresenter {
     }
 
     @Override
+    public Place getPlaceFromRealm(Integer placeId) {
+        myPlaceId = placeId;
+        try { // I could use try-with-resources here
+            mRealm = Realm.getDefaultInstance();
+            mRealm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    myPlace = mRealm.copyFromRealm(mRealm.where(Place.class).equalTo("id", myPlaceId).findFirst());
+                }
+            });
+        } finally {
+            if (mRealm != null) {
+                mRealm.close();
+            }
+        }
+        return myPlace;
+    }
+
+    @Override
     public Observable<Basket> getBasket(Integer basketId) {
         return model.getBasket(basketId);
     }
 
-//    @Override
-//    public void savePlaces(ArrayList<Place> list) {
-//        mRealm.beginTransaction();
-//        for (int i = 0; i < list.size(); i++) {
-//            Place place = list.get(i);
-//            mRealm.copyToRealmOrUpdate(place);
-//        }
-//        mRealm.commitTransaction();
-//    }
-//
-//    @Override
-//    public void savePlace(Place place) {
-//        myPlace = place;
-//        mRealm.beginTransaction();
-//        mRealm.copyToRealmOrUpdate(myPlace);
-//        mRealm.commitTransaction();
-//
-//        Basket mBasket = mRealm.where(Basket.class).equalTo("mBasketId", place.getId()).findFirst();
-//        if (mBasket == null) {
-//            mRealm.executeTransaction(new Realm.Transaction() {
-//                @Override
-//                public void execute(Realm realm) {
-//                    Basket basket = realm.createObject(Basket.class, myPlace.getId());
-//                    basket.setmBasketProductsList(new RealmList<BasketProducts>());
-//                }
-//            });
-//        }
-//    }
 
     @Override
     public void savePlaces(final ArrayList<Place> list) {

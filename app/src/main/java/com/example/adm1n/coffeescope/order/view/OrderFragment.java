@@ -1,4 +1,4 @@
-package com.example.adm1n.coffeescope.order;
+package com.example.adm1n.coffeescope.order.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,19 +16,17 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
+import com.example.adm1n.coffeescope.BaseActivity;
 import com.example.adm1n.coffeescope.BaseFragment;
 import com.example.adm1n.coffeescope.R;
-import com.example.adm1n.coffeescope.coffee_ingredients.CoffeeIngredientsActivity;
-import com.example.adm1n.coffeescope.models.Place;
-import com.example.adm1n.coffeescope.models.basket.Basket;
+import com.example.adm1n.coffeescope.coffee_ingredients.view.CoffeeIngredientsActivity;
+import com.example.adm1n.coffeescope.coffee_ingredients.view.CoffeeIngredientsFragment;
 import com.example.adm1n.coffeescope.models.basket.BasketProducts;
+import com.example.adm1n.coffeescope.order.OrderAdapter;
+import com.example.adm1n.coffeescope.order.presenter.OrderPresenter;
 import com.example.adm1n.coffeescope.utils.SpaceItemDecoration;
 
 import io.realm.RealmList;
-
-/**
- * Created by adm1n on 25.08.2017.
- */
 
 public class OrderFragment extends BaseFragment implements OrderAdapter.OnOrderClick {
 
@@ -45,9 +43,9 @@ public class OrderFragment extends BaseFragment implements OrderAdapter.OnOrderC
     private RadioButton mRadioButtonFast;
     private RadioButton mRadioButtonTime;
     private RecyclerView mRecyclerView;
+    private OrderPresenter presenter;
 
     private OrderAdapter mAdapter;
-    private Basket mBasket;
     private Integer mPlaceId;
 
 
@@ -62,10 +60,11 @@ public class OrderFragment extends BaseFragment implements OrderAdapter.OnOrderC
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        presenter = new OrderPresenter();
         if (getArguments().get(PLACE_ID_EXTRA) != null) {
             mPlaceId = getArguments().getInt(PLACE_ID_EXTRA);
-            getPlace(mPlaceId);
-            getBasket(mPlaceId);
+            mBasket = presenter.getBasket(mPlaceId);
+            mLastPlace = presenter.getPlace(mPlaceId);
         }
     }
 
@@ -140,30 +139,22 @@ public class OrderFragment extends BaseFragment implements OrderAdapter.OnOrderC
         btn_order_summa_count = (Button) v.findViewById(R.id.btn_order_summa_count);
     }
 
-    private void getBasket(Integer id) {
-        mBasket = mRealm.copyFromRealm(mRealm.where(Basket.class).equalTo("mBasketId", id).findFirst());
-    }
-
-    private void getPlace(Integer id) {
-        mLastPlace = mRealm.copyFromRealm(mRealm.where(Place.class).equalTo("id", id).findFirst());
-    }
-
     @Override
     public void onDelete(View v, int position) {
-        basketProductses.remove(basketProductses.get(position));
+        mBasket.getmBasketProductsList().remove(position);
         mAdapter.notifyDataSetChanged();
-        saveBasket();
+        presenter.saveBasket(mBasket);
     }
 
     @Override
     public void onRefactor(View v, int position) {
+        presenter.saveBasket(mBasket);
         Intent intent = new Intent(getContext(), CoffeeIngredientsActivity.class);
+        intent.putExtra(PLACE_ID_EXTRA, mPlaceId);
+        intent.putExtra(PARAM_EXTRA, CoffeeIngredientsFragment.Param.Edit);
+        intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
+        intent.putExtra(PRODUCT_POSITION_EDIT_EXTRA, position);
+        intent.putExtra(BaseActivity.PRODUCT_ID_EXTRA, mBasket.getmBasketProductsList().get(position).getProductId());
         startActivity(intent);
-    }
-
-    void saveBasket() {
-        mRealm.beginTransaction();
-        mRealm.copyToRealmOrUpdate(mBasket);
-        mRealm.commitTransaction();
     }
 }

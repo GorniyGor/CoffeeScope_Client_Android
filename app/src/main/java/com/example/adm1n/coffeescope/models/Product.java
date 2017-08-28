@@ -3,8 +3,6 @@ package com.example.adm1n.coffeescope.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-
 import io.realm.RealmList;
 import io.realm.RealmObject;
 
@@ -12,15 +10,15 @@ import io.realm.RealmObject;
  * Created by adm1n on 22.07.2017.
  */
 
-public class Products extends RealmObject implements Parcelable {
+public class Product extends RealmObject implements Parcelable {
     private Integer id;
     private String name;
     private RealmList<Sizes> sizes;
 
-    public Products() {
+    public Product() {
     }
 
-    protected Products(Parcel in) {
+    protected Product(Parcel in) {
         name = in.readString();
         id = in.readInt();
         this.sizes = new RealmList<>();
@@ -39,15 +37,15 @@ public class Products extends RealmObject implements Parcelable {
         return 0;
     }
 
-    public static final Creator<Products> CREATOR = new Creator<Products>() {
+    public static final Creator<Product> CREATOR = new Creator<Product>() {
         @Override
-        public Products createFromParcel(Parcel in) {
-            return new Products(in);
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
         }
 
         @Override
-        public Products[] newArray(int size) {
-            return new Products[size];
+        public Product[] newArray(int size) {
+            return new Product[size];
         }
     };
 

@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.example.adm1n.coffeescope.models.Ingredients;
 
+import java.util.ArrayList;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -53,7 +55,7 @@ public class BasketProducts extends RealmObject implements Parcelable {
         dest.writeString(sizeId);
         dest.writeInt(cost);
         dest.writeInt(count);
-        dest.writeTypedList(this.mIngredientsList);
+        dest.writeTypedList(this.mIngredientsList = new RealmList<>());
         dest.writeInt(productId);
         dest.writeString(name);
         dest.writeInt(costSumm);

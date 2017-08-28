@@ -1,6 +1,6 @@
 package com.example.adm1n.coffeescope.coffee_menu.custom_model;
 
-import com.example.adm1n.coffeescope.models.Products;
+import com.example.adm1n.coffeescope.models.Product;
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
  */
 
 public class CoffeeMenu extends ExpandableGroup {
-    public CoffeeMenu(String title, List<Products> items) {
+    public CoffeeMenu(String title, List<Product> items) {
         super(title, items);
     }
 }

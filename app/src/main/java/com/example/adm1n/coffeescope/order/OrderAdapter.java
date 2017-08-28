@@ -5,22 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.adm1n.coffeescope.R;
-import com.example.adm1n.coffeescope.coffee_menu.MenuAdapter;
 import com.example.adm1n.coffeescope.models.Ingredients;
-import com.example.adm1n.coffeescope.models.Products;
-import com.example.adm1n.coffeescope.models.basket.Basket;
 import com.example.adm1n.coffeescope.models.basket.BasketProducts;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.realm.Realm;
 import io.realm.RealmList;
-import io.realm.RealmResults;
 
 /**
  * Created by adm1n on 21.08.2017.

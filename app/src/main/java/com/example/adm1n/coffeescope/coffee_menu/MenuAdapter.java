@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.adm1n.coffeescope.R;
-import com.example.adm1n.coffeescope.models.Products;
+import com.example.adm1n.coffeescope.models.Product;
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter;
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 
@@ -39,8 +39,8 @@ public class MenuAdapter extends ExpandableRecyclerViewAdapter<HeaderViewHolder,
     @Override
     public void onBindChildViewHolder(BodyViewHolder holder, int flatPosition, ExpandableGroup group,
                                       int childIndex) {
-        Products products = (Products) group.getItems().get(childIndex);
-        holder.onBind(products);
+        Product product = (Product) group.getItems().get(childIndex);
+        holder.onBind(product);
     }
 
     @Override
@@ -51,6 +51,6 @@ public class MenuAdapter extends ExpandableRecyclerViewAdapter<HeaderViewHolder,
     }
 
     public interface OnProductClick {
-        void onClick(View v, Products products);
+        void onClick(View v, Product product);
     }
 }

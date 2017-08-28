@@ -19,12 +19,13 @@ import io.realm.Realm;
 
 public class BaseActivity extends AppCompatActivity {
     public static final String PLACE_EXTRA = "PLACE_EXTRA";
-    public static final String PRODUCT_EXTRA = "PRODUCT_EXTRA";
+    public static final String PRODUCT_ID_EXTRA = "PRODUCT_ID_EXTRA";
     public static final String PLACE_ID_EXTRA = "PLACE_ID_EXTRA";
     public static final String PLACE_NAME_EXTRA = "PLACE_NAME_EXTRA";
+    public static final String PARAM_EXTRA = "PARAM_EXTRA";
 
     protected Place mLastPlace;
-    protected Realm mRealm;
+    protected Realm mRealm = null;
     protected Toolbar toolbar;
 
     //toolbar
@@ -34,7 +35,6 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mRealm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -45,7 +45,6 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        mRealm.close();
         super.onStop();
     }
 }

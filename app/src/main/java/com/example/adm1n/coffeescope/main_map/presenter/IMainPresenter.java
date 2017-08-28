@@ -14,6 +14,7 @@ import io.reactivex.Observable;
 public interface IMainPresenter {
     void getPlaces();
     void getPlace(String placeId);
+    Place getPlaceFromRealm(Integer placeId);
     void savePlace(Place place);
     void savePlaces(ArrayList<Place> list);
     Observable<Basket> getBasket(Integer PlaceId);

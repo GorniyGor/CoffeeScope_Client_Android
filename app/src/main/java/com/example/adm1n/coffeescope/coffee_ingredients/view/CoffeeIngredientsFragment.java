@@ -290,7 +290,11 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
 
         if (checkIcon(realPosition)) {
             if (mParam != null && mParam.equals(Param.Add)) {
-                mBasketProducts.getmIngredientsList().remove(realPosition);
+                for (int i = 0; i < ingredientsInBasket.size(); i++) {
+                    if (ingredientClick.getId().equals(mBasketProducts.getmIngredientsList().get(i).getId())) {
+                        mBasketProducts.getmIngredientsList().remove(i);
+                    }
+                }
             } else {
                 for (int i = 0; i < ingredientsInBasket.size(); i++) {
                     if (ingredientClick.getId().equals(ingredientsInBasket.get(i).getId())) {
@@ -313,10 +317,19 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
     Boolean checkIcon(int position) {
         Ingredients ingredientClick = mIngredientsList.get(position);
 
+
         RealmList<Ingredients> ingredientsInBasketList = mBasketProducts.getmIngredientsList();
-        for (Ingredients ingredient : ingredientsInBasketList) {
-            if (ingredient.getId().equals(ingredientClick.getId())) {
-                return true;
+        if (mParam != null && mParam.equals(Param.Add)) {
+            for (Ingredients ingredient : ingredientsInBasketList) {
+                if (ingredient.getId().equals(ingredientClick.getId())) {
+                    return true;
+                }
+            }
+        } else {
+            for (Ingredients ingredient : mBasket.getmBasketProductsList().get(mEditProductPosition).getmIngredientsList()) {
+                if (ingredient.getId().equals(ingredientClick.getId())) {
+                    return true;
+                }
             }
         }
         return false;

@@ -31,7 +31,10 @@ public class CoffeeIngredientsPresenter implements ICoffeeIngredientsPresenter {
             mRealm.executeTransaction(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
-                    mBasket = mRealm.copyFromRealm(mRealm.where(Basket.class).equalTo("mBasketId", mBasketId).findFirst());
+                    Basket mBasketId = mRealm.where(Basket.class).equalTo("mBasketId", CoffeeIngredientsPresenter.this.mBasketId).findFirst();
+                    if (mBasketId != null) {
+                        mBasket = mRealm.copyFromRealm(mBasketId);
+                    }
                 }
             });
         } finally {

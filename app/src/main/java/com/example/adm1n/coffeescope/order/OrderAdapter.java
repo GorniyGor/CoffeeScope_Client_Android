@@ -11,6 +11,8 @@ import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.models.Ingredients;
 import com.example.adm1n.coffeescope.models.basket.BasketProducts;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +55,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
             ingredients += ingredientses.get(j).getName();
         }
         viewHolder.ingredients.setText(ingredients);
+        viewHolder.count.setText("x" + String.valueOf(basketProducts.getCount()));
         viewHolder.setPosition(i);
     }
 
@@ -69,6 +72,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         private TextView ingredients;
         private TextView size;
         private TextView cost;
+        private TextView count;
         private ImageView iv_order_confirm_del_position;
         private ImageView iv_order_cancel_del_position;
         private OnOrderClick onClickListener;
@@ -95,6 +99,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
                     onClickListener.onRefactor(v, mPosition);
                 }
             });
+            count = (TextView) itemView.findViewById(R.id.tv_order_product_count);
         }
 
         void setPosition(int position) {

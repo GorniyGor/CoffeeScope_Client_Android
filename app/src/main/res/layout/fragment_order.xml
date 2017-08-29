@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_order">
@@ -35,13 +36,14 @@
                 android:id="@+id/rv_order_basket"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:layout_below="@+id/order_layout_place_info" />
 
             <View
                 android:id="@+id/line_divider2"
                 layout="@layout/line"
                 android:layout_width="match_parent"
-                android:layout_height="0.5dp"
+                android:layout_height="0.8dp"
                 android:layout_below="@+id/rv_order_basket"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
@@ -50,29 +52,48 @@
 
             <TextView
                 android:id="@+id/tv_order_coffee_comment"
-                style="@style/PreviewCardCoffeeName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/line_divider2"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/сomment"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/double_grey"
+                android:textSize="20sp" />
 
-            <include
-                android:id="@+id/layout_comment_field"
-                layout="@layout/fragment_order_comment_field"
+            <android.support.v7.widget.CardView
+                android:id="@+id/cv_komment_field"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="64dp"
                 android:layout_below="@+id/tv_order_coffee_comment"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="13dp" />
+                android:layout_marginTop="13dp"
+                android:background="@color/white"
+                app:cardCornerRadius="8dp">
+
+                <EditText
+                    android:id="@+id/et_order_comment_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:background="@android:color/transparent"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/enter_сomment"
+                    android:maxLines="5"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+            </android.support.v7.widget.CardView>
 
             <RadioGroup
                 android:id="@+id/rg_order_coffee_time_radio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/layout_comment_field"
+                android:layout_below="@+id/cv_komment_field"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="10dp">
 
                 <RadioButton
@@ -95,27 +116,65 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/rg_order_coffee_time_radio"
                 android:layout_centerHorizontal="true"
+                android:layout_marginBottom="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="7dp"
                 android:background="@color/white"
                 android:timePickerMode="spinner" />
 
-            <include
-                android:id="@+id/layout_how_to_pay"
-                layout="@layout/fragment_order_how_to_pay"
+            <View
+                android:id="@+id/line_divider3"
+                layout="@layout/line"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0.8dp"
                 android:layout_below="@+id/time_picker"
-                android:layout_marginBottom="20dp" />
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/line" />
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/cv_order_pay_change"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_below="@+id/line_divider3"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="8dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white">
+
+                    <ImageView
+                        android:id="@+id/iv_check_icon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="16dp"
+                        android:src="@drawable/done_icon" />
+
+                    <TextView
+                        style="@style/PreviewCardCoffeeName"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="@string/how_to_pay">
+
+                    </TextView>
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
 
             <Button
                 android:id="@+id/btn_order_summa_count"
                 android:layout_width="184dp"
                 android:layout_height="40dp"
-                android:layout_below="@+id/layout_how_to_pay"
+                android:layout_below="@+id/cv_order_pay_change"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="12dp"
+                android:layout_marginTop="8dp"
                 android:background="@drawable/price_frame"
                 android:text="Итого:"
                 android:textAllCaps="false"
@@ -126,12 +185,21 @@
                 style="@style/button"
                 android:layout_width="match_parent"
                 android:layout_height="72dp"
-                android:layout_alignParentBottom="true"
                 android:layout_below="@+id/btn_order_summa_count"
-                android:layout_marginBottom="12dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:text="Оформить заказ" />
+
+            <View
+                android:id="@+id/line_divider4"
+                layout="@layout/line"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/btn_order_pay_product"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/transparent" />
 
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>

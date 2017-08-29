@@ -21,6 +21,7 @@ import com.example.adm1n.coffeescope.BaseFragment;
 import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.coffee_ingredients.view.CoffeeIngredientsActivity;
 import com.example.adm1n.coffeescope.coffee_ingredients.view.CoffeeIngredientsFragment;
+import com.example.adm1n.coffeescope.custom_view.CustomGridLayoutManager;
 import com.example.adm1n.coffeescope.models.basket.BasketProducts;
 import com.example.adm1n.coffeescope.order.OrderAdapter;
 import com.example.adm1n.coffeescope.order.presenter.OrderPresenter;
@@ -80,11 +81,12 @@ public class OrderFragment extends BaseFragment implements OrderAdapter.OnOrderC
             }
         });
         initPlaceInfo();
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        mRecyclerView.setLayoutManager(linearLayoutManager);
+        CustomGridLayoutManager customGridLayoutManager = new CustomGridLayoutManager(getContext());
+        customGridLayoutManager.setScrollEnabled(false);
+        mRecyclerView.setLayoutManager(customGridLayoutManager);
         basketProductses = mBasket.getmBasketProductsList();
         mAdapter = new OrderAdapter(mBasket.getmBasketProductsList(), this);
-        SpaceItemDecoration decorator = new SpaceItemDecoration(20, true, true);
+        SpaceItemDecoration decorator = new SpaceItemDecoration(8, true, true);
         mRecyclerView.addItemDecoration(decorator);
         mRecyclerView.setAdapter(mAdapter);
         mRadioButtonFast.setOnClickListener(radioButtonClickListener);

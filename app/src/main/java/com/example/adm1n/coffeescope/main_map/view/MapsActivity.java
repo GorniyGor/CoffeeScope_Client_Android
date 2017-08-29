@@ -12,6 +12,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -83,7 +84,6 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
     private TextView tv_preview_card_place_average_time;
     private ImageView iv_preview_card_top_arrow;
     private ImageView ivPreviewBottomStatus;
-    private AppBarLayout appBarLayout;
     private BottomSheetBehavior mBottomSheetBehavior;
 
     private RecyclerView recyclerview;
@@ -159,12 +159,13 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
                 .findFragmentById(R.id.map);
 
         //initBottomSheet
-        appBarLayout = (AppBarLayout) findViewById(R.id.peak_view);
+        peakView = (AppBarLayout) findViewById(R.id.peak_view);
 
-        android.view.Display display = ((android.view.WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+        Display display = ((android.view.WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
         FrameLayout FlBottomSheetBehavior = (FrameLayout) findViewById(R.id.fl_sheet_content);
         ViewGroup.LayoutParams params = FlBottomSheetBehavior.getLayoutParams();
-        params.height = (int) (display.getHeight() * 0.90);
+
+        params.height = (int) (display.getHeight() * 0.95);
         FlBottomSheetBehavior.setLayoutParams(params);
         mBottomSheetBehavior = BottomSheetBehavior.from(FlBottomSheetBehavior);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -173,7 +174,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    appBarLayout.setExpanded(true);
+                    peakView.setExpanded(true);
                 }
             }
 
@@ -186,12 +187,11 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
                 }
             }
         });
-
         //initRecycler
         recyclerview = (RecyclerView) findViewById(R.id.rv_coffee_menu);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerview.setLayoutManager(linearLayoutManager);
-        SpaceItemDecoration decorator = new SpaceItemDecoration(32, true, true);
+        SpaceItemDecoration decorator = new SpaceItemDecoration(20, true, true);
         recyclerview.addItemDecoration(decorator);
         recyclerview.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -200,7 +200,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     int firstVisiblePosition = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
                     if (firstVisiblePosition == 0) {
-                        appBarLayout.setExpanded(true, true);
+                        peakView.setExpanded(true, true);
                     }
                 }
             }
@@ -247,11 +247,11 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                showPeakView(presenter.getPlaceFromRealm(Integer.valueOf(marker.getSnippet())));
                 presenter.getPlace(marker.getSnippet());
-                peakView = (AppBarLayout) findViewById(R.id.peak_view);
+                peakView.requestLayout();
                 View previewTopElements = findViewById(R.id.preview_top_elements);
-                mBottomSheetBehavior.setPeekHeight(previewTopElements.getHeight() + peakView.getHeight() + 65);
+                mBottomSheetBehavior.setPeekHeight(previewTopElements.getHeight() + peakView.getHeight());
+                showPeakView(presenter.getPlaceFromRealm(Integer.valueOf(marker.getSnippet())));
                 if (mBottomSheetBehavior != null) {
                     switch (mBottomSheetBehavior.getState()) {
                         case (BottomSheetBehavior.STATE_HIDDEN):
@@ -265,7 +265,6 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
                         default:
                             break;
                     }
-                    peakView.requestLayout();
                 }
                 return false;
             }
@@ -289,6 +288,34 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
                 }
             }
         });
+    }
+
+    public void showPeakView(Place place) {
+        mLastPlace = place;
+        tv_coffee_name = (TextView) findViewById(R.id.tv_preview_card_product_name);
+        ivPreviewBottomStatus = (ImageView) findViewById(R.id.ivPreviewBottomStatus);
+        tv_coffee_address = (TextView) findViewById(R.id.tv_preview_card_place_address);
+        tv_coffee_phone_number = (TextView) findViewById(R.id.tv_preview_card_place_phone_number);
+        tv_preview_card_place_average_time = (TextView) findViewById(R.id.tv_preview_card_place_average_time);
+        tvPreviewBottomRangeCount = (TextView) findViewById(R.id.tv_preview_card_place_range_count);
+        tvPreviewBottomJobTime = (TextView) findViewById(R.id.tvPreviewBottomJobTime);
+        tvPreviewBottomRateCount = (TextView) findViewById(R.id.tv_preview_card_place_rate_count);
+
+        tv_coffee_name.setText(mLastPlace.getName());
+        tv_coffee_address.setText(mLastPlace.getAddress());
+        tv_coffee_phone_number.setText(mLastPlace.getPhone());
+        tv_preview_card_place_average_time.setText(mLastPlace.getAverage_time() + " мин");
+        tvPreviewBottomRateCount.setText(String.valueOf(mLastPlace.getRating()));
+        if (mMap.getMyLocation() != null) {
+            int distance = MapsUtils.calculationDistance(new LatLng(mMap.getMyLocation().getLatitude(), mMap.getMyLocation().getLongitude())
+                    , new LatLng(mLastPlace.getCoodrinates().getLatitude(),
+                            mLastPlace.getCoodrinates().getLongitude()));
+            tvPreviewBottomRangeCount.setText(MapsUtils.castDistance(distance));
+        } else {
+            tvPreviewBottomRangeCount.setText("fail");
+        }
+        initDate();
+        initBasket();
     }
 
     private void enableMyLocation() {
@@ -386,34 +413,6 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
     @Override
     public void showError(String s) {
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
-    }
-
-    public void showPeakView(Place place) {
-        mLastPlace = place;
-        tv_coffee_name = (TextView) findViewById(R.id.tv_preview_card_product_name);
-        ivPreviewBottomStatus = (ImageView) findViewById(R.id.ivPreviewBottomStatus);
-        tv_coffee_address = (TextView) findViewById(R.id.tv_preview_card_place_address);
-        tv_coffee_phone_number = (TextView) findViewById(R.id.tv_preview_card_place_phone_number);
-        tv_preview_card_place_average_time = (TextView) findViewById(R.id.tv_preview_card_place_average_time);
-        tvPreviewBottomRangeCount = (TextView) findViewById(R.id.tv_preview_card_place_range_count);
-        tvPreviewBottomJobTime = (TextView) findViewById(R.id.tvPreviewBottomJobTime);
-        tvPreviewBottomRateCount = (TextView) findViewById(R.id.tv_preview_card_place_rate_count);
-
-        tv_coffee_name.setText(mLastPlace.getName());
-        tv_coffee_address.setText(mLastPlace.getAddress());
-        tv_coffee_phone_number.setText(mLastPlace.getPhone());
-        tv_preview_card_place_average_time.setText(mLastPlace.getAverage_time() + " мин");
-        tvPreviewBottomRateCount.setText(String.valueOf(mLastPlace.getRating()));
-        if (mMap.getMyLocation() != null) {
-            int distance = MapsUtils.calculationDistance(new LatLng(mMap.getMyLocation().getLatitude(), mMap.getMyLocation().getLongitude())
-                    , new LatLng(mLastPlace.getCoodrinates().getLatitude(),
-                            mLastPlace.getCoodrinates().getLongitude()));
-            tvPreviewBottomRangeCount.setText(MapsUtils.castDistance(distance));
-        } else {
-            tvPreviewBottomRangeCount.setText("fail");
-        }
-        initDate();
-        initBasket();
     }
 
     @Override

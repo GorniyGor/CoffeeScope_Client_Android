@@ -12,12 +12,13 @@
         android:id="@+id/fl_sheet_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
         app:behavior_hideable="true"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
         <!--нижняя планка drag me-->
-        <include layout="@layout/bottom_sheet_content_view" />
+        <include
+            android:id="@+id/bottom_sheet_content_view"
+            layout="@layout/bottom_sheet_content_view" />
     </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

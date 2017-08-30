@@ -7,8 +7,6 @@ import android.support.v4.app.FragmentManager;
 
 import com.example.adm1n.coffeescope.BaseActivityWithoutToolbar;
 import com.example.adm1n.coffeescope.R;
-import com.example.adm1n.coffeescope.coffee_ingredients.view.CoffeeIngredientsFragment;
-import com.example.adm1n.coffeescope.models.Product;
 import com.example.adm1n.coffeescope.utils.OnBackPressedListener;
 
 import static com.example.adm1n.coffeescope.BaseFragment.PRODUCT_POSITION_EDIT_EXTRA;
@@ -24,13 +22,8 @@ public class CoffeeIngredientsActivity extends BaseActivityWithoutToolbar {
         int position = getIntent().getIntExtra(PRODUCT_POSITION_EDIT_EXTRA, 0);
 
         if (savedInstanceState == null) {
-            if (mParam != null && mParam.equals(CoffeeIngredientsFragment.Param.Edit)) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                        CoffeeIngredientsFragment.newInstance(mPlaceId, product, mParam, position)).commit();
-            } else {
-                getSupportFragmentManager().beginTransaction().replace(R.id.container,
-                        CoffeeIngredientsFragment.newInstance(mPlaceId, product, mParam, position)).commit();
-            }
+            getSupportFragmentManager().beginTransaction().replace(R.id.container,
+                    CoffeeIngredientsFragment.newInstance(mPlaceId, product, mParam, position)).commit();
         }
     }
 

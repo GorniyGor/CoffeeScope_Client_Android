@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.example.adm1n.coffeescope.models.Ingredients;
 
-import java.util.ArrayList;
+import java.util.UUID;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -17,6 +17,7 @@ import io.realm.annotations.PrimaryKey;
 
 public class BasketProducts extends RealmObject implements Parcelable {
     @PrimaryKey
+    private Integer id;
     private Integer productId;
     private String sizeId;
     private String name;
@@ -33,10 +34,13 @@ public class BasketProducts extends RealmObject implements Parcelable {
         }
         summ += cost;
         summ *= count;
+        this.costSumm = summ;
         return summ;
     }
 
     public BasketProducts() {
+        UUID uuid = UUID.randomUUID();
+        this.id = uuid.hashCode();
     }
 
     protected BasketProducts(Parcel in) {
@@ -46,6 +50,7 @@ public class BasketProducts extends RealmObject implements Parcelable {
         productId = in.readInt();
         name = in.readString();
         costSumm = in.readInt();
+        id = in.readInt();
         this.mIngredientsList = new RealmList<>();
         this.mIngredientsList.addAll(in.createTypedArrayList(Ingredients.CREATOR));
     }
@@ -59,6 +64,7 @@ public class BasketProducts extends RealmObject implements Parcelable {
         dest.writeInt(productId);
         dest.writeString(name);
         dest.writeInt(costSumm);
+        dest.writeInt(id);
     }
 
     @Override
@@ -132,5 +138,13 @@ public class BasketProducts extends RealmObject implements Parcelable {
 
     public void setCostSumm(Integer costSumm) {
         this.costSumm = costSumm;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

@@ -3,7 +3,6 @@ package com.example.adm1n.coffeescope.order.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -91,7 +90,6 @@ public class OrderFragment extends BaseFragment implements OrderAdapter.OnOrderC
         mRecyclerView.setAdapter(mAdapter);
         mRadioButtonFast.setOnClickListener(radioButtonClickListener);
         mRadioButtonTime.setOnClickListener(radioButtonClickListener);
-
         timePicker.setEnabled(false);
     }
 

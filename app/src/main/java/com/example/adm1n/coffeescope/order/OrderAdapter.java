@@ -55,6 +55,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
             ingredients += ingredientses.get(j).getName();
         }
         viewHolder.ingredients.setText(ingredients);
+        viewHolder.size.setText(basketProducts.getSizeId());
         viewHolder.count.setText("x" + String.valueOf(basketProducts.getCount()));
         viewHolder.setPosition(i);
     }

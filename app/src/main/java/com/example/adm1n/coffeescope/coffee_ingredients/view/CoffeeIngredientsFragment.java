@@ -139,6 +139,11 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
         super.onActivityCreated(savedInstanceState);
         initRecycler();
         tvActionBarTitle.setText(mProduct.getName());
+        if (mParam != null && mParam.equals(Param.Add)) {
+            tvProductCount.setText(String.valueOf(mBasketProducts.getCount()));
+        } else {
+            tvProductCount.setText(String.valueOf(mBasket.getmBasketProductsList().get(mEditProductPosition).getCount()));
+        }
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -162,7 +167,6 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
         setRxView();
         showSumma();
     }
-
 
     void createTabs() {
         for (int i = 0; i < mProduct.getSizes().size(); i++) {
@@ -202,16 +206,19 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
                         tab.getCustomView().findViewById(R.id.icon).setBackgroundResource(R.drawable.size_s_active);
                         TextView viewByIdS = (TextView) tab.getCustomView().findViewById(R.id.tvCost);
                         mBasketProducts.setCost(Integer.valueOf(viewByIdS.getText().toString()));
+                        mBasketProducts.setSizeId(tab.getContentDescription().toString());
                         break;
                     case "m":
                         tab.getCustomView().findViewById(R.id.icon).setBackgroundResource(R.drawable.size_m_active);
                         TextView viewByIdM = (TextView) tab.getCustomView().findViewById(R.id.tvCost);
                         mBasketProducts.setCost(Integer.valueOf(viewByIdM.getText().toString()));
+                        mBasketProducts.setSizeId(tab.getContentDescription().toString());
                         break;
                     case "l":
                         tab.getCustomView().findViewById(R.id.icon).setBackgroundResource(R.drawable.size_l_active);
                         TextView viewByIdL = (TextView) tab.getCustomView().findViewById(R.id.tvCost);
                         mBasketProducts.setCost(Integer.valueOf(viewByIdL.getText().toString()));
+                        mBasketProducts.setSizeId(tab.getContentDescription().toString());
                         break;
                     default:
                         break;
@@ -243,16 +250,19 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
                         tab.getCustomView().findViewById(R.id.icon).setBackgroundResource(R.drawable.size_s_active);
                         TextView viewByIdS = (TextView) tab.getCustomView().findViewById(R.id.tvCost);
                         mBasketProducts.setCost(Integer.valueOf(viewByIdS.getText().toString()));
+                        mBasketProducts.setSizeId(tab.getContentDescription().toString());
                         break;
                     case "m":
                         tab.getCustomView().findViewById(R.id.icon).setBackgroundResource(R.drawable.size_m_active);
                         TextView viewByIdM = (TextView) tab.getCustomView().findViewById(R.id.tvCost);
                         mBasketProducts.setCost(Integer.valueOf(viewByIdM.getText().toString()));
+                        mBasketProducts.setSizeId(tab.getContentDescription().toString());
                         break;
                     case "l":
                         tab.getCustomView().findViewById(R.id.icon).setBackgroundResource(R.drawable.size_l_active);
                         TextView viewByIdL = (TextView) tab.getCustomView().findViewById(R.id.tvCost);
                         mBasketProducts.setCost(Integer.valueOf(viewByIdL.getText().toString()));
+                        mBasketProducts.setSizeId(tab.getContentDescription().toString());
                         break;
                     default:
                         break;
@@ -284,52 +294,26 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
     public void onIngredientsClick(View v, int position) {
         int realPosition = position - 1;
         Ingredients ingredientClick = mIngredientsList.get(realPosition);
-        RealmList<Ingredients> ingredientsInBasket = mBasket.getmBasketProductsList().get(mEditProductPosition).getmIngredientsList();
         ImageView viewById = (ImageView) v.findViewById(R.id.iv_napitok_add);
 
-
         if (checkIcon(realPosition)) {
-            if (mParam != null && mParam.equals(Param.Add)) {
-                for (int i = 0; i < ingredientsInBasket.size(); i++) {
-                    if (ingredientClick.getId().equals(mBasketProducts.getmIngredientsList().get(i).getId())) {
-                        mBasketProducts.getmIngredientsList().remove(i);
-                    }
-                }
-            } else {
-                for (int i = 0; i < ingredientsInBasket.size(); i++) {
-                    if (ingredientClick.getId().equals(ingredientsInBasket.get(i).getId())) {
-                        mBasket.getmBasketProductsList().get(mEditProductPosition).getmIngredientsList().remove(i);
-                    }
+            for (int i = 0; i < mBasketProducts.getmIngredientsList().size(); i++) {
+                if (ingredientClick.getId().equals(mBasketProducts.getmIngredientsList().get(i).getId())) {
+                    mBasketProducts.getmIngredientsList().remove(i);
                 }
             }
             viewById.setImageResource(R.drawable.add_icon);
         } else {
-            if (mParam != null && mParam.equals(Param.Add)) {
-                mBasketProducts.getmIngredientsList().add(ingredientClick);
-            } else {
-                mBasket.getmBasketProductsList().get(mEditProductPosition).getmIngredientsList().add(ingredientClick);
-            }
+            mBasketProducts.getmIngredientsList().add(ingredientClick);
             viewById.setImageResource(R.drawable.done_icon);
         }
         showSumma();
     }
 
     Boolean checkIcon(int position) {
-        Ingredients ingredientClick = mIngredientsList.get(position);
-
-
-        RealmList<Ingredients> ingredientsInBasketList = mBasketProducts.getmIngredientsList();
-        if (mParam != null && mParam.equals(Param.Add)) {
-            for (Ingredients ingredient : ingredientsInBasketList) {
-                if (ingredient.getId().equals(ingredientClick.getId())) {
-                    return true;
-                }
-            }
-        } else {
-            for (Ingredients ingredient : mBasket.getmBasketProductsList().get(mEditProductPosition).getmIngredientsList()) {
-                if (ingredient.getId().equals(ingredientClick.getId())) {
-                    return true;
-                }
+        for (Ingredients ingredient : mBasketProducts.getmIngredientsList()) {
+            if (ingredient.getId().equals(mIngredientsList.get(position).getId())) {
+                return true;
             }
         }
         return false;
@@ -340,10 +324,16 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
             @Override
             public void accept(Object o) throws Exception {
                 int i = Integer.parseInt(tvProductCount.getText().toString());
-                i++;
-                tvProductCount.setText(String.valueOf(i));
-                mBasketProducts.setCount(i);
-                showSumma();
+                if (i != 9) {
+                    i++;
+                    tvProductCount.setText(String.valueOf(i));
+                    if (mParam != null && mParam.equals(Param.Add)) {
+                        mBasketProducts.setCount(i);
+                    } else {
+                        mBasket.getmBasketProductsList().get(mEditProductPosition).setCount(i);
+                    }
+                    showSumma();
+                }
             }
         });
 
@@ -354,7 +344,11 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
                 if (i != 1) {
                     i--;
                     tvProductCount.setText(String.valueOf(i));
-                    mBasketProducts.setCount(i);
+                    if (mParam != null && mParam.equals(Param.Add)) {
+                        mBasketProducts.setCount(i);
+                    } else {
+                        mBasket.getmBasketProductsList().get(mEditProductPosition).setCount(i);
+                    }
                 } else {
                     Toast.makeText(getContext(), "ТЫ НА ДНЕ", Toast.LENGTH_SHORT).show();
                 }

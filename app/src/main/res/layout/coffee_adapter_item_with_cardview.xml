@@ -30,7 +30,7 @@
 
             <com.example.adm1n.coffeescope.custom_view.CustomTextView
                 android:id="@+id/tv_napitok_cost"
-                style="@style/CoffeeMenuCost"
+                style="@style/CoffeeMenuCostWithDiscount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="14dp"

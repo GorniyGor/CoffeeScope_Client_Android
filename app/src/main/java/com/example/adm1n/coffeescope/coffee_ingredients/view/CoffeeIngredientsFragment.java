@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +33,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import io.reactivex.functions.Consumer;
 import io.realm.RealmList;
 
-public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIngredientsAdapter.OnIngredientsClick, OnBackPressedListener {
+public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIngredientsAdapter.OnIngredientsClick {
 
     public enum Param {Add, Edit}
 
@@ -41,6 +42,7 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
     private RecyclerView recyclerview;
     private ImageView mAddButton;
     private Button mPayButton;
+    private Button mButtonSave;
     private LinearLayoutManager linearLayoutManager;
     private AppBarLayout app_bar_layout_vibor_napitka;
     private Product mProduct;
@@ -51,7 +53,9 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
     private Integer mPlaceId;
     private Integer mProductId;
     private CoffeeIngredientsPresenter presenter;
-
+    private View btnLayout;
+    private LinearLayout llBack;
+    private TextView toolbarBackText;
     private ImageView ivAddProductCount;
     private ImageView ivRemoveProductCount;
     private TextView tvProductCount;
@@ -107,6 +111,18 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
         recyclerview = (RecyclerView) v.findViewById(R.id.rv_coffee_ingredients);
         app_bar_layout_vibor_napitka = (AppBarLayout) v.findViewById(R.id.app_bar_layout_vibor_napitka);
         mTabLayout = ((TabLayout) v.findViewById(R.id.tl_coffee_size));
+        mButtonSave = (Button) v.findViewById(R.id.btn_order_save_button);
+        btnLayout = v.findViewById(R.id.layout_btn_vibor_napitka);
+        toolbarBackText = (TextView) v.findViewById(R.id.tv_action_bar_back_text);
+        llBack = (LinearLayout) v.findViewById(R.id.ll_coffee_ingredients_back);
+        if (mParam != null && mParam.equals(Param.Edit)) {
+            mButtonSave.setVisibility(View.VISIBLE);
+            btnLayout.setVisibility(View.GONE);
+            toolbarBackText.setVisibility(View.GONE);
+        } else {
+            mButtonSave.setVisibility(View.GONE);
+            btnLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     void initRecycler() {
@@ -147,9 +163,8 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //добавляем заказ
                 presenter.saveBasket(mBasket);
-                onBackPressed();
+                getActivity().onBackPressed();
             }
         });
         mPayButton.setOnClickListener(new View.OnClickListener() {
@@ -157,6 +172,17 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
             public void onClick(View v) {
                 presenter.saveBasket(mBasket);
                 Intent intent = new Intent(getContext(), OrderActivity.class);
+                intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra(BaseActivity.PLACE_ID_EXTRA, mPlaceId);
+                startActivity(intent);
+            }
+        });
+        mButtonSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.saveBasket(mBasket);
+                Intent intent = new Intent(getContext(), OrderActivity.class);
+                intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra(BaseActivity.PLACE_ID_EXTRA, mPlaceId);
                 startActivity(intent);
             }
@@ -164,6 +190,12 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
         if (mProduct.getSizes() != null) {
             createTabs();
         }
+        llBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
         setRxView();
         showSumma();
     }
@@ -361,10 +393,5 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
         if (mBasket != null) {
             mPayButton.setText("Оплатить (" + String.valueOf(mBasket.getSumma(mBasket)) + ")");
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        Toast.makeText(getActivity(), "TOASTASTAT", Toast.LENGTH_SHORT).show();
     }
 }

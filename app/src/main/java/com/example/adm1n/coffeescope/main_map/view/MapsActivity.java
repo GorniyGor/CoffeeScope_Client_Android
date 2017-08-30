@@ -210,6 +210,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
+                intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra(BaseActivity.PLACE_ID_EXTRA, mLastPlace.getId());
                 startActivity(intent);
             }

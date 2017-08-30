@@ -37,7 +37,6 @@ public class OrderFragment extends BaseFragment implements OrderAdapter.OnOrderC
     private Button btn_order_summa_count;
 
     private RealmList<BasketProducts> basketProductses;
-    private SwipeRevealLayout swipeLayout;
     private EditText etOrderCommentField;
     private TimePicker timePicker;
     private RadioButton mRadioButtonFast;
@@ -90,6 +89,7 @@ public class OrderFragment extends BaseFragment implements OrderAdapter.OnOrderC
         mRecyclerView.setAdapter(mAdapter);
         mRadioButtonFast.setOnClickListener(radioButtonClickListener);
         mRadioButtonTime.setOnClickListener(radioButtonClickListener);
+        timePicker.setIs24HourView(true);
         timePicker.setEnabled(false);
     }
 
@@ -130,7 +130,6 @@ public class OrderFragment extends BaseFragment implements OrderAdapter.OnOrderC
         tv_order_place_address = (TextView) v.findViewById(R.id.tv_place_address);
         tv_order_place_phone_number = (TextView) v.findViewById(R.id.tv_place_phone_number);
         tv_place_average_time = (TextView) v.findViewById(R.id.tv_place_average_time);
-        swipeLayout = (SwipeRevealLayout) v.findViewById(R.id.swipeLayout);
         etOrderCommentField = (EditText) v.findViewById(R.id.et_order_comment_field);
         mRadioButtonFast = (RadioButton) v.findViewById(R.id.rb_1_order_coffee);
         mRadioButtonTime = (RadioButton) v.findViewById(R.id.rb_2_order_coffee);

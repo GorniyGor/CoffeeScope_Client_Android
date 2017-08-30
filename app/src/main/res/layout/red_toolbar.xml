@@ -10,7 +10,7 @@
         android:background="@color/primaryRed">
 
         <ImageView
-            android:id="@+id/ivActionBarBackButton"
+            android:id="@+id/iv_action_bar_back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/back_button" />

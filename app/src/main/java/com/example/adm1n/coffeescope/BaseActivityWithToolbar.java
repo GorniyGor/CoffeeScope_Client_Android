@@ -22,7 +22,7 @@ public class BaseActivityWithToolbar extends BaseActivity {
         }
         toolbar = (Toolbar) findViewById(R.id.cool_toolbar);
         toolbarTitle = (TextView) toolbar.findViewById(R.id.tv_action_bar_title);
-        toolbarBackButton = (ImageView) toolbar.findViewById(R.id.ivActionBarBackButton);
+        toolbarBackButton = (ImageView) toolbar.findViewById(R.id.iv_action_bar_back_button);
         toolbarBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

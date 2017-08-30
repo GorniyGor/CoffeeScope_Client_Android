@@ -14,7 +14,9 @@ import com.example.adm1n.coffeescope.R;
 
 public class CustomTextView extends android.support.v7.widget.AppCompatTextView {
     private int mColor;
-    private Paint paint;
+    private Paint paintRed;
+    private Paint paintWhite;
+    private float padding = 3f;
 
     public CustomTextView(Context context) {
         super(context);
@@ -36,15 +38,20 @@ public class CustomTextView extends android.support.v7.widget.AppCompatTextView 
         //Color
         mColor = resources.getColor(R.color.red);
 
-        paint = new Paint();
-        paint.setColor(mColor);
-        //Width
-        paint.setStrokeWidth(5);
+        paintRed = new Paint();
+        paintRed.setColor(mColor);
+        paintRed.setStrokeWidth(3);
+
+        paintWhite = new Paint();
+        paintWhite.setColor(resources.getColor(R.color.white));
+        paintWhite.setStrokeWidth(3);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawLine(0, getHeight() / 2, getWidth(), getHeight() / 2, paint);
+        canvas.drawLine(0, (getHeight() / 2) + padding, getWidth(), (getHeight() / 2) + padding, paintWhite);
+        canvas.drawLine(0, getHeight() / 2, getWidth(), getHeight() / 2, paintRed);
+        canvas.drawLine(0, getHeight() / 2 - padding, getWidth(), getHeight() / 2 - padding, paintWhite);
     }
 }

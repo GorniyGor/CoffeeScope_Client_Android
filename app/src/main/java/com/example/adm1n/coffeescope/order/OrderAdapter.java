@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.chauthai.swipereveallayout.SwipeRevealLayout;
+import com.chauthai.swipereveallayout.ViewBinderHelper;
 import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.models.Ingredients;
 import com.example.adm1n.coffeescope.models.basket.BasketProducts;
@@ -26,8 +28,11 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
 
     private List<BasketProducts> productsList = new ArrayList<>();
     private OnOrderClick onClickListener;
+    private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
+    private final String X = "x";
 
     public OrderAdapter(List<BasketProducts> records, OnOrderClick click) {
+        viewBinderHelper.setOpenOnlyOne(true);
         this.onClickListener = click;
         this.productsList = records;
     }
@@ -48,7 +53,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         BasketProducts basketProducts = productsList.get(i);
         viewHolder.name.setText(basketProducts.getName());
-        viewHolder.cost.setText(String.valueOf(basketProducts.getCostSumm()));
+        String textCost = String.valueOf(basketProducts.getCostSumm()) + "\u20BD";
+        viewHolder.cost.setText(textCost);
         String ingredients = "";
         RealmList<Ingredients> ingredientses = basketProducts.getmIngredientsList();
         for (int j = 0; j < ingredientses.size(); j++) {
@@ -56,8 +62,10 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         }
         viewHolder.ingredients.setText(ingredients);
         viewHolder.size.setText(basketProducts.getSizeId());
-        viewHolder.count.setText("x" + String.valueOf(basketProducts.getCount()));
+        String textCount = "x" + String.valueOf(basketProducts.getCount());
+        viewHolder.count.setText(textCount);
         viewHolder.setPosition(i);
+        viewBinderHelper.bind(viewHolder.mSwipeLayout, String.valueOf(basketProducts.getId()));
     }
 
     @Override
@@ -78,6 +86,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         private ImageView iv_order_cancel_del_position;
         private OnOrderClick onClickListener;
         private int mPosition;
+        private SwipeRevealLayout mSwipeLayout;
 
         public ViewHolder(View itemView, OnOrderClick click) {
             super(itemView);
@@ -101,6 +110,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
                 }
             });
             count = (TextView) itemView.findViewById(R.id.tv_order_product_count);
+            mSwipeLayout = (SwipeRevealLayout) itemView.findViewById(R.id.swipeLayout);
         }
 
         void setPosition(int position) {

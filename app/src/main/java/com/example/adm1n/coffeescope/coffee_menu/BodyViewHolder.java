@@ -13,7 +13,7 @@ import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
  * Created by adm1n on 25.07.2017.
  */
 
-public class BodyViewHolder extends ChildViewHolder {
+class BodyViewHolder extends ChildViewHolder {
 
     private CustomTextView tv_napitok_cost;
     private TextView tv_napitok_name;
@@ -23,7 +23,7 @@ public class BodyViewHolder extends ChildViewHolder {
     private Product mProduct;
     private Integer mTheRealCost;
 
-    public BodyViewHolder(View itemView, MenuAdapter.OnProductClick listener) {
+    BodyViewHolder(View itemView, MenuAdapter.OnProductClick listener) {
         super(itemView);
         this.mListener = listener;
         tv_napitok_cost = ((CustomTextView) itemView.findViewById(R.id.tv_napitok_cost));
@@ -32,7 +32,7 @@ public class BodyViewHolder extends ChildViewHolder {
         tv_napitok_cost_with_discount = (TextView) itemView.findViewById(R.id.tv_napitok_cost_with_discount);
     }
 
-    public void onBind(Product product) {
+    void onBind(Product product) {
         mProduct = product;
         Integer lowCostWithDiscount = null;
         tv_napitok_name.setText(product.getName());
@@ -54,11 +54,14 @@ public class BodyViewHolder extends ChildViewHolder {
             }
             if (lowCostWithDiscount != null) {
                 if (!lowCostWithDiscount.equals(mTheRealCost)) {
+                    String textWithoutDiscount = String.valueOf(lowCostWithDiscount) + "\u20BD";
+                    String textWithDiscount = String.valueOf(mTheRealCost) + "\u20BD";
                     tv_napitok_cost_with_discount.setVisibility(View.VISIBLE);
-                    tv_napitok_cost_with_discount.setText(String.valueOf(lowCostWithDiscount));
-                    tv_napitok_cost.setText(String.valueOf(mTheRealCost));
+                    tv_napitok_cost_with_discount.setText(textWithoutDiscount);
+                    tv_napitok_cost.setText(textWithDiscount);
                 } else {
-                    tv_napitok_cost_with_discount.setText(String.valueOf(mTheRealCost));
+                    String text = String.valueOf(mTheRealCost) + "\u20BD";
+                    tv_napitok_cost_with_discount.setText(text);
                     tv_napitok_cost.setVisibility(View.GONE);
                 }
             } else {

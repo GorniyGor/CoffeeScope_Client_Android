@@ -83,4 +83,8 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_centerVertical">true</item>
     </style>
+
+    <style name="CoffeeMenuCostWithDiscount" parent="CoffeeMenuCost">
+        <item name="android:textColor">@color/discount_grey</item>
+    </style>
 </resources>

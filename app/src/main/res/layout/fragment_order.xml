@@ -36,8 +36,8 @@
                 android:id="@+id/rv_order_basket"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_below="@+id/order_layout_place_info" />
+                android:layout_below="@+id/order_layout_place_info"
+                android:layout_marginTop="16dp" />
 
             <View
                 android:id="@+id/line_divider2"
@@ -100,13 +100,14 @@
                     android:id="@+id/rb_1_order_coffee"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Как можно скорее" />
+                    android:checked="true"
+                    android:text="@string/as_soon_as_possible" />
 
                 <RadioButton
                     android:id="@+id/rb_2_order_coffee"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Ко времени" />
+                    android:text="@string/at_time" />
 
             </RadioGroup>
 
@@ -176,7 +177,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/price_frame"
-                android:text="Итого:"
+                android:text="@string/btn_order_result_text"
                 android:textAllCaps="false"
                 android:textSize="22sp" />
 
@@ -200,7 +201,6 @@
                 android:layout_below="@+id/btn_order_pay_product"
                 android:layout_marginTop="10dp"
                 android:background="@android:color/transparent" />
-
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 </RelativeLayout>

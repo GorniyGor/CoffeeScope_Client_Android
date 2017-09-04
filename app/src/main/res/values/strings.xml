@@ -21,4 +21,5 @@
     <string name="login">Войти</string>
     <string name="dont_have_account">У вас ещё нет учётной записи?</string>
     <string name="registration">Зарегистрироваться</string>
+    <string name="authorization">Авторизация</string>
 </resources>

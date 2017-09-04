@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.adm1n.coffeescope.BaseFragment;
 import com.example.adm1n.coffeescope.R;
+import com.example.adm1n.coffeescope.introduction.presenter.IntroductionPresenter;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
 
@@ -27,7 +28,7 @@ import io.reactivex.functions.Function;
  * Created by adm1n on 04.09.2017.
  */
 
-public class IntroductionAuthorizationFragment extends BaseFragment {
+public class IntroductionAuthorizationFragment extends BaseFragment implements IIntroductionAuthorizationView {
 
     private TextInputLayout textInputLayoutEmail;
     private TextInputLayout textInputLayoutPass;
@@ -37,6 +38,8 @@ public class IntroductionAuthorizationFragment extends BaseFragment {
     private Button btnRegistration;
     private Button btnLogin;
     private TextView tvForgotPassword;
+
+    private IntroductionPresenter presenter;
 
     public static IntroductionAuthorizationFragment newInstance() {
 
@@ -50,6 +53,7 @@ public class IntroductionAuthorizationFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        presenter = new IntroductionPresenter(getActivity(), this);
     }
 
     @Nullable
@@ -94,7 +98,7 @@ public class IntroductionAuthorizationFragment extends BaseFragment {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Логинимся", Toast.LENGTH_SHORT).show();
+                presenter.login(etEmail.getText().toString(), etPassword.getText().toString());
             }
         });
 
@@ -146,5 +150,21 @@ public class IntroductionAuthorizationFragment extends BaseFragment {
             }
         });
         btnLogin.setEnabled(false);
+    }
+
+    @Override
+    public void onStop() {
+        presenter.onStop();
+        super.onStop();
+    }
+
+    @Override
+    public void showError(String s) {
+        Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void successLogin() {
+        Toast.makeText(getActivity(), "Успешный LOGIN", Toast.LENGTH_SHORT).show();
     }
 }

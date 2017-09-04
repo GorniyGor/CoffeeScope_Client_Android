@@ -54,7 +54,7 @@
             android:theme="@style/AppThemeRedAndGreen" />
 
         <activity
-            android:name=".introduction.IntroductionActivity"
+            android:name=".introduction.authorization.IntroductionAuthorizationActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/IntroductionTheme">

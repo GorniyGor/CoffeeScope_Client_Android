@@ -19,6 +19,7 @@
     <color name="recycler_background">#66000000</color>
     <color name="disable_button">#8047c68a</color>
     <color name="background_order">#f1f2f2</color>
+    <color name="support_grey">#b9b9b9</color>
 
     <color name="primaryRed">#fd3a3f</color>
     <color name="primaryDarkRed">#ed2126</color>

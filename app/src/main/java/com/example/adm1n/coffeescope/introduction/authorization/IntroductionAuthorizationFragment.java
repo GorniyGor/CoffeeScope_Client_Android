@@ -2,9 +2,12 @@ package com.example.adm1n.coffeescope.introduction.authorization;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.example.adm1n.coffeescope.BaseFragment;
 import com.example.adm1n.coffeescope.R;
@@ -14,6 +17,9 @@ import com.example.adm1n.coffeescope.R;
  */
 
 public class IntroductionAuthorizationFragment extends BaseFragment {
+
+    private TextInputLayout textInputLayoutEmail;
+    private EditText etEmail;
 
     public static IntroductionAuthorizationFragment newInstance() {
 
@@ -33,11 +39,27 @@ public class IntroductionAuthorizationFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_introduction_authorization, null);
+        textInputLayoutEmail = (TextInputLayout) view.findViewById(R.id.textInputLayoutEmail);
+        etEmail = (EditText) view.findViewById(R.id.etEmail);
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        etEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    textInputLayoutEmail.setGravity(Gravity.BOTTOM);
+                } else {
+                    if (etEmail.getText().length() == 0) {
+                        textInputLayoutEmail.setGravity(Gravity.CENTER);
+                    }
+                }
+                textInputLayoutEmail.postInvalidate();
+            }
+        });
     }
 }

@@ -94,4 +94,11 @@
     <style name="CoffeeMenuCostWithDiscount" parent="CoffeeMenuCost">
         <item name="android:textColor">@color/discount_grey</item>
     </style>
+
+    <style name="IntroductionTextInputLayoutStyle">
+        <item name="android:layout_marginEnd">12dp</item>
+        <item name="android:layout_marginStart">12dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:gravity">center</item>
+    </style>
 </resources>

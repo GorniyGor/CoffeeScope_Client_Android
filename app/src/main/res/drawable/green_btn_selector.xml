@@ -29,8 +29,8 @@
                     <gradient
                         android:angle="360"
                         android:useLevel="true"
-                        android:endColor="@color/main_green_alpha"
-                        android:startColor="@color/main_green_alpha" />
+                        android:endColor="@color/disable_green_button"
+                        android:startColor="@color/disable_green_button" />
                     <corners android:radius="60dp" />
 
                     <gradient

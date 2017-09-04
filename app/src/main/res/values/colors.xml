@@ -20,6 +20,9 @@
     <color name="disable_button">#8047c68a</color>
     <color name="background_order">#f1f2f2</color>
     <color name="support_grey">#b9b9b9</color>
+    <color name="account_grey">#9e9e9e</color>
+    <color name="introduction_background">#f1f2f2</color>
+    <color name="disable_green_button">#6647c68a</color>
 
     <color name="primaryRed">#fd3a3f</color>
     <color name="primaryDarkRed">#ed2126</color>

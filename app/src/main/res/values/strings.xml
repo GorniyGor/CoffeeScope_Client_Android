@@ -17,4 +17,8 @@
     <string name="btn_order_result_text">Итого:</string>
     <string name="e_mail_address">Адрес электронной почты</string>
     <string name="password">Пароль</string>
+    <string name="forgot_password">Забыли пароль?</string>
+    <string name="login">Войти</string>
+    <string name="dont_have_account">У вас ещё нет учётной записи?</string>
+    <string name="registration">Зарегистрироваться</string>
 </resources>

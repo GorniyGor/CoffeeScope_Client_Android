@@ -15,4 +15,6 @@
     <string name="as_soon_as_possible">Как можно скорее</string>
     <string name="at_time">Ко времени</string>
     <string name="btn_order_result_text">Итого:</string>
+    <string name="e_mail_address">Адрес электронной почты</string>
+    <string name="password">Пароль</string>
 </resources>

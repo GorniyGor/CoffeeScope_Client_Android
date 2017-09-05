@@ -18,6 +18,7 @@ import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.dialog.OkDialog;
 import com.example.adm1n.coffeescope.introduction.presenter.IntroductionPresenter;
 import com.example.adm1n.coffeescope.introduction.registration.IntroductionRegistrationActivity;
+import com.example.adm1n.coffeescope.profile.ProfileActivity;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
 
@@ -98,6 +99,15 @@ public class IntroductionAuthorizationFragment extends BaseFragment implements I
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), IntroductionRegistrationActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        btnRegistration.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent intent = new Intent(getActivity(), ProfileActivity.class);
+                startActivity(intent);
+                return true;
             }
         });
 

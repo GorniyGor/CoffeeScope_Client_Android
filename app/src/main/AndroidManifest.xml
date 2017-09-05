@@ -70,6 +70,13 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             android:theme="@style/IntroductionTheme" />
+
+        <activity
+            android:name=".profile.ProfileActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/IntroductionTheme" />
     </application>
 
 </manifest>

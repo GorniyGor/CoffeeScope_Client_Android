@@ -10,8 +10,8 @@
 
     <style name="IntroductionTheme" parent="AppTheme.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/primaryRed</item>
+        <item name="colorPrimaryDark">@color/primaryDarkRed</item>
         <item name="colorAccent">@color/support_grey</item>
     </style>
 

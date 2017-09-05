@@ -1,5 +1,6 @@
 package com.example.adm1n.coffeescope.introduction.authorization;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.example.adm1n.coffeescope.BaseFragment;
 import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.introduction.presenter.IntroductionPresenter;
+import com.example.adm1n.coffeescope.introduction.registration.IntroductionRegistrationActivity;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
 
@@ -42,9 +44,7 @@ public class IntroductionAuthorizationFragment extends BaseFragment implements I
     private IntroductionPresenter presenter;
 
     public static IntroductionAuthorizationFragment newInstance() {
-
         Bundle args = new Bundle();
-
         IntroductionAuthorizationFragment fragment = new IntroductionAuthorizationFragment();
         fragment.setArguments(args);
         return fragment;
@@ -91,7 +91,8 @@ public class IntroductionAuthorizationFragment extends BaseFragment implements I
         btnRegistration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Переход на регистрацию", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), IntroductionRegistrationActivity.class);
+                startActivity(intent);
             }
         });
 

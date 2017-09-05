@@ -6,4 +6,5 @@ package com.example.adm1n.coffeescope.introduction.presenter;
 
 public interface IIntroductionPresenter {
     void login(String email, String password);
+    void registration(String lastName, String name, String email, String password, String confirmPassword);
 }

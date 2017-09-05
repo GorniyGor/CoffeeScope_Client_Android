@@ -21,7 +21,6 @@
             style="@style/IntroductionTextInputLayoutStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toStartOf="@+id/ivClearEmail"
             app:errorEnabled="true">
 
             <EditText

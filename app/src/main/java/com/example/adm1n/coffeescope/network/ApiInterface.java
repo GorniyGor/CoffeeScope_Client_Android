@@ -28,4 +28,13 @@ public interface ApiInterface {
     @POST("buyer/login")
     Observable<AuthResponse> authorization(@Field("email") String email,
                                            @Field("password") String password);
+
+    //Регистрация
+    @FormUrlEncoded
+    @POST("buyer/registration")
+    Observable<AuthResponse> registration(@Field("surname") String surName,
+                                          @Field("name") String name,
+                                          @Field("email") String email,
+                                          @Field("password") String password,
+                                          @Field("password_confirmation") String password_confirmation);
 }

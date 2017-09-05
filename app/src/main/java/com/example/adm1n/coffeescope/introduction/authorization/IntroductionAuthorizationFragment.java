@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.adm1n.coffeescope.BaseFragment;
 import com.example.adm1n.coffeescope.R;
+import com.example.adm1n.coffeescope.dialog.OkDialog;
 import com.example.adm1n.coffeescope.introduction.presenter.IntroductionPresenter;
 import com.example.adm1n.coffeescope.introduction.registration.IntroductionRegistrationActivity;
 import com.jakewharton.rxbinding2.widget.RxTextView;
@@ -22,6 +23,8 @@ import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
 
 import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
@@ -40,6 +43,8 @@ public class IntroductionAuthorizationFragment extends BaseFragment implements I
     private Button btnRegistration;
     private Button btnLogin;
     private TextView tvForgotPassword;
+    private TextView tvAuthError;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private IntroductionPresenter presenter;
 
@@ -67,6 +72,7 @@ public class IntroductionAuthorizationFragment extends BaseFragment implements I
         btnLogin = (Button) view.findViewById(R.id.btnAuthorizationLogin);
         btnRegistration = (Button) view.findViewById(R.id.btnAuthorizationRegistration);
         tvForgotPassword = (TextView) view.findViewById(R.id.tvForgotPassword);
+        tvAuthError = (TextView) view.findViewById(R.id.tvAuthError);
         return view;
     }
 
@@ -87,7 +93,6 @@ public class IntroductionAuthorizationFragment extends BaseFragment implements I
                 textInputLayoutEmail.postInvalidate();
             }
         });
-
         btnRegistration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,6 +105,7 @@ public class IntroductionAuthorizationFragment extends BaseFragment implements I
             @Override
             public void onClick(View v) {
                 presenter.login(etEmail.getText().toString(), etPassword.getText().toString());
+                btnLogin.setEnabled(false);
             }
         });
 
@@ -118,11 +124,7 @@ public class IntroductionAuthorizationFragment extends BaseFragment implements I
                     @Override
                     public Boolean apply(@NonNull TextViewAfterTextChangeEvent textViewAfterTextChangeEvent) throws Exception {
                         String text = textViewAfterTextChangeEvent.view().getText().toString();
-                        if (textViewAfterTextChangeEvent.view().length() == 0) {
-                            return false;
-                        } else {
-                            return text.contains("@") && text.contains(".");
-                        }
+                        return textViewAfterTextChangeEvent.view().length() != 0;
                     }
                 });
 
@@ -135,7 +137,7 @@ public class IntroductionAuthorizationFragment extends BaseFragment implements I
                     }
                 });
 
-        Observable.combineLatest(checkEmailField, checkPassField, new BiFunction<Boolean, Boolean, Boolean>() {
+        Disposable mainObs = Observable.combineLatest(checkEmailField, checkPassField, new BiFunction<Boolean, Boolean, Boolean>() {
             @Override
             public Boolean apply(@NonNull Boolean aBoolean, @NonNull Boolean aBoolean2) throws Exception {
                 return aBoolean && aBoolean2;
@@ -150,18 +152,22 @@ public class IntroductionAuthorizationFragment extends BaseFragment implements I
                 }
             }
         });
+        compositeDisposable.add(mainObs);
         btnLogin.setEnabled(false);
     }
 
     @Override
-    public void onStop() {
+    public void onDestroy() {
         presenter.onStop();
-        super.onStop();
+        compositeDisposable.clear();
+        super.onDestroy();
     }
 
     @Override
     public void showError(String s) {
-        Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+        OkDialog dialog = new OkDialog(s);
+        dialog.show(getFragmentManager(), "AuthError");
+        btnLogin.setEnabled(true);
     }
 
     @Override

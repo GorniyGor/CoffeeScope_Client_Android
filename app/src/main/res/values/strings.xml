@@ -26,4 +26,7 @@
     <string name="last_name">Фамилия</string>
     <string name="name">Имя</string>
     <string name="registration_policy">Регистрируясь, я соглашаюсь с правилами политики конфиденциальности</string>
+    <string name="error_1">Ошибка ввода!</string>
+    <string name="cancel">Отмена</string>
+    <string name="let">Давайте</string>
 </resources>

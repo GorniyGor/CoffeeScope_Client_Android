@@ -5,6 +5,7 @@ import com.example.adm1n.coffeescope.network.responses.PlaceResponse;
 import com.example.adm1n.coffeescope.network.responses.PlacesResponse;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -26,13 +27,13 @@ public interface ApiInterface {
     //Авторизация
     @FormUrlEncoded
     @POST("buyer/login")
-    Observable<AuthResponse> authorization(@Field("email") String email,
-                                           @Field("password") String password);
+    Single<AuthResponse> authorization(@Field("email") String email,
+                                       @Field("password") String password);
 
     //Регистрация
     @FormUrlEncoded
     @POST("buyer/registration")
-    Observable<AuthResponse> registration(@Field("surname") String surName,
+    Single<AuthResponse> registration(@Field("surname") String surName,
                                           @Field("name") String name,
                                           @Field("email") String email,
                                           @Field("password") String password,

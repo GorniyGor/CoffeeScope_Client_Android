@@ -8,7 +8,6 @@ import com.example.adm1n.coffeescope.introduction.registration.IIntroductionRegi
 import com.example.adm1n.coffeescope.network.ApiInterface;
 import com.example.adm1n.coffeescope.network.responses.AuthResponse;
 
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.CompositeDisposable;
@@ -39,7 +38,7 @@ public class IntroductionPresenter implements IIntroductionPresenter {
 
     @Override
     public void login(String email, String password) {
-        compositeDisposable.add(apiInterface.authorization(email, password)
+        apiInterface.authorization(email, password)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<AuthResponse>() {
@@ -48,7 +47,7 @@ public class IntroductionPresenter implements IIntroductionPresenter {
                         if (authResponse.getStatus().equals("success")) {
                             authorizationView.successLogin();
                         } else {
-                            authorizationView.showError(authResponse.getStatus());
+                            authorizationView.showError(authResponse.getFirst_error());
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -56,12 +55,12 @@ public class IntroductionPresenter implements IIntroductionPresenter {
                     public void accept(@NonNull Throwable throwable) throws Exception {
                         authorizationView.showError(throwable.getMessage());
                     }
-                }));
+                });
     }
 
     @Override
     public void registration(String lastName, String name, String email, String password, String confirmPassword) {
-        compositeDisposable.add(apiInterface.registration(lastName, name, email, password, confirmPassword)
+        apiInterface.registration(lastName, name, email, password, confirmPassword)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<AuthResponse>() {
@@ -70,7 +69,7 @@ public class IntroductionPresenter implements IIntroductionPresenter {
                         if (authResponse.getStatus().equals("success")) {
                             registrationView.onRegistrationFinish();
                         } else {
-                            registrationView.showError(authResponse.getStatus());
+                            registrationView.showError(authResponse.getFirst_error());
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -78,7 +77,7 @@ public class IntroductionPresenter implements IIntroductionPresenter {
                     public void accept(@NonNull Throwable throwable) throws Exception {
                         registrationView.showError(throwable.getMessage());
                     }
-                }));
+                });
     }
 
     public void onStop() {

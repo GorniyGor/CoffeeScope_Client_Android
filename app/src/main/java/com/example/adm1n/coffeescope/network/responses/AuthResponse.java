@@ -8,11 +8,13 @@ import java.util.List;
 
 public class AuthResponse {
     private String status;
+    private String first_error;
     private String accessToken;
     private String tokenType;
     private String who;
     private Integer expiresIn;
     private List<Object> error = null;
+//    private Errors errors;
 
     public String getStatus() {
         return status;
@@ -60,5 +62,13 @@ public class AuthResponse {
 
     public void setError(List<Object> error) {
         this.error = error;
+    }
+
+    public String getFirst_error() {
+        return first_error;
+    }
+
+    public void setFirst_error(String first_error) {
+        this.first_error = first_error;
     }
 }

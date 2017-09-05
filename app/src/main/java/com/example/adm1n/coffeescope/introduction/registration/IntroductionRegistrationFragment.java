@@ -14,12 +14,15 @@ import android.widget.Toast;
 
 import com.example.adm1n.coffeescope.BaseFragment;
 import com.example.adm1n.coffeescope.R;
+import com.example.adm1n.coffeescope.dialog.OkDialog;
 import com.example.adm1n.coffeescope.introduction.presenter.IntroductionPresenter;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
 
 import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Function5;
@@ -30,6 +33,7 @@ import io.reactivex.functions.Function5;
 
 public class IntroductionRegistrationFragment extends BaseFragment implements IIntroductionRegistrationView {
     private IntroductionPresenter presenter;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private TextInputLayout textInputLayoutName;
     private EditText etName;
@@ -94,6 +98,7 @@ public class IntroductionRegistrationFragment extends BaseFragment implements II
                         etEmail.getText().toString(),
                         etPassword.getText().toString(),
                         etConfirmPassword.getText().toString());
+                btnRegistration.setEnabled(false);
             }
         });
         tvPolicy.setOnClickListener(new View.OnClickListener() {
@@ -199,7 +204,7 @@ public class IntroductionRegistrationFragment extends BaseFragment implements II
                     }
                 });
 
-        Observable.combineLatest(
+        Disposable authObs = Observable.combineLatest(
                 checkEmailField,
                 checkNameField,
                 checkLastNameField,
@@ -220,18 +225,22 @@ public class IntroductionRegistrationFragment extends BaseFragment implements II
                 }
             }
         });
+        compositeDisposable.add(authObs);
         btnRegistration.setEnabled(false);
     }
 
     @Override
-    public void onStop() {
+    public void onDestroy() {
         presenter.onStop();
-        super.onStop();
+        compositeDisposable.dispose();
+        super.onDestroy();
     }
 
     @Override
     public void showError(String s) {
-        Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+        OkDialog dialog = new OkDialog(s);
+        dialog.show(getFragmentManager(), "RegError");
+        btnRegistration.setEnabled(true);
     }
 
     @Override

@@ -20,7 +20,6 @@ import io.reactivex.schedulers.Schedulers;
 
 public class IntroductionPresenter implements IIntroductionPresenter {
 
-    private ApiInterface apiInterface = App.getApiInterface();
     private Context mContext;
     private IIntroductionAuthorizationView authorizationView;
     private IIntroductionRegistrationView registrationView;
@@ -38,7 +37,7 @@ public class IntroductionPresenter implements IIntroductionPresenter {
 
     @Override
     public void login(String email, String password) {
-        apiInterface.authorization(email, password)
+        App.getApiInterface().authorization(email, password)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<AuthResponse>() {
@@ -60,7 +59,7 @@ public class IntroductionPresenter implements IIntroductionPresenter {
 
     @Override
     public void registration(String lastName, String name, String email, String password, String confirmPassword) {
-        apiInterface.registration(lastName, name, email, password, confirmPassword)
+        App.getApiInterface().registration(lastName, name, email, password, confirmPassword)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<AuthResponse>() {

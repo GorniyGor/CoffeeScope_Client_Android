@@ -6,6 +6,7 @@ import com.example.adm1n.coffeescope.network.ApiInterface;
 import com.example.adm1n.coffeescope.network.responses.PlaceResponse;
 import com.example.adm1n.coffeescope.network.responses.PlacesResponse;
 
+import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
@@ -29,6 +30,7 @@ public class MainPlacesModel implements IMainPlacesModel {
     private Realm mRealm = null;
     private Basket mBasket;
     private Integer mBasketId;
+    private ArrayList sdf;
 
     public Observable<PlacesResponse> getPlaces() {
         return apiInterface.getPlaces()
@@ -38,6 +40,7 @@ public class MainPlacesModel implements IMainPlacesModel {
 
     @Override
     public Observable<PlaceResponse> getPlace(String id) {
+        sdf = new ArrayList();
         return apiInterface.getPlace(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

@@ -28,6 +28,7 @@ import com.example.adm1n.coffeescope.coffee_ingredients.view.CoffeeIngredientsAc
 import com.example.adm1n.coffeescope.coffee_ingredients.view.CoffeeIngredientsFragment;
 import com.example.adm1n.coffeescope.coffee_menu.MenuAdapter;
 import com.example.adm1n.coffeescope.coffee_menu.custom_model.CoffeeMenu;
+import com.example.adm1n.coffeescope.introduction.authorization.IntroductionAuthorizationActivity;
 import com.example.adm1n.coffeescope.main_map.presenter.MainPresenter;
 import com.example.adm1n.coffeescope.models.Hours;
 import com.example.adm1n.coffeescope.models.Place;
@@ -138,7 +139,8 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
         mButtonMyProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MapsActivity.this, "On Profile Click", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), IntroductionAuthorizationActivity.class);
+                startActivity(intent);
             }
         });
         Button mButtonSearch = (Button) findViewById(R.id.btn_search);
@@ -437,6 +439,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
         Date placeOpenTime = null;
         Date placeCloseTime = null;
         Date currentDate = new Date();
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
 
         // 1) получаем текущую дату

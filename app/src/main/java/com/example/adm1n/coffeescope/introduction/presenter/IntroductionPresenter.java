@@ -5,7 +5,6 @@ import android.content.Context;
 import com.example.adm1n.coffeescope.App;
 import com.example.adm1n.coffeescope.introduction.authorization.IIntroductionAuthorizationView;
 import com.example.adm1n.coffeescope.introduction.registration.IIntroductionRegistrationView;
-import com.example.adm1n.coffeescope.network.ApiInterface;
 import com.example.adm1n.coffeescope.network.responses.AuthResponse;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;

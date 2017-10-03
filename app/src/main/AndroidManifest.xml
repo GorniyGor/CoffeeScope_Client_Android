@@ -38,7 +38,10 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.MainMapStyle">
-
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <activity
@@ -58,25 +61,22 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/IntroductionTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
 
         <activity
             android:name=".introduction.registration.IntroductionRegistrationActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/IntroductionTheme" />
+            android:theme="@style/IntroductionTheme"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".profile.ProfileActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/IntroductionTheme" />
+            android:theme="@style/IntroductionTheme"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

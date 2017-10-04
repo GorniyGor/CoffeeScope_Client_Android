@@ -9,7 +9,7 @@
     android:paddingTop="24dp">
 
     <TextView
-        android:id="@+id/tvIntroductionDialogBody"
+        android:id="@+id/tvDialogBody"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="14dp"

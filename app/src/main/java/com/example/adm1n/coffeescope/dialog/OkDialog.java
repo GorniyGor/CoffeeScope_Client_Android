@@ -40,7 +40,7 @@ public class OkDialog extends DialogFragment {
                 getDialog().dismiss();
             }
         });
-        tvMessage = (TextView) view.findViewById(R.id.tvIntroductionDialogBody);
+        tvMessage = (TextView) view.findViewById(R.id.tvDialogBody);
         tvMessage.setText(message);
         return view;
     }

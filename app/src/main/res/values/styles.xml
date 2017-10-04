@@ -31,10 +31,10 @@
         <item name="colorPrimaryDark">@color/primaryDarkRed</item>
         <item name="colorAccent">@color/main_green</item>
         <item name="windowActionBar">false</item>
+        <item name="colorControlNormal">@color/main_green</item>
         <item name="windowNoTitle">true</item>
         <item name="android:statusBarColor">@color/primaryDarkRed</item>
     </style>
-
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -44,7 +44,6 @@
     <style name="AppTheme.MainMapStyle" parent="AppTheme.NoActionBar">
         <item name="android:windowTranslucentStatus">true</item>
     </style>
-
 
     <!--Превью карточка-->
     <style name="PreviewCard">

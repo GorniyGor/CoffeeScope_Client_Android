@@ -1,17 +1,13 @@
 package com.example.adm1n.coffeescope.custom_view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +17,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.adm1n.coffeescope.BaseActivity;
 import com.example.adm1n.coffeescope.R;
-import com.example.adm1n.coffeescope.order.view.OrderActivity;
+import com.example.adm1n.coffeescope.coffee_menu.MenuAdapter;
+import com.example.adm1n.coffeescope.coffee_menu.custom_model.CoffeeMenu;
 import com.example.adm1n.coffeescope.utils.SpaceItemDecoration;
 
-import static android.content.Context.WINDOW_SERVICE;
+import java.util.List;
 
 public class CoffeeCardView extends FrameLayout {
     public AppBarLayout peakView;
@@ -41,6 +37,8 @@ public class CoffeeCardView extends FrameLayout {
     public ImageView ivPreviewBottomStatus;
     public RecyclerView recyclerview;
     public Button mBtnPayCoffee;
+
+    private MenuAdapter menuAdapter;
 
     public CoffeeCardView(@NonNull Context context) {
         super(context);
@@ -103,6 +101,19 @@ public class CoffeeCardView extends FrameLayout {
                 }
             }
         });
+    }
 
+    public void setAdapter(List<CoffeeMenu> menu, MenuAdapter.OnProductClick listener) {
+        menuAdapter = new MenuAdapter(menu, listener);
+        recyclerview.getRecycledViewPool().clear();
+        recyclerview.setAdapter(menuAdapter);
+        for (int i = menuAdapter.getGroups().size() - 1; i >= 0; i--) {
+            if (menuAdapter.isGroupExpanded(i)) {
+                return;
+            }
+            menuAdapter.toggleGroup(i);
+        }
+        menuAdapter.notifyDataSetChanged();
+//        initBasket();
     }
 }

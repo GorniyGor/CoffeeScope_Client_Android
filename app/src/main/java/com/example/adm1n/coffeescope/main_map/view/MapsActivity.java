@@ -280,20 +280,17 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
 
     public void showPeakView(Place place) {
         mLastPlace = place;
-        tv_coffee_name = (TextView) findViewById(R.id.tv_preview_card_product_name);
-        ivPreviewBottomStatus = (ImageView) findViewById(R.id.ivPreviewBottomStatus);
-        tv_coffee_address = (TextView) findViewById(R.id.tv_preview_card_place_address);
-        tv_coffee_phone_number = (TextView) findViewById(R.id.tv_preview_card_place_phone_number);
-        tv_preview_card_place_average_time = (TextView) findViewById(R.id.tv_preview_card_place_average_time);
-        tvPreviewBottomRangeCount = (TextView) findViewById(R.id.tv_preview_card_place_range_count);
-        tvPreviewBottomJobTime = (TextView) findViewById(R.id.tvPreviewBottomJobTime);
-        tvPreviewBottomRateCount = (TextView) findViewById(R.id.tv_preview_card_place_rate_count);
+        tv_coffee_name = coffeeCardView.tv_coffee_name;
+        ivPreviewBottomStatus = coffeeCardView.ivPreviewBottomStatus;
+        tv_coffee_address = coffeeCardView.tv_coffee_address;
+        tv_coffee_phone_number = coffeeCardView.tv_coffee_phone_number;
+        tv_preview_card_place_average_time = coffeeCardView.tv_preview_card_place_average_time;
+        tvPreviewBottomRangeCount = coffeeCardView.tvPreviewBottomRangeCount;
+        tvPreviewBottomJobTime = coffeeCardView.tvPreviewBottomJobTime;
+        tvPreviewBottomRateCount = coffeeCardView.tvPreviewBottomRateCount;
 
-        tv_coffee_name.setText(mLastPlace.getName());
-        tv_coffee_address.setText(mLastPlace.getAddress());
-        tv_coffee_phone_number.setText(mLastPlace.getPhone());
-        tv_preview_card_place_average_time.setText(mLastPlace.getAverage_time() + " мин");
-        tvPreviewBottomRateCount.setText(String.valueOf(mLastPlace.getRating()));
+        coffeeCardView.setPlace(mLastPlace);
+
         if (mMap.getMyLocation() != null) {
             int distance = MapsUtils.calculationDistance(new LatLng(mMap.getMyLocation().getLatitude(), mMap.getMyLocation().getLongitude())
                     , new LatLng(mLastPlace.getCoodrinates().getLatitude(),

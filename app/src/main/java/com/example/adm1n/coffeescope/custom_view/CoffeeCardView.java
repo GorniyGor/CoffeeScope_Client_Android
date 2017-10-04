@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.coffee_menu.MenuAdapter;
 import com.example.adm1n.coffeescope.coffee_menu.custom_model.CoffeeMenu;
+import com.example.adm1n.coffeescope.models.Place;
 import com.example.adm1n.coffeescope.utils.SpaceItemDecoration;
 
 import java.util.List;
@@ -41,13 +42,11 @@ public class CoffeeCardView extends FrameLayout {
     private MenuAdapter menuAdapter;
 
     public CoffeeCardView(@NonNull Context context) {
-        super(context);
-        initView();
+        this(context, null);
     }
 
     public CoffeeCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        initView();
+        this(context, attrs, 0);
     }
 
     public CoffeeCardView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
@@ -115,5 +114,13 @@ public class CoffeeCardView extends FrameLayout {
         }
         menuAdapter.notifyDataSetChanged();
 //        initBasket();
+    }
+
+    public void setPlace(Place place) {
+        tv_coffee_name.setText(place.getName());
+        tv_coffee_address.setText(place.getAddress());
+        tv_coffee_phone_number.setText(place.getPhone());
+        tv_preview_card_place_average_time.setText(place.getAverage_time() + " мин");
+        tvPreviewBottomRateCount.setText(String.valueOf(place.getRating()));
     }
 }

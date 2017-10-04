@@ -28,6 +28,7 @@ import com.example.adm1n.coffeescope.coffee_ingredients.view.CoffeeIngredientsAc
 import com.example.adm1n.coffeescope.coffee_ingredients.view.CoffeeIngredientsFragment;
 import com.example.adm1n.coffeescope.coffee_menu.MenuAdapter;
 import com.example.adm1n.coffeescope.coffee_menu.custom_model.CoffeeMenu;
+import com.example.adm1n.coffeescope.custom_view.CoffeeCardView;
 import com.example.adm1n.coffeescope.introduction.authorization.IntroductionAuthorizationActivity;
 import com.example.adm1n.coffeescope.main_map.presenter.MainPresenter;
 import com.example.adm1n.coffeescope.models.Hours;
@@ -97,10 +98,15 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
     private Observable<Basket> mBasketOBS;
     private CompositeDisposable disposable = new CompositeDisposable();
 
+    private CoffeeCardView coffeeCardView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contain_main);
+
+        coffeeCardView = (CoffeeCardView) findViewById(R.id.coffee_card_view);
+
         presenter = new MainPresenter(getApplicationContext(), this);
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         //init map control button
@@ -134,7 +140,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
                 }
             }
         });
-        iv_preview_card_top_arrow = (ImageView) findViewById(R.id.iv_preview_card_top_arrow);
+        iv_preview_card_top_arrow = coffeeCardView.iv_preview_card_top_arrow;
         Button mButtonMyProfile = (Button) findViewById(R.id.btn_profile);
         mButtonMyProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,7 +167,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
                 .findFragmentById(R.id.map);
 
         //initBottomSheet
-        peakView = (AppBarLayout) findViewById(R.id.peak_view);
+        peakView = coffeeCardView.peakView;
 
         Display display = ((android.view.WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
         FrameLayout FlBottomSheetBehavior = (FrameLayout) findViewById(R.id.fl_sheet_content);
@@ -190,24 +196,9 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
             }
         });
         //initRecycler
-        recyclerview = (RecyclerView) findViewById(R.id.rv_coffee_menu);
-        linearLayoutManager = new LinearLayoutManager(this);
-        recyclerview.setLayoutManager(linearLayoutManager);
-        SpaceItemDecoration decorator = new SpaceItemDecoration(20, true, true);
-        recyclerview.addItemDecoration(decorator);
-        recyclerview.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    int firstVisiblePosition = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
-                    if (firstVisiblePosition == 0) {
-                        peakView.setExpanded(true, true);
-                    }
-                }
-            }
-        });
-        mBtnPayCoffee = (Button) findViewById(R.id.btn_coffee_menu_pay);
+        recyclerview = coffeeCardView.recyclerview;
+
+        mBtnPayCoffee = coffeeCardView.mBtnPayCoffee;
         mBtnPayCoffee.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

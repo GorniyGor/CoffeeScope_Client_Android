@@ -55,12 +55,18 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
         viewHolder.name.setText(basketProducts.getName());
         String textCost = String.valueOf(basketProducts.getCostSumm()) + "\u20BD";
         viewHolder.cost.setText(textCost);
-        String ingredients = "";
-        RealmList<Ingredients> ingredientses = basketProducts.getmIngredientsList();
-        for (int j = 0; j < ingredientses.size(); j++) {
-            ingredients += ingredientses.get(j).getName();
+        RealmList<Ingredients> ingredientsList = basketProducts.getmIngredientsList();
+        if (ingredientsList != null && ingredientsList.size() != 0) {
+            String ingredients = "+ ";
+            for (int j = 0; j < ingredientsList.size(); j++) {
+                if (j == ingredientsList.size() - 1) {
+                    ingredients += ingredientsList.get(j).getName();
+                } else {
+                    ingredients += ingredientsList.get(j).getName() + ", ";
+                }
+            }
+            viewHolder.ingredients.setText(ingredients);
         }
-        viewHolder.ingredients.setText(ingredients);
         viewHolder.size.setText(basketProducts.getSizeId());
         String textCount = "x" + String.valueOf(basketProducts.getCount());
         viewHolder.count.setText(textCount);

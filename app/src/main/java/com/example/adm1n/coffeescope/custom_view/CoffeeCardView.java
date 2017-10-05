@@ -2,6 +2,7 @@ package com.example.adm1n.coffeescope.custom_view;
 
 import android.content.Context;
 import android.support.annotation.AttrRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -135,7 +136,7 @@ public class CoffeeCardView extends FrameLayout {
         initDate(place);
     }
 
-    void initDate(Place place) {
+    private void initDate(Place place) {
         Date current = null;
         Date placeOpenTime = null;
         Date placeCloseTime = null;
@@ -160,23 +161,27 @@ public class CoffeeCardView extends FrameLayout {
             e.printStackTrace();
         }
         //проверяю условия
+        String time = "";
+        @DrawableRes int iconId;
         if (placeCloseTime != null && placeOpenTime != null) {
             if (current.after(placeOpenTime) && current.before(placeCloseTime)) {
-                ivPreviewBottomStatus.setImageResource(R.drawable.open_icon);
-                tvPreviewBottomJobTime.setText(getContext().getString(R.string.until, place.getHours().get(currentDay).getClose()));
+                iconId = R.drawable.open_icon;
+                time = getContext().getString(R.string.until, place.getHours().get(currentDay).getClose());
             } else {
+                iconId = R.drawable.close_icon;
                 if (current.before(placeOpenTime)) {
-                    tvPreviewBottomJobTime.setText(getContext().getString(R.string.until, place.getHours().get(currentDay).getOpen()));
+                    time = getContext().getString(R.string.until, place.getHours().get(currentDay).getOpen());
                 } else if (current.after(placeCloseTime)) {
                     //достать след день
                     if (place.getHours().size() != currentDay) {
-                        tvPreviewBottomJobTime.setText(getContext().getString(R.string.until, place.getHours().get(currentDay + 1).getOpen()));
+                        time = getContext().getString(R.string.until, place.getHours().get(currentDay + 1).getOpen());
                     } else {
-                        tvPreviewBottomJobTime.setText(getContext().getString(R.string.until, place.getHours().get(0).getOpen()));
+                        time = getContext().getString(R.string.until, place.getHours().get(0).getOpen());
                     }
                 }
-                ivPreviewBottomStatus.setImageResource(R.drawable.close_icon);
             }
+            tvPreviewBottomJobTime.setText(time);
+            ivPreviewBottomStatus.setImageResource(iconId);
         }
     }
 

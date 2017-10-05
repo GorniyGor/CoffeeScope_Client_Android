@@ -159,7 +159,6 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
                 }
             }
         });
-        //initRecycler
 
         Button mBtnPayCoffee = coffeeCardView.mBtnPayCoffee;
         mBtnPayCoffee.setOnClickListener(new View.OnClickListener() {
@@ -199,9 +198,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
             @Override
             public boolean onMarkerClick(Marker marker) {
                 presenter.getPlace(marker.getSnippet());
-                coffeeCardView.peakView.requestLayout();
-                View previewTopElements = findViewById(R.id.preview_top_elements);
-                mBottomSheetBehavior.setPeekHeight(previewTopElements.getHeight() + coffeeCardView.peakView.getHeight());
+                mBottomSheetBehavior.setPeekHeight(coffeeCardView.getHeaderHeight());
                 showPeakView(presenter.getPlaceFromRealm(Integer.valueOf(marker.getSnippet())));
                 if (mBottomSheetBehavior != null) {
                     switch (mBottomSheetBehavior.getState()) {

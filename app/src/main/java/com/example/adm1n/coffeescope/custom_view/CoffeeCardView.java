@@ -52,6 +52,7 @@ public class CoffeeCardView extends FrameLayout {
     public ImageView ivPreviewBottomStatus;
     public RecyclerView recyclerview;
     public Button mBtnPayCoffee;
+    public View previewTopElements;
 
     private MenuAdapter menuAdapter;
 
@@ -92,9 +93,9 @@ public class CoffeeCardView extends FrameLayout {
         tv_preview_card_place_average_time = (TextView) findViewById(R.id.tv_preview_card_place_average_time);
         iv_preview_card_top_arrow = (ImageView) findViewById(R.id.iv_preview_card_top_arrow);
         ivPreviewBottomStatus = (ImageView) findViewById(R.id.ivPreviewBottomStatus);
-        peakView = (AppBarLayout) findViewById(R.id.peak_view);
         recyclerview = (RecyclerView) findViewById(R.id.rv_coffee_menu);
         mBtnPayCoffee = (Button) findViewById(R.id.btn_coffee_menu_pay);
+        previewTopElements = findViewById(R.id.preview_top_elements);
     }
 
     private void init() {
@@ -211,6 +212,10 @@ public class CoffeeCardView extends FrameLayout {
         } else {
             Toast.makeText(getContext(), "Ошибка RX", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public int getHeaderHeight() {
+        return previewTopElements.getHeight() + peakView.getHeight();
     }
 
 }

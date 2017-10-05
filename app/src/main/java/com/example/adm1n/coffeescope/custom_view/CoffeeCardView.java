@@ -16,7 +16,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.coffee_menu.MenuAdapter;
@@ -32,12 +31,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 public class CoffeeCardView extends FrameLayout {
     public AppBarLayout peakView;
@@ -186,31 +179,13 @@ public class CoffeeCardView extends FrameLayout {
         }
     }
 
-    public void initBasket(Observable<Basket> mBasketOBS, CompositeDisposable disposable) {
-        if (mBasketOBS != null) {
-            disposable.add(mBasketOBS
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<Basket>() {
-                        @Override
-                        public void accept(Basket basket) throws Exception {
-                            if (basket != null) {
-                                mBtnPayCoffee.setText(String.valueOf(basket.getmBasketProductsList().size())
-                                        + " Позиции " + basket.getSumma(basket));
-                                if (basket.getmBasketProductsList().size() == 0) {
-                                    mBtnPayCoffee.setEnabled(false);
-                                } else {
-                                    mBtnPayCoffee.setEnabled(true);
-                                }
-                                mBtnPayCoffee.setText("В заказе " + String.valueOf(basket.getmBasketProductsList().size())
-                                        + " напитка (" + basket.getSumma(basket) + "Р)");
-                            } else {
-                                mBtnPayCoffee.setEnabled(false);
-                            }
-                        }
-                    }));
+    public void updateBaster(Basket basket) {
+        if (basket != null) {
+            mBtnPayCoffee.setEnabled(basket.getmBasketProductsList().size() > 0);
+            mBtnPayCoffee.setText("В заказе " + String.valueOf(basket.getmBasketProductsList().size())
+                    + " напитка (" + basket.getSumma(basket) + "\u20BD)");
         } else {
-            Toast.makeText(getContext(), "Ошибка RX", Toast.LENGTH_SHORT).show();
+            mBtnPayCoffee.setEnabled(false);
         }
     }
 

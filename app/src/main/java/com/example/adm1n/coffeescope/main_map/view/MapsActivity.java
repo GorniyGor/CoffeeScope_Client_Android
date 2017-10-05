@@ -29,6 +29,7 @@ import com.example.adm1n.coffeescope.introduction.authorization.IntroductionAuth
 import com.example.adm1n.coffeescope.main_map.presenter.MainPresenter;
 import com.example.adm1n.coffeescope.models.Place;
 import com.example.adm1n.coffeescope.models.Product;
+import com.example.adm1n.coffeescope.models.basket.Basket;
 import com.example.adm1n.coffeescope.order.view.OrderActivity;
 import com.example.adm1n.coffeescope.utils.MapsUtils;
 import com.example.adm1n.coffeescope.utils.PermissionUtils;
@@ -43,7 +44,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapReadyCallback, MenuAdapter.OnProductClick, IMapActivity {
 
@@ -182,7 +187,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
 //            expandGroup(i);
 //        }
 //        menuAdapter.notifyDataSetChanged();
-        coffeeCardView.initBasket(presenter.getBasket(mLastPlace.getId()), disposable);
+        initBasket();
     }
 
     @Override
@@ -252,7 +257,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
         } else {
             tvPreviewBottomRangeCount.setText("fail");
         }
-        coffeeCardView.initBasket(presenter.getBasket(mLastPlace.getId()), disposable);
+        initBasket();
     }
 
     private void enableMyLocation() {
@@ -364,12 +369,29 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
     protected void onResume() {
         super.onResume();
         if (mLastPlace != null) {
-            coffeeCardView.initBasket(presenter.getBasket(mLastPlace.getId()), disposable);
+            initBasket();
         }
     }
 
     @Override
     public void setMenuAdapter(Place place) {
         setAdapter(place);
+    }
+
+    void initBasket() {
+        Observable<Basket> mBasketOBS = presenter.getBasket(mLastPlace.getId());
+        if (mBasketOBS != null) {
+            disposable.add(mBasketOBS
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<Basket>() {
+                        @Override
+                        public void accept(Basket basket) throws Exception {
+                            coffeeCardView.updateBaster(basket);
+                        }
+                    }));
+        } else {
+            Toast.makeText(this, "Ошибка RX", Toast.LENGTH_SHORT).show();
+        }
     }
 }

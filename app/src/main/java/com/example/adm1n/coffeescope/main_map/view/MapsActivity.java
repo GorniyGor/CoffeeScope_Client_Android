@@ -161,8 +161,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
             }
         });
 
-        Button mBtnPayCoffee = coffeeCardView.mBtnPayCoffee;
-        mBtnPayCoffee.setOnClickListener(new View.OnClickListener() {
+        coffeeCardView.setOnOrderButtonClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), OrderActivity.class);

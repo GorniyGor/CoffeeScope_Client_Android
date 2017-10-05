@@ -212,4 +212,7 @@ public class CoffeeCardView extends FrameLayout {
         iv_preview_card_top_arrow.animate().rotation(angle).setDuration(300).start();
     }
 
+    public void setOnOrderButtonClickListener(View.OnClickListener listener) {
+        mBtnPayCoffee.setOnClickListener(listener);
+    }
 }

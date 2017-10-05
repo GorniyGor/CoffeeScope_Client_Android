@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.adm1n.coffeescope.BaseActivity;
@@ -245,17 +244,17 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
 
     public void showPeakView(Place place) {
         mLastPlace = place;
-        TextView tvPreviewBottomRangeCount = coffeeCardView.tvPreviewBottomRangeCount;
 
         coffeeCardView.setPlace(mLastPlace);
 
         if (mMap.getMyLocation() != null) {
-            int distance = MapsUtils.calculationDistance(new LatLng(mMap.getMyLocation().getLatitude(), mMap.getMyLocation().getLongitude())
-                    , new LatLng(mLastPlace.getCoodrinates().getLatitude(),
-                            mLastPlace.getCoodrinates().getLongitude()));
-            tvPreviewBottomRangeCount.setText(MapsUtils.castDistance(distance));
+            int distance = MapsUtils.calculationDistance(
+                    new LatLng(mMap.getMyLocation().getLatitude(), mMap.getMyLocation().getLongitude()),
+                    new LatLng(mLastPlace.getCoodrinates().getLatitude(), mLastPlace.getCoodrinates().getLongitude())
+            );
+            coffeeCardView.setDistance(MapsUtils.castDistance(distance));
         } else {
-            tvPreviewBottomRangeCount.setText("fail");
+            coffeeCardView.setDistance("fail");
         }
         initBasket();
     }

@@ -200,4 +200,8 @@ public class CoffeeCardView extends FrameLayout {
         return previewTopElements.getHeight() + peakView.getHeight();
     }
 
+    public void setDistance(String text) {
+        tvPreviewBottomRangeCount.setText(text);
+    }
+
 }

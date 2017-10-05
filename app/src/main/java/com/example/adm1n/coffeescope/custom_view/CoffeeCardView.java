@@ -31,6 +31,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 public class CoffeeCardView extends FrameLayout {
     public AppBarLayout peakView;
@@ -140,7 +141,7 @@ public class CoffeeCardView extends FrameLayout {
         Date placeCloseTime = null;
         Date currentDate = new Date();
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
         // 1) получаем текущую дату
         Calendar calendar = GregorianCalendar.getInstance();
@@ -162,16 +163,16 @@ public class CoffeeCardView extends FrameLayout {
         if (placeCloseTime != null && placeOpenTime != null) {
             if (current.after(placeOpenTime) && current.before(placeCloseTime)) {
                 ivPreviewBottomStatus.setImageResource(R.drawable.open_icon);
-                tvPreviewBottomJobTime.setText("до " + place.getHours().get(currentDay).getClose());
+                tvPreviewBottomJobTime.setText(getContext().getString(R.string.until, place.getHours().get(currentDay).getClose()));
             } else {
                 if (current.before(placeOpenTime)) {
-                    tvPreviewBottomJobTime.setText("до " + place.getHours().get(currentDay).getOpen());
+                    tvPreviewBottomJobTime.setText(getContext().getString(R.string.until, place.getHours().get(currentDay).getOpen()));
                 } else if (current.after(placeCloseTime)) {
                     //достать след день
                     if (place.getHours().size() != currentDay) {
-                        tvPreviewBottomJobTime.setText("до " + place.getHours().get(currentDay + 1).getOpen());
+                        tvPreviewBottomJobTime.setText(getContext().getString(R.string.until, place.getHours().get(currentDay + 1).getOpen()));
                     } else {
-                        tvPreviewBottomJobTime.setText("до " + place.getHours().get(0).getOpen());
+                        tvPreviewBottomJobTime.setText(getContext().getString(R.string.until, place.getHours().get(0).getOpen()));
                     }
                 }
                 ivPreviewBottomStatus.setImageResource(R.drawable.close_icon);
@@ -181,9 +182,10 @@ public class CoffeeCardView extends FrameLayout {
 
     public void updateBaster(Basket basket) {
         if (basket != null) {
+            int items = basket.getmBasketProductsList().size();
+            String drinks = getContext().getResources().getQuantityString(R.plurals.drinks, items, items);
             mBtnPayCoffee.setEnabled(basket.getmBasketProductsList().size() > 0);
-            mBtnPayCoffee.setText("В заказе " + String.valueOf(basket.getmBasketProductsList().size())
-                    + " напитка (" + basket.getSumma(basket) + "\u20BD)");
+            mBtnPayCoffee.setText(getContext().getString(R.string.button_order, drinks, basket.getSumma(basket)));
         } else {
             mBtnPayCoffee.setEnabled(false);
         }

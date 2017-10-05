@@ -150,17 +150,14 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    coffeeCardView.peakView.setExpanded(true);
+                    coffeeCardView.setExpanded(true);
                 }
             }
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                if (slideOffset > 0.5) {
-                    coffeeCardView.iv_preview_card_top_arrow.setImageResource(R.drawable.arrow_down_icon2);
-                } else {
-                    coffeeCardView.iv_preview_card_top_arrow.setImageResource(R.drawable.arrow_down_icon);
-                }
+                if (slideOffset > 0.5) coffeeCardView.rotateArrow(180);
+                else coffeeCardView.rotateArrow(0);
             }
         });
 

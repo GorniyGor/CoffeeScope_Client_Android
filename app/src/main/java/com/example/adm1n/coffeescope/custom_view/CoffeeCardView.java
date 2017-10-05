@@ -204,4 +204,12 @@ public class CoffeeCardView extends FrameLayout {
         tvPreviewBottomRangeCount.setText(text);
     }
 
+    public void setExpanded(boolean e) {
+        peakView.setExpanded(e);
+    }
+
+    public void rotateArrow(int angle) {
+        iv_preview_card_top_arrow.animate().rotation(angle).setDuration(300).start();
+    }
+
 }

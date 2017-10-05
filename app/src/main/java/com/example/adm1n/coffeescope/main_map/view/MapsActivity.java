@@ -7,17 +7,13 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,14 +27,11 @@ import com.example.adm1n.coffeescope.coffee_menu.custom_model.CoffeeMenu;
 import com.example.adm1n.coffeescope.custom_view.CoffeeCardView;
 import com.example.adm1n.coffeescope.introduction.authorization.IntroductionAuthorizationActivity;
 import com.example.adm1n.coffeescope.main_map.presenter.MainPresenter;
-import com.example.adm1n.coffeescope.models.Hours;
 import com.example.adm1n.coffeescope.models.Place;
 import com.example.adm1n.coffeescope.models.Product;
-import com.example.adm1n.coffeescope.models.basket.Basket;
 import com.example.adm1n.coffeescope.order.view.OrderActivity;
 import com.example.adm1n.coffeescope.utils.MapsUtils;
 import com.example.adm1n.coffeescope.utils.PermissionUtils;
-import com.example.adm1n.coffeescope.utils.SpaceItemDecoration;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -47,19 +40,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapReadyCallback, MenuAdapter.OnProductClick, IMapActivity {
 
@@ -75,27 +59,9 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
     private LatLng mLastKnownLocation;
     private Location bestLocation;
 
-    //preViewCardView
-    private AppBarLayout peakView;
-    private TextView tvPreviewBottomJobTime;
-    private TextView tvPreviewBottomRateCount;
-    private TextView tvPreviewBottomRangeCount;
-    private TextView tv_coffee_name;
-    private TextView tv_coffee_address;
-    private TextView tv_coffee_phone_number;
-    private TextView tv_preview_card_place_average_time;
-    private ImageView iv_preview_card_top_arrow;
-    private ImageView ivPreviewBottomStatus;
     private BottomSheetBehavior mBottomSheetBehavior;
 
-    private RecyclerView recyclerview;
-    private MenuAdapter menuAdapter;
-    private LinearLayoutManager linearLayoutManager;
-    private Button mBtnPayCoffee;
-
     private MainPresenter presenter;
-    private Basket mBasket;
-    private Observable<Basket> mBasketOBS;
     private CompositeDisposable disposable = new CompositeDisposable();
 
     private CoffeeCardView coffeeCardView;
@@ -140,7 +106,6 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
                 }
             }
         });
-        iv_preview_card_top_arrow = coffeeCardView.iv_preview_card_top_arrow;
         Button mButtonMyProfile = (Button) findViewById(R.id.btn_profile);
         mButtonMyProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,7 +132,6 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
                 .findFragmentById(R.id.map);
 
         //initBottomSheet
-        peakView = coffeeCardView.peakView;
 
         Display display = ((android.view.WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
         FrameLayout FlBottomSheetBehavior = (FrameLayout) findViewById(R.id.fl_sheet_content);
@@ -182,23 +146,22 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    peakView.setExpanded(true);
+                    coffeeCardView.peakView.setExpanded(true);
                 }
             }
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
                 if (slideOffset > 0.5) {
-                    iv_preview_card_top_arrow.setImageResource(R.drawable.arrow_down_icon2);
+                    coffeeCardView.iv_preview_card_top_arrow.setImageResource(R.drawable.arrow_down_icon2);
                 } else {
-                    iv_preview_card_top_arrow.setImageResource(R.drawable.arrow_down_icon);
+                    coffeeCardView.iv_preview_card_top_arrow.setImageResource(R.drawable.arrow_down_icon);
                 }
             }
         });
         //initRecycler
-        recyclerview = coffeeCardView.recyclerview;
 
-        mBtnPayCoffee = coffeeCardView.mBtnPayCoffee;
+        Button mBtnPayCoffee = coffeeCardView.mBtnPayCoffee;
         mBtnPayCoffee.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -220,7 +183,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
 //            expandGroup(i);
 //        }
 //        menuAdapter.notifyDataSetChanged();
-        initBasket();
+        coffeeCardView.initBasket(presenter.getBasket(mLastPlace.getId()), disposable);
     }
 
     @Override
@@ -236,9 +199,9 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
             @Override
             public boolean onMarkerClick(Marker marker) {
                 presenter.getPlace(marker.getSnippet());
-                peakView.requestLayout();
+                coffeeCardView.peakView.requestLayout();
                 View previewTopElements = findViewById(R.id.preview_top_elements);
-                mBottomSheetBehavior.setPeekHeight(previewTopElements.getHeight() + peakView.getHeight());
+                mBottomSheetBehavior.setPeekHeight(previewTopElements.getHeight() + coffeeCardView.peakView.getHeight());
                 showPeakView(presenter.getPlaceFromRealm(Integer.valueOf(marker.getSnippet())));
                 if (mBottomSheetBehavior != null) {
                     switch (mBottomSheetBehavior.getState()) {
@@ -280,14 +243,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
 
     public void showPeakView(Place place) {
         mLastPlace = place;
-        tv_coffee_name = coffeeCardView.tv_coffee_name;
-        ivPreviewBottomStatus = coffeeCardView.ivPreviewBottomStatus;
-        tv_coffee_address = coffeeCardView.tv_coffee_address;
-        tv_coffee_phone_number = coffeeCardView.tv_coffee_phone_number;
-        tv_preview_card_place_average_time = coffeeCardView.tv_preview_card_place_average_time;
-        tvPreviewBottomRangeCount = coffeeCardView.tvPreviewBottomRangeCount;
-        tvPreviewBottomJobTime = coffeeCardView.tvPreviewBottomJobTime;
-        tvPreviewBottomRateCount = coffeeCardView.tvPreviewBottomRateCount;
+        TextView tvPreviewBottomRangeCount = coffeeCardView.tvPreviewBottomRangeCount;
 
         coffeeCardView.setPlace(mLastPlace);
 
@@ -299,8 +255,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
         } else {
             tvPreviewBottomRangeCount.setText("fail");
         }
-        initDate();
-        initBasket();
+        coffeeCardView.initBasket(presenter.getBasket(mLastPlace.getId()), disposable);
     }
 
     private void enableMyLocation() {
@@ -412,87 +367,12 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
     protected void onResume() {
         super.onResume();
         if (mLastPlace != null) {
-            initBasket();
-        }
-    }
-
-    void initDate() {
-        Date current = null;
-        Date placeOpenTime = null;
-        Date placeCloseTime = null;
-        Date currentDate = new Date();
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-
-        // 1) получаем текущую дату
-        Calendar calendar = GregorianCalendar.getInstance();
-        // 2) определяем день недели
-        int currentDay = calendar.get(Calendar.DAY_OF_WEEK) - calendar.getFirstDayOfWeek();
-        // 3) получаем расписание по этому дню
-        Hours hours = mLastPlace.getHours().get(currentDay);
-        String open = hours.getOpen();      //"17:31"
-        String close = hours.getClose();    //"20:31"
-        // 4) преобразую в нужный мне формат
-        try {
-            current = dateFormat.parse(dateFormat.format(currentDate));
-            placeOpenTime = dateFormat.parse(open);
-            placeCloseTime = dateFormat.parse(close);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        //проверяю условия
-        if (placeCloseTime != null && placeOpenTime != null) {
-            if (current.after(placeOpenTime) && current.before(placeCloseTime)) {
-                ivPreviewBottomStatus.setImageResource(R.drawable.open_icon);
-                tvPreviewBottomJobTime.setText("до " + mLastPlace.getHours().get(currentDay).getClose());
-            } else {
-                if (current.before(placeOpenTime)) {
-                    tvPreviewBottomJobTime.setText("до " + mLastPlace.getHours().get(currentDay).getOpen());
-                } else if (current.after(placeCloseTime)) {
-                    //достать след день
-                    if (mLastPlace.getHours().size() != currentDay) {
-                        tvPreviewBottomJobTime.setText("до " + mLastPlace.getHours().get(currentDay + 1).getOpen());
-                    } else {
-                        tvPreviewBottomJobTime.setText("до " + mLastPlace.getHours().get(0).getOpen());
-                    }
-                }
-                ivPreviewBottomStatus.setImageResource(R.drawable.close_icon);
-            }
+            coffeeCardView.initBasket(presenter.getBasket(mLastPlace.getId()), disposable);
         }
     }
 
     @Override
     public void setMenuAdapter(Place place) {
         setAdapter(place);
-    }
-
-    void initBasket() {
-        mBasketOBS = presenter.getBasket(mLastPlace.getId());
-        if (mBasketOBS != null) {
-            disposable.add(mBasketOBS
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<Basket>() {
-                        @Override
-                        public void accept(Basket basket) throws Exception {
-                            if (basket != null) {
-                                mBasket = basket;
-                                mBtnPayCoffee.setText(String.valueOf(mBasket.getmBasketProductsList().size())
-                                        + " Позиции " + mBasket.getSumma(mBasket));
-                                if (mBasket.getmBasketProductsList().size() == 0) {
-                                    mBtnPayCoffee.setEnabled(false);
-                                } else {
-                                    mBtnPayCoffee.setEnabled(true);
-                                }
-                                mBtnPayCoffee.setText("В заказе " + String.valueOf(mBasket.getmBasketProductsList().size())
-                                        + " напитка (" + mBasket.getSumma(mBasket) + "Р)");
-                            } else {
-                                mBtnPayCoffee.setEnabled(false);
-                            }
-                        }
-                    }));
-        } else {
-            Toast.makeText(this, "Ошибка RX", Toast.LENGTH_SHORT).show();
-        }
     }
 }

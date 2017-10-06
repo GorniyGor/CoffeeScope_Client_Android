@@ -6,6 +6,9 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.CardView;
 import android.text.InputType;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 
 import com.example.adm1n.coffeescope.R;
@@ -17,6 +20,8 @@ public class GreatEditText extends CardView {
     final private EditText editText;
     final private TextInputLayout textInputLayout;
 
+    private int paddintTop = 0;
+
     public GreatEditText(Context context) {
         this(context, null);
     }
@@ -25,8 +30,10 @@ public class GreatEditText extends CardView {
         this(context, attrs, 0);
     }
 
-    public GreatEditText(Context context, AttributeSet attrs, int defStyleAttr) {
+    public GreatEditText(final Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        paddintTop = Math.round(12 * (getResources().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT));
 
         inflate(getContext(), R.layout.great_edit_text, this);
         textInputLayout = (TextInputLayout) findViewById(R.id.textInputLayout);
@@ -38,6 +45,7 @@ public class GreatEditText extends CardView {
 
         try {
             textInputLayout.setHint(a.getString(R.styleable.GreatEditText_hint));
+            Log.d("Makaka", a.getString(R.styleable.GreatEditText_hint));
             int type = a.getInteger(R.styleable.GreatEditText_type, 0);
             switch (type) {
                 case 1: // password
@@ -54,6 +62,20 @@ public class GreatEditText extends CardView {
         } finally {
             a.recycle();
         }
+
+        editText.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                int moveTo;
+                if (hasFocus || editText.getText().length() > 0) {
+                    moveTo = paddintTop;
+                } else {
+                    moveTo = 0;
+                }
+                textInputLayout.animate().translationY(moveTo).setDuration(100).start();
+            }
+        });
+
     }
 
     public EditText getEditText() {

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,19 +85,6 @@ public class IntroductionAuthorizationFragment extends BaseFragment implements I
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRxListener();
-        etEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    textInputLayoutEmail.setGravity(Gravity.BOTTOM);
-                } else {
-                    if (etEmail.getText().length() == 0) {
-                        textInputLayoutEmail.setGravity(Gravity.CENTER);
-                    }
-                }
-                textInputLayoutEmail.postInvalidate();
-            }
-        });
         btnRegistration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

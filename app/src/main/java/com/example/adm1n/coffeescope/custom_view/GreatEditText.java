@@ -7,7 +7,6 @@ import android.support.v7.widget.CardView;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -45,7 +44,6 @@ public class GreatEditText extends CardView {
 
         try {
             textInputLayout.setHint(a.getString(R.styleable.GreatEditText_hint));
-            Log.d("Makaka", a.getString(R.styleable.GreatEditText_hint));
             int type = a.getInteger(R.styleable.GreatEditText_type, 0);
             switch (type) {
                 case 1: // password

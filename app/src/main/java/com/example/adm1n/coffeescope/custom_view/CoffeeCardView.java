@@ -123,7 +123,6 @@ public class CoffeeCardView extends FrameLayout {
             menuAdapter.toggleGroup(i);
         }
         menuAdapter.notifyDataSetChanged();
-//        initBasket();
     }
 
     public void setPlace(Place place) {

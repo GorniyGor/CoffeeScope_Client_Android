@@ -175,13 +175,6 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
 
     void setAdapter(Place place) {
         coffeeCardView.setAdapter(createMenu(place), this);
-//        menuAdapter = new MenuAdapter(createMenu(place), this);
-//        recyclerview.getRecycledViewPool().clear();
-//        recyclerview.setAdapter(menuAdapter);
-//        for (int i = menuAdapter.getGroups().size() - 1; i >= 0; i--) {
-//            expandGroup(i);
-//        }
-//        menuAdapter.notifyDataSetChanged();
         initBasket();
     }
 

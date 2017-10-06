@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.adm1n.coffeescope.BaseFragment;
 import com.example.adm1n.coffeescope.R;
+import com.example.adm1n.coffeescope.custom_view.GreatEditText;
 import com.example.adm1n.coffeescope.dialog.OkDialog;
 import com.example.adm1n.coffeescope.introduction.presenter.IntroductionPresenter;
 import com.example.adm1n.coffeescope.introduction.registration.IntroductionRegistrationActivity;
@@ -66,10 +67,14 @@ public class IntroductionAuthorizationFragment extends BaseFragment implements I
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_introduction_authorization, null);
-        textInputLayoutEmail = (TextInputLayout) view.findViewById(R.id.textInputLayoutEmail);
-        textInputLayoutPass = (TextInputLayout) view.findViewById(R.id.textInputLayoutPass);
-        etEmail = (EditText) view.findViewById(R.id.etEmail);
-        etPassword = (EditText) view.findViewById(R.id.etPassword);
+
+        GreatEditText email = (GreatEditText) view.findViewById(R.id.cvAuthorizationEmail);
+        GreatEditText pass = (GreatEditText) view.findViewById(R.id.cvAuthorizationPassword);
+
+        textInputLayoutEmail = email.getTextInputLayout();
+        textInputLayoutPass = pass.getTextInputLayout();
+        etEmail = email.getEditText();
+        etPassword = pass.getEditText();
         btnLogin = (Button) view.findViewById(R.id.btnAuthorizationLogin);
         btnRegistration = (Button) view.findViewById(R.id.btnAuthorizationRegistration);
         tvForgotPassword = (TextView) view.findViewById(R.id.tvForgotPassword);

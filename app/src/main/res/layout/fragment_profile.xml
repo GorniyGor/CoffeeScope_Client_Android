@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:descendantFocusability="beforeDescendants">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,6 +58,8 @@
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:layout_marginTop="24dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             app:cardElevation="6dp">
 
             <TextView
@@ -74,6 +77,8 @@
             android:layout_width="match_parent"
             android:layout_height="64dp"
             android:layout_marginTop="16dp"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             app:cardElevation="6dp">
 
             <TextView
@@ -90,8 +95,9 @@
         <Button
             android:id="@+id/logout_button"
             style="@style/Base.Widget.AppCompat.Button.Borderless"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_width="300dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
             android:layout_marginTop="35dp"
             android:text="@string/logout"
             android:textAllCaps="true"

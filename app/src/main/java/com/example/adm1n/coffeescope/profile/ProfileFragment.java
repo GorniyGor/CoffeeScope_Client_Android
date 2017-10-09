@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.adm1n.coffeescope.BaseFragment;
 import com.example.adm1n.coffeescope.R;
@@ -73,6 +74,18 @@ public class ProfileFragment extends BaseFragment {
                 AlertDialog dialog = builder.create();
                 dialog.show();
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#47c68a"));
+            }
+        });
+        view.findViewById(R.id.cv_feedback).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Фидбэк", Toast.LENGTH_SHORT).show();
+            }
+        });
+        view.findViewById(R.id.cv_change_password).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Изменяем пароль", Toast.LENGTH_SHORT).show();
             }
         });
 

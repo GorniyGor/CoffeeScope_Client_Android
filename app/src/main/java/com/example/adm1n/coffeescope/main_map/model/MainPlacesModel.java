@@ -2,7 +2,7 @@ package com.example.adm1n.coffeescope.main_map.model;
 
 import com.example.adm1n.coffeescope.App;
 import com.example.adm1n.coffeescope.models.basket.Basket;
-import com.example.adm1n.coffeescope.network.ApiInterface;
+import com.example.adm1n.coffeescope.network.PublicApiInterface;
 import com.example.adm1n.coffeescope.network.responses.PlaceResponse;
 import com.example.adm1n.coffeescope.network.responses.PlacesResponse;
 
@@ -10,11 +10,6 @@ import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Single;
-import io.reactivex.SingleEmitter;
-import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.internal.operators.observable.ObservableFromCallable;
 import io.reactivex.schedulers.Schedulers;
@@ -26,14 +21,14 @@ import io.realm.Realm;
 
 public class MainPlacesModel implements IMainPlacesModel {
 
-    private ApiInterface apiInterface = App.getApiInterface();
+    private PublicApiInterface publicApiInterface = App.getPublicApi();
     private Realm mRealm = null;
     private Basket mBasket;
     private Integer mBasketId;
     private ArrayList sdf;
 
     public Observable<PlacesResponse> getPlaces() {
-        return apiInterface.getPlaces()
+        return publicApiInterface.getPlaces()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -41,7 +36,7 @@ public class MainPlacesModel implements IMainPlacesModel {
     @Override
     public Observable<PlaceResponse> getPlace(String id) {
         sdf = new ArrayList();
-        return apiInterface.getPlace(id)
+        return publicApiInterface.getPlace(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

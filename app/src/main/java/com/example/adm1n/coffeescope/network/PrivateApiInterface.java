@@ -16,13 +16,7 @@ import retrofit2.http.Path;
  * Created by adm1n on 31.07.2017.
  */
 
-public interface ApiInterface {
-
-    @GET("places")
-    Observable<PlacesResponse> getPlaces();
-
-    @GET("place/{placeId}")
-    Observable<PlaceResponse> getPlace(@Path("placeId") String placeId);
+public interface PrivateApiInterface {
 
     //Авторизация
     @FormUrlEncoded
@@ -34,8 +28,12 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("buyer/registration")
     Single<AuthResponse> registration(@Field("surname") String surName,
-                                          @Field("name") String name,
-                                          @Field("email") String email,
-                                          @Field("password") String password,
-                                          @Field("password_confirmation") String password_confirmation);
+                                      @Field("name") String name,
+                                      @Field("email") String email,
+                                      @Field("password") String password,
+                                      @Field("password_confirmation") String password_confirmation);
+
+    //Refresh
+    @GET("buyer/refresh")
+    Single<AuthResponse> refresh();
 }

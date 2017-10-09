@@ -36,7 +36,7 @@ public class IntroductionPresenter implements IIntroductionPresenter {
 
     @Override
     public void login(String email, String password) {
-        App.getApiInterface().authorization(email, password)
+        App.getPrivateApi().authorization(email, password)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<AuthResponse>() {
@@ -58,7 +58,7 @@ public class IntroductionPresenter implements IIntroductionPresenter {
 
     @Override
     public void registration(String lastName, String name, String email, String password, String confirmPassword) {
-        App.getApiInterface().registration(lastName, name, email, password, confirmPassword)
+        App.getPrivateApi().registration(lastName, name, email, password, confirmPassword)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<AuthResponse>() {

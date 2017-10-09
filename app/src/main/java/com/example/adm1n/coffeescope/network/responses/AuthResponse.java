@@ -10,27 +10,27 @@ import java.util.List;
 
 public class AuthResponse extends BaseResponse {
     private String first_error;
-    private String accessToken;
-    private String tokenType;
+    private String access_token;
+    private String token_type;
     private String who;
-    private Integer expiresIn;
-    private List<Object> error = null;
+    private Integer expires_in;
+    private List<Errors> error = null;
 //    private Errors errors;
 
     public String getAccessToken() {
-        return accessToken;
+        return access_token;
     }
 
     public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
+        this.access_token = accessToken;
     }
 
-    public String getTokenType() {
-        return tokenType;
+    public String getToken_type() {
+        return token_type;
     }
 
-    public void setTokenType(String tokenType) {
-        this.tokenType = tokenType;
+    public void setToken_type(String token_type) {
+        this.token_type = token_type;
     }
 
     public String getWho() {
@@ -41,20 +41,12 @@ public class AuthResponse extends BaseResponse {
         this.who = who;
     }
 
-    public Integer getExpiresIn() {
-        return expiresIn;
+    public Integer getExpires_in() {
+        return expires_in;
     }
 
-    public void setExpiresIn(Integer expiresIn) {
-        this.expiresIn = expiresIn;
-    }
-
-    public List<Object> getError() {
-        return error;
-    }
-
-    public void setError(List<Object> error) {
-        this.error = error;
+    public void setExpires_in(Integer expires_in) {
+        this.expires_in = expires_in;
     }
 
     public String getFirst_error() {
@@ -63,5 +55,13 @@ public class AuthResponse extends BaseResponse {
 
     public void setFirst_error(String first_error) {
         this.first_error = first_error;
+    }
+
+    public List<Errors> getError() {
+        return error;
+    }
+
+    public void setError(List<Errors> error) {
+        this.error = error;
     }
 }

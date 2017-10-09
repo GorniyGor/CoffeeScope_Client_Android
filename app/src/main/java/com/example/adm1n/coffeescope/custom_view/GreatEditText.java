@@ -76,6 +76,15 @@ public class GreatEditText extends CardView {
 
     }
 
+    public void setText(String text) {
+        editText.setText(text);
+        textInputLayout.setTranslationY(text.isEmpty() ? 0 : paddintTop);
+    }
+
+    public String getText() {
+        return editText.getText().toString();
+    }
+
     public EditText getEditText() {
         return editText;
     }

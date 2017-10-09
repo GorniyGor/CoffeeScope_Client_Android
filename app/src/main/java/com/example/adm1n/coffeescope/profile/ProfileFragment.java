@@ -24,20 +24,14 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Function3;
 
-/**
- * Created by adm1n on 05.09.2017.
- */
+public class ProfileFragment extends BaseFragment implements IProfileView {
 
-public class ProfileFragment extends BaseFragment {
-
-    private GreatEditText firstName;
-    private GreatEditText lastName;
-    private GreatEditText email;
+    private GreatEditText etFirstName;
+    private GreatEditText etLastName;
+    private GreatEditText etEmail;
     private Button saveProfileButton;
 
-    private String currentFirstName = "";
-    private String currentLastName = "";
-    private String currentEmail = "";
+    private IProfilePresenter presenter = new ProfilePresenter(this);
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -58,10 +52,20 @@ public class ProfileFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, null);
 
-        firstName = (GreatEditText) view.findViewById(R.id.first_name);
-        lastName = (GreatEditText) view.findViewById(R.id.last_name);
-        email = (GreatEditText) view.findViewById(R.id.email);
+        etFirstName = (GreatEditText) view.findViewById(R.id.first_name);
+        etLastName = (GreatEditText) view.findViewById(R.id.last_name);
+        etEmail = (GreatEditText) view.findViewById(R.id.email);
         saveProfileButton = (Button) view.findViewById(R.id.save_profile_button);
+        saveProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.saveProfile(etFirstName.getText(), etLastName.getText(), etEmail.getText());
+            }
+        });
+
+        etFirstName.setText(presenter.getCurrentFirstName());
+        etLastName.setText(presenter.getCurrentLastName());
+        etEmail.setText(presenter.getCurrentEmail());
 
         view.findViewById(R.id.logout_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,15 +93,22 @@ public class ProfileFragment extends BaseFragment {
             }
         });
 
-        setRx();
+        setRx(presenter.getCurrentFirstName(), presenter.getCurrentLastName(), presenter.getCurrentEmail());
 
         return view;
     }
 
-    private void setRx() {
-        Observable<Boolean> f = RxTextView.afterTextChangeEvents(firstName.getEditText()).map(new Checker(currentFirstName));
-        Observable<Boolean> l = RxTextView.afterTextChangeEvents(lastName.getEditText()).map(new Checker(currentLastName));
-        Observable<Boolean> e = RxTextView.afterTextChangeEvents(email.getEditText()).map(new Checker(currentEmail));
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        compositeDisposable.clear();
+    }
+
+    @Override
+    public void setRx(String firstName, String lastName, String email) {
+        Observable<Boolean> f = RxTextView.afterTextChangeEvents(etFirstName.getEditText()).map(new Checker(presenter.getCurrentFirstName()));
+        Observable<Boolean> l = RxTextView.afterTextChangeEvents(etLastName.getEditText()).map(new Checker(presenter.getCurrentLastName()));
+        Observable<Boolean> e = RxTextView.afterTextChangeEvents(etEmail.getEditText()).map(new Checker(presenter.getCurrentEmail()));
 
         Disposable disposable = Observable.combineLatest(f, l, e, new Function3<Boolean, Boolean, Boolean, Boolean>() {
             @Override
@@ -111,12 +122,6 @@ public class ProfileFragment extends BaseFragment {
             }
         });
         compositeDisposable.add(disposable);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        compositeDisposable.clear();
     }
 
     private class Checker implements Function<TextViewAfterTextChangeEvent, Boolean> {

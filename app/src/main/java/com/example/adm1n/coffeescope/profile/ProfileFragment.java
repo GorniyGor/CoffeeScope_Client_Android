@@ -1,7 +1,9 @@
 package com.example.adm1n.coffeescope.profile;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +61,20 @@ public class ProfileFragment extends BaseFragment {
         lastName = (GreatEditText) view.findViewById(R.id.last_name);
         email = (GreatEditText) view.findViewById(R.id.email);
         saveProfileButton = (Button) view.findViewById(R.id.save_profile_button);
+
+        view.findViewById(R.id.logout_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.LogoutDialog);
+                builder.setMessage(R.string.logout_message);
+                builder.setPositiveButton(R.string.cancel, null);
+                builder.setNegativeButton(R.string.logout, null);
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.parseColor("#47c68a"));
+            }
+        });
 
         setRx();
 

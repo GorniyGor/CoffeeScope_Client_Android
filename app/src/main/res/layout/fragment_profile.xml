@@ -49,6 +49,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
             android:background="@drawable/green_btn_selector"
+            android:enabled="false"
             android:text="@string/save" />
 
         <android.support.v7.widget.CardView

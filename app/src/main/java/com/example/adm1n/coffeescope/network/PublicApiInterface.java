@@ -1,15 +1,10 @@
 package com.example.adm1n.coffeescope.network;
 
-import com.example.adm1n.coffeescope.network.responses.AuthResponse;
 import com.example.adm1n.coffeescope.network.responses.PlaceResponse;
 import com.example.adm1n.coffeescope.network.responses.PlacesResponse;
 
 import io.reactivex.Observable;
-import io.reactivex.Single;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 /**

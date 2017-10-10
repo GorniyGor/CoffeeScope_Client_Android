@@ -52,7 +52,6 @@ public class App extends Application {
                 .getString(Const.API_TOKEN_TYPE, " ");
     }
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -101,6 +100,18 @@ public class App extends Application {
                                 .body(ResponseBody.create(response.body().contentType(), responseBodyString)).build();
                     }
                 })
+//                .authenticator(new Authenticator() {
+//                    @Override
+//                    public Request authenticate(Route route, Response response) throws IOException {
+//                        if (response.request().header("Authorization") != null) {
+//                            return null; // Give up, we've already attempted to authenticate.
+//                        }
+//                        String credential = Credentials.basic("jesse", "password1");
+//                        return response.request().newBuilder()
+//                                .header("Authorization", credential)
+//                                .build();
+//                    }
+//                })
                 .build();
 
         publicRetrofit = new Retrofit.Builder()
@@ -135,12 +146,16 @@ public class App extends Application {
                 .subscribe(new Consumer<AuthResponse>() {
                     @Override
                     public void accept(@NonNull AuthResponse authResponse) throws Exception {
-                        //todo выполнить запрос, который был до этого
+//                        if (authResponse.getStatus().equals(getString(R.string.success))) {
+//                            saveToken(authResponse.getAccessToken(), authResponse.getToken_type());
+//                        } else {
+//                            refreshToken();
+//                        }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-                        //возможна реккурсия
+                        refreshToken();
                     }
                 });
     }

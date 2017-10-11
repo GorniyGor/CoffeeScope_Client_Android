@@ -31,7 +31,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     private GreatEditText etEmail;
     private Button saveProfileButton;
 
-    private IProfilePresenter presenter = new ProfilePresenter(this);
+    private IProfilePresenter presenter;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -84,6 +84,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
             }
         });
 
+        presenter = new ProfilePresenter(this);
         presenter.getProfile();
 
         return view;
@@ -97,13 +98,13 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
 
     @Override
     public void setFields(String firstName, String lastName, String email) {
-        etFirstName.setText(presenter.getCurrentFirstName());
-        etLastName.setText(presenter.getCurrentLastName());
-        etEmail.setText(presenter.getCurrentEmail());
+        etFirstName.setText(firstName);
+        etLastName.setText(lastName);
+        etEmail.setText(email);
 
-        Observable<Boolean> f = RxTextView.afterTextChangeEvents(etFirstName.getEditText()).map(new Checker(presenter.getCurrentFirstName()));
-        Observable<Boolean> l = RxTextView.afterTextChangeEvents(etLastName.getEditText()).map(new Checker(presenter.getCurrentLastName()));
-        Observable<Boolean> e = RxTextView.afterTextChangeEvents(etEmail.getEditText()).map(new Checker(presenter.getCurrentEmail()));
+        Observable<Boolean> f = RxTextView.afterTextChangeEvents(etFirstName.getEditText()).map(new Checker(firstName));
+        Observable<Boolean> l = RxTextView.afterTextChangeEvents(etLastName.getEditText()).map(new Checker(lastName));
+        Observable<Boolean> e = RxTextView.afterTextChangeEvents(etEmail.getEditText()).map(new Checker(email));
 
         Disposable disposable = Observable.combineLatest(f, l, e, new Function3<Boolean, Boolean, Boolean, Boolean>() {
             @Override

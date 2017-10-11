@@ -1,6 +1,7 @@
 package com.example.adm1n.coffeescope.network;
 
 import com.example.adm1n.coffeescope.network.responses.AuthResponse;
+import com.example.adm1n.coffeescope.network.responses.EditProfileResponse;
 import com.example.adm1n.coffeescope.network.responses.PlaceResponse;
 import com.example.adm1n.coffeescope.network.responses.PlacesResponse;
 import com.example.adm1n.coffeescope.network.responses.ProfileResponse;
@@ -42,4 +43,11 @@ public interface ApiInterface {
 
     @GET("buyer/profile")
     Single<ProfileResponse> getProfile();
+
+    @POST("buyer/profile/edit")
+    Single<EditProfileResponse> editProfile(
+            @Field("name") String firstName,
+            @Field("surname") String lastName,
+            @Field("email") String email
+    );
 }

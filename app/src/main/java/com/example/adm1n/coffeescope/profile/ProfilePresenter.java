@@ -1,6 +1,7 @@
 package com.example.adm1n.coffeescope.profile;
 
 import com.example.adm1n.coffeescope.App;
+import com.example.adm1n.coffeescope.network.responses.EditProfileResponse;
 import com.example.adm1n.coffeescope.network.responses.ProfileResponse;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -9,18 +10,12 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 class ProfilePresenter implements IProfilePresenter {
-    private String currentFirstName;
-    private String currentLastName;
-    private String currentEmail;
 
     private IProfileView view;
 
     ProfilePresenter(IProfileView v) {
-        currentFirstName = "Борис";
-        currentLastName = "Дядька";
-        currentEmail = "e@e.e";
-
         view = v;
+        view.setFields("Тест1", "Тест2", "Тест3");
     }
 
     @Override
@@ -47,25 +42,26 @@ class ProfilePresenter implements IProfilePresenter {
     }
 
     @Override
-    public void saveProfile(String firstName, String lastName, String email) {
-        currentFirstName = firstName;
-        currentLastName = lastName;
-        currentEmail = email;
-        view.setFields(currentFirstName, currentLastName, currentEmail);
-    }
+    public void saveProfile(final String firstName, final String lastName, final String email) {
+        App.getApiInterface().editProfile(firstName, lastName, email)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<EditProfileResponse>() {
+                    @Override
+                    public void accept(@NonNull EditProfileResponse editProfileResponse) throws Exception {
+                        if (editProfileResponse.getProfile() != null) {
+                            view.setFields(
+                                    editProfileResponse.getProfile().getFirstName(),
+                                    editProfileResponse.getProfile().getLastName(),
+                                    editProfileResponse.getProfile().getEmail()
+                            );
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
 
-    @Override
-    public String getCurrentFirstName() {
-        return currentFirstName;
-    }
-
-    @Override
-    public String getCurrentLastName() {
-        return currentLastName;
-    }
-
-    @Override
-    public String getCurrentEmail() {
-        return currentEmail;
+                    }
+                });
     }
 }

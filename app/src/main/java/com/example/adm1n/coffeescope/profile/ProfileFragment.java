@@ -42,11 +42,6 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         return fragment;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -62,10 +57,6 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
                 presenter.saveProfile(etFirstName.getText(), etLastName.getText(), etEmail.getText());
             }
         });
-
-        etFirstName.setText(presenter.getCurrentFirstName());
-        etLastName.setText(presenter.getCurrentLastName());
-        etEmail.setText(presenter.getCurrentEmail());
 
         view.findViewById(R.id.logout_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,7 +84,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
             }
         });
 
-        setRx(presenter.getCurrentFirstName(), presenter.getCurrentLastName(), presenter.getCurrentEmail());
+        presenter.getProfile();
 
         return view;
     }
@@ -105,7 +96,11 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     }
 
     @Override
-    public void setRx(String firstName, String lastName, String email) {
+    public void setFields(String firstName, String lastName, String email) {
+        etFirstName.setText(presenter.getCurrentFirstName());
+        etLastName.setText(presenter.getCurrentLastName());
+        etEmail.setText(presenter.getCurrentEmail());
+
         Observable<Boolean> f = RxTextView.afterTextChangeEvents(etFirstName.getEditText()).map(new Checker(presenter.getCurrentFirstName()));
         Observable<Boolean> l = RxTextView.afterTextChangeEvents(etLastName.getEditText()).map(new Checker(presenter.getCurrentLastName()));
         Observable<Boolean> e = RxTextView.afterTextChangeEvents(etEmail.getEditText()).map(new Checker(presenter.getCurrentEmail()));

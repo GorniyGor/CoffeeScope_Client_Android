@@ -5,6 +5,7 @@ import android.content.Context;
 import com.example.adm1n.coffeescope.App;
 import com.example.adm1n.coffeescope.introduction.authorization.IIntroductionAuthorizationView;
 import com.example.adm1n.coffeescope.introduction.registration.IIntroductionRegistrationView;
+import com.example.adm1n.coffeescope.introduction.reset_password.IIntroductionResetPasswordView;
 import com.example.adm1n.coffeescope.network.responses.AuthResponse;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -22,6 +23,7 @@ public class IntroductionPresenter implements IIntroductionPresenter {
     private Context mContext;
     private IIntroductionAuthorizationView authorizationView;
     private IIntroductionRegistrationView registrationView;
+    private IIntroductionResetPasswordView resetPasswordView;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public IntroductionPresenter(Context mContext, IIntroductionAuthorizationView authorizationView) {
@@ -32,6 +34,11 @@ public class IntroductionPresenter implements IIntroductionPresenter {
     public IntroductionPresenter(Context mContext, IIntroductionRegistrationView registrationView) {
         this.mContext = mContext;
         this.registrationView = registrationView;
+    }
+
+    public IntroductionPresenter(Context mContext, IIntroductionResetPasswordView resetPasswordView) {
+        this.mContext = mContext;
+        this.resetPasswordView = resetPasswordView;
     }
 
     @Override

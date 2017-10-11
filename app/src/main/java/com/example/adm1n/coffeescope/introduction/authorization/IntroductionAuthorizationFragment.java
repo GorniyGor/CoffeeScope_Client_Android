@@ -18,6 +18,7 @@ import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.dialog.OkDialog;
 import com.example.adm1n.coffeescope.introduction.presenter.IntroductionPresenter;
 import com.example.adm1n.coffeescope.introduction.registration.IntroductionRegistrationActivity;
+import com.example.adm1n.coffeescope.introduction.reset_password.IntroductionResetPasswordActivity;
 import com.example.adm1n.coffeescope.profile.ProfileActivity;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
@@ -122,7 +123,8 @@ public class IntroductionAuthorizationFragment extends BaseFragment implements I
         tvForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Восстанавливаем пароль", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), IntroductionResetPasswordActivity.class);
+                startActivity(intent);
             }
         });
     }

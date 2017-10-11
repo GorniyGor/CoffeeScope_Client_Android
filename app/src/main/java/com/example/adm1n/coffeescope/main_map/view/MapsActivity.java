@@ -7,18 +7,13 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.adm1n.coffeescope.BaseActivity;
@@ -28,16 +23,15 @@ import com.example.adm1n.coffeescope.coffee_ingredients.view.CoffeeIngredientsAc
 import com.example.adm1n.coffeescope.coffee_ingredients.view.CoffeeIngredientsFragment;
 import com.example.adm1n.coffeescope.coffee_menu.MenuAdapter;
 import com.example.adm1n.coffeescope.coffee_menu.custom_model.CoffeeMenu;
+import com.example.adm1n.coffeescope.custom_view.CoffeeCardView;
 import com.example.adm1n.coffeescope.introduction.authorization.IntroductionAuthorizationActivity;
 import com.example.adm1n.coffeescope.main_map.presenter.MainPresenter;
-import com.example.adm1n.coffeescope.models.Hours;
 import com.example.adm1n.coffeescope.models.Place;
 import com.example.adm1n.coffeescope.models.Product;
 import com.example.adm1n.coffeescope.models.basket.Basket;
 import com.example.adm1n.coffeescope.order.view.OrderActivity;
 import com.example.adm1n.coffeescope.utils.MapsUtils;
 import com.example.adm1n.coffeescope.utils.PermissionUtils;
-import com.example.adm1n.coffeescope.utils.SpaceItemDecoration;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -46,12 +40,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -74,33 +63,20 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
     private LatLng mLastKnownLocation;
     private Location bestLocation;
 
-    //preViewCardView
-    private AppBarLayout peakView;
-    private TextView tvPreviewBottomJobTime;
-    private TextView tvPreviewBottomRateCount;
-    private TextView tvPreviewBottomRangeCount;
-    private TextView tv_coffee_name;
-    private TextView tv_coffee_address;
-    private TextView tv_coffee_phone_number;
-    private TextView tv_preview_card_place_average_time;
-    private ImageView iv_preview_card_top_arrow;
-    private ImageView ivPreviewBottomStatus;
     private BottomSheetBehavior mBottomSheetBehavior;
 
-    private RecyclerView recyclerview;
-    private MenuAdapter menuAdapter;
-    private LinearLayoutManager linearLayoutManager;
-    private Button mBtnPayCoffee;
-
     private MainPresenter presenter;
-    private Basket mBasket;
-    private Observable<Basket> mBasketOBS;
     private CompositeDisposable disposable = new CompositeDisposable();
+
+    private CoffeeCardView coffeeCardView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contain_main);
+
+        coffeeCardView = (CoffeeCardView) findViewById(R.id.coffee_card_view);
+
         presenter = new MainPresenter(getApplicationContext(), this);
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         //init map control button
@@ -134,7 +110,6 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
                 }
             }
         });
-        iv_preview_card_top_arrow = (ImageView) findViewById(R.id.iv_preview_card_top_arrow);
         Button mButtonMyProfile = (Button) findViewById(R.id.btn_profile);
         mButtonMyProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,7 +136,6 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
                 .findFragmentById(R.id.map);
 
         //initBottomSheet
-        peakView = (AppBarLayout) findViewById(R.id.peak_view);
 
         Display display = ((android.view.WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
         FrameLayout FlBottomSheetBehavior = (FrameLayout) findViewById(R.id.fl_sheet_content);
@@ -176,39 +150,18 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    peakView.setExpanded(true);
+                    coffeeCardView.setExpanded(true);
                 }
             }
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                if (slideOffset > 0.5) {
-                    iv_preview_card_top_arrow.setImageResource(R.drawable.arrow_down_icon2);
-                } else {
-                    iv_preview_card_top_arrow.setImageResource(R.drawable.arrow_down_icon);
-                }
+                if (slideOffset > 0.5) coffeeCardView.rotateArrow(180);
+                else coffeeCardView.rotateArrow(0);
             }
         });
-        //initRecycler
-        recyclerview = (RecyclerView) findViewById(R.id.rv_coffee_menu);
-        linearLayoutManager = new LinearLayoutManager(this);
-        recyclerview.setLayoutManager(linearLayoutManager);
-        SpaceItemDecoration decorator = new SpaceItemDecoration(20, true, true);
-        recyclerview.addItemDecoration(decorator);
-        recyclerview.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    int firstVisiblePosition = linearLayoutManager.findFirstCompletelyVisibleItemPosition();
-                    if (firstVisiblePosition == 0) {
-                        peakView.setExpanded(true, true);
-                    }
-                }
-            }
-        });
-        mBtnPayCoffee = (Button) findViewById(R.id.btn_coffee_menu_pay);
-        mBtnPayCoffee.setOnClickListener(new View.OnClickListener() {
+
+        coffeeCardView.setOnOrderButtonClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), OrderActivity.class);
@@ -221,21 +174,8 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
     }
 
     void setAdapter(Place place) {
-        menuAdapter = new MenuAdapter(createMenu(place), this);
-        recyclerview.getRecycledViewPool().clear();
-        recyclerview.setAdapter(menuAdapter);
-        for (int i = menuAdapter.getGroups().size() - 1; i >= 0; i--) {
-            expandGroup(i);
-        }
-        menuAdapter.notifyDataSetChanged();
+        coffeeCardView.setAdapter(createMenu(place), this);
         initBasket();
-    }
-
-    public void expandGroup(int gPos) {
-        if (menuAdapter.isGroupExpanded(gPos)) {
-            return;
-        }
-        menuAdapter.toggleGroup(gPos);
     }
 
     @Override
@@ -251,9 +191,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
             @Override
             public boolean onMarkerClick(Marker marker) {
                 presenter.getPlace(marker.getSnippet());
-                peakView.requestLayout();
-                View previewTopElements = findViewById(R.id.preview_top_elements);
-                mBottomSheetBehavior.setPeekHeight(previewTopElements.getHeight() + peakView.getHeight());
+                mBottomSheetBehavior.setPeekHeight(coffeeCardView.getHeaderHeight());
                 showPeakView(presenter.getPlaceFromRealm(Integer.valueOf(marker.getSnippet())));
                 if (mBottomSheetBehavior != null) {
                     switch (mBottomSheetBehavior.getState()) {
@@ -295,29 +233,18 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
 
     public void showPeakView(Place place) {
         mLastPlace = place;
-        tv_coffee_name = (TextView) findViewById(R.id.tv_preview_card_product_name);
-        ivPreviewBottomStatus = (ImageView) findViewById(R.id.ivPreviewBottomStatus);
-        tv_coffee_address = (TextView) findViewById(R.id.tv_preview_card_place_address);
-        tv_coffee_phone_number = (TextView) findViewById(R.id.tv_preview_card_place_phone_number);
-        tv_preview_card_place_average_time = (TextView) findViewById(R.id.tv_preview_card_place_average_time);
-        tvPreviewBottomRangeCount = (TextView) findViewById(R.id.tv_preview_card_place_range_count);
-        tvPreviewBottomJobTime = (TextView) findViewById(R.id.tvPreviewBottomJobTime);
-        tvPreviewBottomRateCount = (TextView) findViewById(R.id.tv_preview_card_place_rate_count);
 
-        tv_coffee_name.setText(mLastPlace.getName());
-        tv_coffee_address.setText(mLastPlace.getAddress());
-        tv_coffee_phone_number.setText(mLastPlace.getPhone());
-        tv_preview_card_place_average_time.setText(mLastPlace.getAverage_time() + " мин");
-        tvPreviewBottomRateCount.setText(String.valueOf(mLastPlace.getRating()));
+        coffeeCardView.setPlace(mLastPlace);
+
         if (mMap.getMyLocation() != null) {
-            int distance = MapsUtils.calculationDistance(new LatLng(mMap.getMyLocation().getLatitude(), mMap.getMyLocation().getLongitude())
-                    , new LatLng(mLastPlace.getCoodrinates().getLatitude(),
-                            mLastPlace.getCoodrinates().getLongitude()));
-            tvPreviewBottomRangeCount.setText(MapsUtils.castDistance(distance));
+            int distance = MapsUtils.calculationDistance(
+                    new LatLng(mMap.getMyLocation().getLatitude(), mMap.getMyLocation().getLongitude()),
+                    new LatLng(mLastPlace.getCoodrinates().getLatitude(), mLastPlace.getCoodrinates().getLongitude())
+            );
+            coffeeCardView.setDistance(MapsUtils.castDistance(distance));
         } else {
-            tvPreviewBottomRangeCount.setText("fail");
+            coffeeCardView.setDistance("fail");
         }
-        initDate();
         initBasket();
     }
 
@@ -434,58 +361,13 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
         }
     }
 
-    void initDate() {
-        Date current = null;
-        Date placeOpenTime = null;
-        Date placeCloseTime = null;
-        Date currentDate = new Date();
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
-
-        // 1) получаем текущую дату
-        Calendar calendar = GregorianCalendar.getInstance();
-        // 2) определяем день недели
-        int currentDay = calendar.get(Calendar.DAY_OF_WEEK) - calendar.getFirstDayOfWeek();
-        // 3) получаем расписание по этому дню
-        Hours hours = mLastPlace.getHours().get(currentDay);
-        String open = hours.getOpen();      //"17:31"
-        String close = hours.getClose();    //"20:31"
-        // 4) преобразую в нужный мне формат
-        try {
-            current = dateFormat.parse(dateFormat.format(currentDate));
-            placeOpenTime = dateFormat.parse(open);
-            placeCloseTime = dateFormat.parse(close);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        //проверяю условия
-        if (placeCloseTime != null && placeOpenTime != null) {
-            if (current.after(placeOpenTime) && current.before(placeCloseTime)) {
-                ivPreviewBottomStatus.setImageResource(R.drawable.open_icon);
-                tvPreviewBottomJobTime.setText("до " + mLastPlace.getHours().get(currentDay).getClose());
-            } else {
-                if (current.before(placeOpenTime)) {
-                    tvPreviewBottomJobTime.setText("до " + mLastPlace.getHours().get(currentDay).getOpen());
-                } else if (current.after(placeCloseTime)) {
-                    //достать след день
-                    if (mLastPlace.getHours().size() != currentDay) {
-                        tvPreviewBottomJobTime.setText("до " + mLastPlace.getHours().get(currentDay + 1).getOpen());
-                    } else {
-                        tvPreviewBottomJobTime.setText("до " + mLastPlace.getHours().get(0).getOpen());
-                    }
-                }
-                ivPreviewBottomStatus.setImageResource(R.drawable.close_icon);
-            }
-        }
-    }
-
     @Override
     public void setMenuAdapter(Place place) {
         setAdapter(place);
     }
 
     void initBasket() {
-        mBasketOBS = presenter.getBasket(mLastPlace.getId());
+        Observable<Basket> mBasketOBS = presenter.getBasket(mLastPlace.getId());
         if (mBasketOBS != null) {
             disposable.add(mBasketOBS
                     .subscribeOn(Schedulers.io())
@@ -493,20 +375,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
                     .subscribe(new Consumer<Basket>() {
                         @Override
                         public void accept(Basket basket) throws Exception {
-                            if (basket != null) {
-                                mBasket = basket;
-                                mBtnPayCoffee.setText(String.valueOf(mBasket.getmBasketProductsList().size())
-                                        + " Позиции " + mBasket.getSumma(mBasket));
-                                if (mBasket.getmBasketProductsList().size() == 0) {
-                                    mBtnPayCoffee.setEnabled(false);
-                                } else {
-                                    mBtnPayCoffee.setEnabled(true);
-                                }
-                                mBtnPayCoffee.setText("В заказе " + String.valueOf(mBasket.getmBasketProductsList().size())
-                                        + " напитка (" + mBasket.getSumma(mBasket) + "Р)");
-                            } else {
-                                mBtnPayCoffee.setEnabled(false);
-                            }
+                            coffeeCardView.updateBaster(basket);
                         }
                     }));
         } else {

@@ -61,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="9dp"
-                    android:text="Капучино"
+                    android:ellipsize="end"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
 
@@ -75,7 +75,6 @@
                     android:layout_toStartOf="@+id/tv_order_product_count"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="adsfjsddddddasdasdf"
                     android:textColor="@color/grey"
                     android:textSize="18sp" />
 
@@ -92,7 +91,6 @@
                     android:paddingStart="6dp"
                     android:paddingEnd="8dp"
                     android:gravity="center"
-                    android:text="x3"
                     android:textColor="@color/grey"
                     android:textSize="18sp" />
 

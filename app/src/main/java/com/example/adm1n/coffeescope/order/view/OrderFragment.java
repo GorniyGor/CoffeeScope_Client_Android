@@ -28,6 +28,8 @@ import com.example.adm1n.coffeescope.utils.SpaceItemDecoration;
 
 import io.realm.RealmList;
 
+import static com.example.adm1n.coffeescope.R.string.btn_order_result_text;
+
 public class OrderFragment extends BaseFragment implements OrderAdapter.OnOrderClick {
 
     private TextView tv_order_place_name;
@@ -91,6 +93,7 @@ public class OrderFragment extends BaseFragment implements OrderAdapter.OnOrderC
         mRadioButtonTime.setOnClickListener(radioButtonClickListener);
         timePicker.setIs24HourView(true);
         timePicker.setEnabled(false);
+        btn_order_summa_count.setText(getString(btn_order_result_text) + " " + mBasket.getSumma() + "\u20BD");
     }
 
     private void initPlaceInfo() {

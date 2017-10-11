@@ -23,6 +23,7 @@
     <string name="dont_have_account">У вас ещё нет учётной записи?</string>
     <string name="registration">Зарегистрироваться</string>
     <string name="authorization">Авторизация</string>
+    <string name="reset_password">Восстановить пароль</string>
     <string name="last_name">Фамилия</string>
     <string name="name">Имя</string>
     <string name="registration_policy">Регистрируясь, я соглашаюсь с правилами политики конфиденциальности</string>
@@ -32,5 +33,21 @@
     <string name="profile">Профиль</string>
     <string name="write_feedback">Написать обратную связь</string>
     <string name="edit_pass">Изменить пароль</string>
-    <string name="logout">выйти</string>
+    <string name="logout">Выйти</string>
+    <string name="until">до %s</string>
+    <plurals name="drinks">
+        <item quantity="zero">нет напитков</item>
+        <item quantity="one">%d напиток</item>
+        <item quantity="few">%d напитка</item>
+        <item quantity="many">%d напитков</item>
+    </plurals>
+    <string name="button_order">В заказе %1$s (%2$d Р)</string>
+    <string name="logout_message">Вы уверены, что хотите выйти?</string>
+    <string name="base_url">http://coffeescope.istomin.im/api/v1/</string>
+
+    //network and errors
+    <string name="error_token_expired">Срок действия данного токена истек.</string>
+    <string name="success">success</string>
+    <string name="error">error</string>
+    <string name="expired">expired</string>
 </resources>

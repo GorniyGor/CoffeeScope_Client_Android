@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +14,11 @@ import android.widget.Toast;
 
 import com.example.adm1n.coffeescope.BaseFragment;
 import com.example.adm1n.coffeescope.R;
+import com.example.adm1n.coffeescope.custom_view.GreatEditText;
 import com.example.adm1n.coffeescope.dialog.OkDialog;
 import com.example.adm1n.coffeescope.introduction.presenter.IntroductionPresenter;
 import com.example.adm1n.coffeescope.introduction.registration.IntroductionRegistrationActivity;
+import com.example.adm1n.coffeescope.introduction.reset_password.IntroductionResetPasswordActivity;
 import com.example.adm1n.coffeescope.profile.ProfileActivity;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
@@ -66,10 +67,14 @@ public class IntroductionAuthorizationFragment extends BaseFragment implements I
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_introduction_authorization, null);
-        textInputLayoutEmail = (TextInputLayout) view.findViewById(R.id.textInputLayoutEmail);
-        textInputLayoutPass = (TextInputLayout) view.findViewById(R.id.textInputLayoutPass);
-        etEmail = (EditText) view.findViewById(R.id.etEmail);
-        etPassword = (EditText) view.findViewById(R.id.etPassword);
+
+        GreatEditText email = (GreatEditText) view.findViewById(R.id.cvAuthorizationEmail);
+        GreatEditText pass = (GreatEditText) view.findViewById(R.id.cvAuthorizationPassword);
+
+        textInputLayoutEmail = email.getTextInputLayout();
+        textInputLayoutPass = pass.getTextInputLayout();
+        etEmail = email.getEditText();
+        etPassword = pass.getEditText();
         btnLogin = (Button) view.findViewById(R.id.btnAuthorizationLogin);
         btnRegistration = (Button) view.findViewById(R.id.btnAuthorizationRegistration);
         tvForgotPassword = (TextView) view.findViewById(R.id.tvForgotPassword);
@@ -81,19 +86,6 @@ public class IntroductionAuthorizationFragment extends BaseFragment implements I
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRxListener();
-        etEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    textInputLayoutEmail.setGravity(Gravity.BOTTOM);
-                } else {
-                    if (etEmail.getText().length() == 0) {
-                        textInputLayoutEmail.setGravity(Gravity.CENTER);
-                    }
-                }
-                textInputLayoutEmail.postInvalidate();
-            }
-        });
         btnRegistration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,7 +114,8 @@ public class IntroductionAuthorizationFragment extends BaseFragment implements I
         tvForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getActivity(), "Восстанавливаем пароль", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), IntroductionResetPasswordActivity.class);
+                startActivity(intent);
             }
         });
     }

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.example.adm1n.coffeescope.App;
 import com.example.adm1n.coffeescope.introduction.authorization.IIntroductionAuthorizationView;
 import com.example.adm1n.coffeescope.introduction.registration.IIntroductionRegistrationView;
+import com.example.adm1n.coffeescope.introduction.reset_password.IIntroductionResetPasswordView;
 import com.example.adm1n.coffeescope.network.responses.AuthResponse;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -22,6 +23,7 @@ public class IntroductionPresenter implements IIntroductionPresenter {
     private Context mContext;
     private IIntroductionAuthorizationView authorizationView;
     private IIntroductionRegistrationView registrationView;
+    private IIntroductionResetPasswordView resetPasswordView;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public IntroductionPresenter(Context mContext, IIntroductionAuthorizationView authorizationView) {
@@ -34,9 +36,14 @@ public class IntroductionPresenter implements IIntroductionPresenter {
         this.registrationView = registrationView;
     }
 
+    public IntroductionPresenter(Context mContext, IIntroductionResetPasswordView resetPasswordView) {
+        this.mContext = mContext;
+        this.resetPasswordView = resetPasswordView;
+    }
+
     @Override
     public void login(String email, String password) {
-        App.getApiInterface().authorization(email, password)
+        App.getPrivateApi().authorization(email, password)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<AuthResponse>() {
@@ -58,7 +65,7 @@ public class IntroductionPresenter implements IIntroductionPresenter {
 
     @Override
     public void registration(String lastName, String name, String email, String password, String confirmPassword) {
-        App.getApiInterface().registration(lastName, name, email, password, confirmPassword)
+        App.getPrivateApi().registration(lastName, name, email, password, confirmPassword)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<AuthResponse>() {

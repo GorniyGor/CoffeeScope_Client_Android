@@ -15,10 +15,10 @@
         app:behavior_hideable="true"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
-        <!--нижняя планка drag me-->
-        <include
-            android:id="@+id/bottom_sheet_content_view"
-            layout="@layout/bottom_sheet_content_view" />
+        <com.example.adm1n.coffeescope.custom_view.CoffeeCardView
+            android:id="@+id/coffee_card_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

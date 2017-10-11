@@ -48,7 +48,7 @@ public class ErrorDialog extends DialogFragment {
                 getDialog().dismiss();
             }
         });
-        tvErrorMessage = (TextView) view.findViewById(R.id.tvIntroductionDialogBody);
+        tvErrorMessage = (TextView) view.findViewById(R.id.tvDialogBody);
         tvErrorMessage.setText(message);
         return view;
     }

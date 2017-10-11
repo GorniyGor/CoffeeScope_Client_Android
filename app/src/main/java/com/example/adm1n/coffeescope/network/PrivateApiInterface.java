@@ -1,8 +1,10 @@
 package com.example.adm1n.coffeescope.network;
 
 import com.example.adm1n.coffeescope.network.responses.AuthResponse;
+import com.example.adm1n.coffeescope.network.responses.EditProfileResponse;
 import com.example.adm1n.coffeescope.network.responses.PlaceResponse;
 import com.example.adm1n.coffeescope.network.responses.PlacesResponse;
+import com.example.adm1n.coffeescope.network.responses.ProfileResponse;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -16,13 +18,7 @@ import retrofit2.http.Path;
  * Created by adm1n on 31.07.2017.
  */
 
-public interface ApiInterface {
-
-    @GET("places")
-    Observable<PlacesResponse> getPlaces();
-
-    @GET("place/{placeId}")
-    Observable<PlaceResponse> getPlace(@Path("placeId") String placeId);
+public interface PrivateApiInterface {
 
     //Авторизация
     @FormUrlEncoded
@@ -34,8 +30,22 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("buyer/registration")
     Single<AuthResponse> registration(@Field("surname") String surName,
-                                          @Field("name") String name,
-                                          @Field("email") String email,
-                                          @Field("password") String password,
-                                          @Field("password_confirmation") String password_confirmation);
+                                      @Field("name") String name,
+                                      @Field("email") String email,
+                                      @Field("password") String password,
+                                      @Field("password_confirmation") String password_confirmation);
+
+    @GET("buyer/profile")
+    Single<ProfileResponse> getProfile();
+
+    @POST("buyer/profile/edit")
+    Single<EditProfileResponse> editProfile(
+            @Field("name") String firstName,
+            @Field("surname") String lastName,
+            @Field("email") String email
+    );
+
+    //Refresh
+    @GET("buyer/refresh")
+    Single<AuthResponse> refresh();
 }

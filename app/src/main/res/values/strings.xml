@@ -33,7 +33,7 @@
     <string name="profile">Профиль</string>
     <string name="write_feedback">Написать обратную связь</string>
     <string name="edit_pass">Изменить пароль</string>
-    <string name="logout">выйти</string>
+    <string name="logout">Выйти</string>
     <string name="until">до %s</string>
     <plurals name="drinks">
         <item quantity="zero">нет напитков</item>
@@ -42,6 +42,7 @@
         <item quantity="many">%d напитков</item>
     </plurals>
     <string name="button_order">В заказе %1$s (%2$d Р)</string>
+    <string name="logout_message">Вы уверены, что хотите выйти?</string>
     <string name="base_url">http://coffeescope.istomin.im/api/v1/</string>
 
     //network and errors

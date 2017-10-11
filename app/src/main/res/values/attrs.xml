@@ -7,5 +7,6 @@
             <enum name="password" value="1" />
             <enum name="email" value="2" />
         </attr>
+        <attr name="text" format="string" />
     </declare-styleable>
 </resources>

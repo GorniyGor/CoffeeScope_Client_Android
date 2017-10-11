@@ -44,6 +44,7 @@ public class GreatEditText extends CardView {
 
         try {
             textInputLayout.setHint(a.getString(R.styleable.GreatEditText_hint));
+            editText.setText(a.getString(R.styleable.GreatEditText_text));
             int type = a.getInteger(R.styleable.GreatEditText_type, 0);
             switch (type) {
                 case 1: // password

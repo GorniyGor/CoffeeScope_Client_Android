@@ -2,17 +2,13 @@ package com.example.adm1n.coffeescope.network;
 
 import com.example.adm1n.coffeescope.network.responses.AuthResponse;
 import com.example.adm1n.coffeescope.network.responses.EditProfileResponse;
-import com.example.adm1n.coffeescope.network.responses.PlaceResponse;
-import com.example.adm1n.coffeescope.network.responses.PlacesResponse;
 import com.example.adm1n.coffeescope.network.responses.ProfileResponse;
 
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
 
 /**
  * Created by adm1n on 31.07.2017.
@@ -38,6 +34,7 @@ public interface PrivateApiInterface {
     @GET("buyer/profile")
     Single<ProfileResponse> getProfile();
 
+    @FormUrlEncoded
     @POST("buyer/profile/edit")
     Single<EditProfileResponse> editProfile(
             @Field("name") String firstName,

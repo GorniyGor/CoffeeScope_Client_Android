@@ -30,10 +30,10 @@ public interface PrivateApiInterface {
     @FormUrlEncoded
     @POST("buyer/registration")
     Single<AuthResponse> registration(@Field("surname") String surName,
-                                          @Field("name") String name,
-                                          @Field("email") String email,
-                                          @Field("password") String password,
-                                          @Field("password_confirmation") String password_confirmation);
+                                      @Field("name") String name,
+                                      @Field("email") String email,
+                                      @Field("password") String password,
+                                      @Field("password_confirmation") String password_confirmation);
 
     @GET("buyer/profile")
     Single<ProfileResponse> getProfile();
@@ -44,10 +44,6 @@ public interface PrivateApiInterface {
             @Field("surname") String lastName,
             @Field("email") String email
     );
-                                      @Field("name") String name,
-                                      @Field("email") String email,
-                                      @Field("password") String password,
-                                      @Field("password_confirmation") String password_confirmation);
 
     //Refresh
     @GET("buyer/refresh")

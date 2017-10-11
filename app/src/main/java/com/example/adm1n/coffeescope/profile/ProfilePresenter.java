@@ -20,7 +20,7 @@ class ProfilePresenter implements IProfilePresenter {
 
     @Override
     public void getProfile() {
-        App.getApiInterface().getProfile()
+        App.getPrivateApi().getProfile()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<ProfileResponse>() {
@@ -43,7 +43,7 @@ class ProfilePresenter implements IProfilePresenter {
 
     @Override
     public void saveProfile(final String firstName, final String lastName, final String email) {
-        App.getApiInterface().editProfile(firstName, lastName, email)
+        App.getPrivateApi().editProfile(firstName, lastName, email)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<EditProfileResponse>() {

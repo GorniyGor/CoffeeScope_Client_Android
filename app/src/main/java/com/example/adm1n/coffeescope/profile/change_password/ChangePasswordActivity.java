@@ -11,6 +11,7 @@ public class ChangePasswordActivity extends BaseActivityWithToolbar {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         toolbarTitle.setText("Изменить пароль");
+        toolbarBackButton.setImageResource(R.drawable.close_button);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.container, new ChangePasswordFragment()).commit();
         }

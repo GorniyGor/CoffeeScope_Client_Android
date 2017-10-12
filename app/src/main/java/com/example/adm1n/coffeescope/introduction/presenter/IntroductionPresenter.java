@@ -1,8 +1,10 @@
 package com.example.adm1n.coffeescope.introduction.presenter;
 
 import android.content.Context;
+import android.preference.PreferenceManager;
 
 import com.example.adm1n.coffeescope.App;
+import com.example.adm1n.coffeescope.Const;
 import com.example.adm1n.coffeescope.introduction.authorization.IIntroductionAuthorizationView;
 import com.example.adm1n.coffeescope.introduction.registration.IIntroductionRegistrationView;
 import com.example.adm1n.coffeescope.introduction.reset_password.IIntroductionResetPasswordView;
@@ -50,6 +52,7 @@ public class IntroductionPresenter implements IIntroductionPresenter {
                     @Override
                     public void accept(@NonNull AuthResponse authResponse) throws Exception {
                         if (authResponse.getStatus().equals("success")) {
+                            saveToken(authResponse.getAccessToken(), authResponse.getToken_type());
                             authorizationView.successLogin();
                         } else {
                             authorizationView.showError(authResponse.getFirst_error());
@@ -72,6 +75,7 @@ public class IntroductionPresenter implements IIntroductionPresenter {
                     @Override
                     public void accept(@NonNull AuthResponse authResponse) throws Exception {
                         if (authResponse.getStatus().equals("success")) {
+                            saveToken(authResponse.getAccessToken(), authResponse.getToken_type());
                             registrationView.onRegistrationFinish();
                         } else {
                             registrationView.showError(authResponse.getFirst_error());
@@ -87,5 +91,17 @@ public class IntroductionPresenter implements IIntroductionPresenter {
 
     public void onStop() {
         compositeDisposable.dispose();
+    }
+
+    private void saveToken(String token, String type) {
+        PreferenceManager.getDefaultSharedPreferences(mContext)
+                .edit()
+                .putString(Const.API_TOKEN, token)
+                .apply();
+
+        PreferenceManager.getDefaultSharedPreferences(mContext)
+                .edit()
+                .putString(Const.API_TOKEN_TYPE, type)
+                .apply();
     }
 }

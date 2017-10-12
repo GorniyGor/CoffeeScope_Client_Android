@@ -5,6 +5,7 @@ import com.example.adm1n.coffeescope.network.responses.EditProfileResponse;
 import com.example.adm1n.coffeescope.network.responses.ProfileResponse;
 
 import io.reactivex.Single;
+import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -44,5 +45,5 @@ public interface PrivateApiInterface {
 
     //Refresh
     @GET("buyer/refresh")
-    Single<AuthResponse> refresh();
+    Call<AuthResponse> refresh();
 }

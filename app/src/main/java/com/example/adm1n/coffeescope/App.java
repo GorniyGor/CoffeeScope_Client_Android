@@ -2,6 +2,7 @@ package com.example.adm1n.coffeescope;
 
 import android.app.Application;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.example.adm1n.coffeescope.network.BaseResponse;
 import com.example.adm1n.coffeescope.network.PrivateApiInterface;
@@ -9,6 +10,7 @@ import com.example.adm1n.coffeescope.network.PublicApiInterface;
 import com.example.adm1n.coffeescope.network.responses.AuthResponse;
 import com.example.adm1n.coffeescope.network.responses.ErrorResponse;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 
@@ -23,6 +25,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -32,12 +35,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class App extends Application {
+    private static final int OK_CODE = 2;
+    private static final int FAIL_CODE = 4;
+
     private Retrofit publicRetrofit;
     private Retrofit privateRetrofit;
+    private Retrofit refreshRetrofit;
     private static PublicApiInterface publicApi;
     private static PrivateApiInterface privateApi;
-    private OkHttpClient client;
+    private static PrivateApiInterface refreshApi;
     private String token;
+    private OkHttpClient httpClient;
     private String tokenType;
 
     public String getToken() {
@@ -64,55 +72,53 @@ public class App extends Application {
 
         Realm.setDefaultConfiguration(realmConfig);
 
-        //C AUTH
-        client = new OkHttpClient()
+        httpClient = new OkHttpClient()
                 .newBuilder()
                 .addInterceptor(new Interceptor() {
                     @Override
                     public Response intercept(Chain chain) throws IOException {
-                        return chain
-                                .proceed(chain.request())
-                                .newBuilder()
-                                .header("Accept", "application/json")
-                                .header("Authorization", getTokenType() + getToken())
-                                .build();
-                    }
-                })
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public Response intercept(Chain chain) throws IOException {
                         Request request = chain.request();
-                        Response response = chain.proceed(request);
+
+                        //Build new request
+                        Request.Builder builder = request.newBuilder();
+                        builder.header("Accept", "application/json"); //if necessary, say to consume JSON
+
+                        String token = getToken(); //save token of this request for future
+                        setAuthHeader(builder, token); //write current token to request
+
+                        request = builder.build(); //overwrite old request
+                        Response response = chain.proceed(request); //perform request, here original request will be executed
+
                         String responseBodyString = response.body().string();
                         Gson gson = new Gson();
                         BaseResponse baseResponse = gson.fromJson(responseBodyString, BaseResponse.class);
                         if (baseResponse.getStatus().equals(getString(R.string.error))) {
                             ErrorResponse message = gson.fromJson(responseBodyString, ErrorResponse.class);
-                            if (message.getFirstError().equals(getString(R.string.error_token_expired))
-                                    && message.getStatus().equals(getString(R.string.expired))) {
-                                refreshToken();
+                            if (message.getFirstError().equals(getString(R.string.error_token_expired))) {
+                                synchronized (httpClient) { //perform all 401 in sync blocks, to avoid multiply token updates
+                                    String currentToken = getToken(); //get currently stored token
+                                    if (currentToken != null && currentToken.equals(token)) { //compare current token with token that was stored before, if it was not updated - do update
+                                        int code = refreshToken(); //refresh token
+                                        if (code != OK_CODE) { //if refresh token failed for some reason
+                                            if (code == FAIL_CODE) //only if response is 400, 500 might mean that token was not updated
+//                                        logout(); //go to login screen
+                                                return response; //if token refresh failed - show error to user
+                                        }
+                                    }
+
+                                    if (getToken() != null) { //retry requires new auth token,
+                                        setAuthHeader(builder, getToken()); //set auth token to updated
+                                        request = builder.build();
+                                        return chain.proceed(request); //repeat request with new token
+                                    }
+                                }
                             }
-                        } else if (baseResponse.getStatus().equals(getString(R.string.success))) {
-                            AuthResponse responseOk = gson.fromJson(responseBodyString, AuthResponse.class);
-                            saveToken(responseOk.getAccessToken(), responseOk.getToken_type());
                         }
                         return response.newBuilder()
-                                .body(ResponseBody.create(response.body().contentType(), responseBodyString)).build();
+                                .body(ResponseBody.create(response.body().contentType(), responseBodyString))
+                                .build();
                     }
-                })
-//                .authenticator(new Authenticator() {
-//                    @Override
-//                    public Request authenticate(Route route, Response response) throws IOException {
-//                        if (response.request().header("Authorization") != null) {
-//                            return null; // Give up, we've already attempted to authenticate.
-//                        }
-//                        String credential = Credentials.basic("jesse", "password1");
-//                        return response.request().newBuilder()
-//                                .header("Authorization", credential)
-//                                .build();
-//                    }
-//                })
-                .build();
+                }).build();
 
         publicRetrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -120,15 +126,22 @@ public class App extends Application {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
+        refreshRetrofit = new Retrofit.Builder()
+                .baseUrl(getString(R.string.base_url))
+                .client(httpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
         privateRetrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(getString(R.string.base_url))
-                .client(client)
+                .client(httpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         publicApi = publicRetrofit.create(PublicApiInterface.class);
         privateApi = privateRetrofit.create(PrivateApiInterface.class);
+        refreshApi = refreshRetrofit.create(PrivateApiInterface.class);
     }
 
     public static PublicApiInterface getPublicApi() {
@@ -139,25 +152,24 @@ public class App extends Application {
         return privateApi;
     }
 
-    private void refreshToken() {
-        privateApi.refresh()
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<AuthResponse>() {
-                    @Override
-                    public void accept(@NonNull AuthResponse authResponse) throws Exception {
-//                        if (authResponse.getStatus().equals(getString(R.string.success))) {
-//                            saveToken(authResponse.getAccessToken(), authResponse.getToken_type());
-//                        } else {
-//                            refreshToken();
-//                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(@NonNull Throwable throwable) throws Exception {
-                        refreshToken();
-                    }
-                });
+    public static PrivateApiInterface getRefreshApi() {
+        return refreshApi;
+    }
+
+    private int refreshToken() {
+        Call<AuthResponse> refresh = getRefreshApi().refresh();
+        try {
+            retrofit2.Response<AuthResponse> execute = refresh.execute();
+            if (execute.isSuccessful()
+                    && execute.body().getAccessToken() != null
+                    && execute.body().getToken_type() != null) {
+                saveToken(execute.body().getAccessToken(), execute.body().getToken_type());
+                return OK_CODE;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return FAIL_CODE;
     }
 
     private void saveToken(String token, String type) {
@@ -170,5 +182,10 @@ public class App extends Application {
                 .edit()
                 .putString(Const.API_TOKEN_TYPE, type)
                 .apply();
+    }
+
+    private void setAuthHeader(Request.Builder builder, String token) {
+        if (token != null) //Add Auth token to each request if authorized
+            builder.header("Authorization", String.format("Bearer %s", token));
     }
 }

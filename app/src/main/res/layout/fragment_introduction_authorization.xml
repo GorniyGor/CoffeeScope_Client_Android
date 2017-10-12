@@ -16,6 +16,7 @@
         android:layout_marginTop="16dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
+        app:text="putin@kreml.ru"
         app:hint="@string/e_mail_address"
         app:type="email" />
 
@@ -28,6 +29,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         app:cardCornerRadius="8dp"
+        app:text="123456"
         app:cardElevation="4dp"
         app:hint="@string/password"
         app:type="password" />

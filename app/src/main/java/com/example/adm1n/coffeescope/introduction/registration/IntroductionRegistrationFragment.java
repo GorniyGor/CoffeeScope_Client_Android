@@ -3,7 +3,6 @@ package com.example.adm1n.coffeescope.introduction.registration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,7 +100,6 @@ public class IntroductionRegistrationFragment extends BaseFragment implements II
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initTextFieldGravity();
         setRxListener();
         btnRegistration.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,50 +116,6 @@ public class IntroductionRegistrationFragment extends BaseFragment implements II
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "Открываем правила", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void initTextFieldGravity() {
-        etEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    textInputLayoutEmail.setGravity(Gravity.BOTTOM);
-                } else {
-                    if (etEmail.getText().length() == 0) {
-                        textInputLayoutEmail.setGravity(Gravity.CENTER);
-                    }
-                }
-                textInputLayoutEmail.postInvalidate();
-            }
-        });
-
-        etName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    textInputLayoutName.setGravity(Gravity.BOTTOM);
-                } else {
-                    if (etName.getText().length() == 0) {
-                        textInputLayoutName.setGravity(Gravity.CENTER);
-                    }
-                }
-                textInputLayoutName.postInvalidate();
-            }
-        });
-
-        etLastName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    textInputLayoutLastName.setGravity(Gravity.BOTTOM);
-                } else {
-                    if (etLastName.getText().length() == 0) {
-                        textInputLayoutLastName.setGravity(Gravity.CENTER);
-                    }
-                }
-                textInputLayoutLastName.postInvalidate();
             }
         });
     }

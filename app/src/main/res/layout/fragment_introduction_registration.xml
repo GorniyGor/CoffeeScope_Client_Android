@@ -35,7 +35,6 @@
 
         <com.example.adm1n.coffeescope.custom_view.GreatEditText
             android:id="@+id/cvRegistrationEmail"
-            apphint="@string/e_mail_address"
             android:layout_width="match_parent"
             android:layout_height="72dp"
             android:layout_below="@+id/cvRegistrationName"

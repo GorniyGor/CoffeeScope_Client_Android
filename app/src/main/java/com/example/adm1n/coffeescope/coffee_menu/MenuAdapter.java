@@ -48,6 +48,9 @@ public class MenuAdapter extends ExpandableRecyclerViewAdapter<HeaderViewHolder,
                                       ExpandableGroup group) {
         holder.setHeaderName(group.getTitle());
         holder.disableListener();
+        if (flatPosition == 0) {
+            holder.showDecorator(false);
+        }
     }
 
     public interface OnProductClick {

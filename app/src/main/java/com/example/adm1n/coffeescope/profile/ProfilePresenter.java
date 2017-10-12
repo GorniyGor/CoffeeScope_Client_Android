@@ -43,6 +43,7 @@ class ProfilePresenter implements IProfilePresenter {
 
     @Override
     public void saveProfile(final String firstName, final String lastName, final String email) {
+        view.setButtonEnabled(false);
         App.getPrivateApi().editProfile(firstName, lastName, email)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -55,12 +56,14 @@ class ProfilePresenter implements IProfilePresenter {
                                     lastName,
                                     email
                             );
+                        } else {
+                            view.setButtonEnabled(true);
                         }
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-
+                        view.setButtonEnabled(true);
                     }
                 });
     }

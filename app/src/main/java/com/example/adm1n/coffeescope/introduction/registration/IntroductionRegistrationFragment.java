@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.adm1n.coffeescope.BaseFragment;
 import com.example.adm1n.coffeescope.R;
+import com.example.adm1n.coffeescope.custom_view.GreatEditText;
 import com.example.adm1n.coffeescope.dialog.OkDialog;
 import com.example.adm1n.coffeescope.introduction.presenter.IntroductionPresenter;
 import com.jakewharton.rxbinding2.widget.RxTextView;
@@ -34,6 +35,12 @@ import io.reactivex.functions.Function5;
 public class IntroductionRegistrationFragment extends BaseFragment implements IIntroductionRegistrationView {
     private IntroductionPresenter presenter;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+    private GreatEditText lastName;
+    private GreatEditText firstName;
+    private GreatEditText email;
+    private GreatEditText password;
+    private GreatEditText passwordRepeat;
 
     private TextInputLayout textInputLayoutName;
     private EditText etName;
@@ -71,16 +78,22 @@ public class IntroductionRegistrationFragment extends BaseFragment implements II
     }
 
     private void initView(View v) {
-        textInputLayoutLastName = (TextInputLayout) v.findViewById(R.id.textInputLayoutLastName);
-        textInputLayoutName = (TextInputLayout) v.findViewById(R.id.textInputLayoutName);
-        textInputLayoutEmail = (TextInputLayout) v.findViewById(R.id.textInputLayoutEmail);
-        textInputLayoutPassword = (TextInputLayout) v.findViewById(R.id.textInputLayoutPass);
-        textInputLayoutConfirmPassword = (TextInputLayout) v.findViewById(R.id.textInputLayoutConfirmPassword);
-        etName = (EditText) v.findViewById(R.id.etName);
-        etLastName = (EditText) v.findViewById(R.id.etLastName);
-        etEmail = (EditText) v.findViewById(R.id.etEmail);
-        etPassword = (EditText) v.findViewById(R.id.etPassword);
-        etConfirmPassword = (EditText) v.findViewById(R.id.etConfirmPassword);
+        lastName = (GreatEditText) v.findViewById(R.id.cvRegistrationLastName);
+        firstName = (GreatEditText) v.findViewById(R.id.cvRegistrationName);
+        email = (GreatEditText) v.findViewById(R.id.cvRegistrationEmail);
+        password = (GreatEditText) v.findViewById(R.id.cvRegistrationPassword);
+        passwordRepeat = (GreatEditText) v.findViewById(R.id.cvRegistrationConfirmPassword);
+
+        textInputLayoutLastName = lastName.getTextInputLayout();
+        textInputLayoutName = firstName.getTextInputLayout();
+        textInputLayoutEmail = email.getTextInputLayout();
+        textInputLayoutPassword = password.getTextInputLayout();
+        textInputLayoutConfirmPassword = passwordRepeat.getTextInputLayout();
+        etName = firstName.getEditText();
+        etLastName = lastName.getEditText();
+        etEmail = email.getEditText();
+        etPassword = password.getEditText();
+        etConfirmPassword = passwordRepeat.getEditText();
         btnRegistration = (Button) v.findViewById(R.id.btnRegistrationFinish);
         tvPolicy = (TextView) v.findViewById(R.id.tvPolicy);
     }

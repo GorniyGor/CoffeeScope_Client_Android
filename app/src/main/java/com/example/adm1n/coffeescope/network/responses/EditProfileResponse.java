@@ -3,13 +3,13 @@ package com.example.adm1n.coffeescope.network.responses;
 import com.example.adm1n.coffeescope.models.Profile;
 
 public class EditProfileResponse {
-    private Profile profile;
+    private Profile data;
 
-    public Profile getProfile() {
-        return profile;
+    public Profile getData() {
+        return data;
     }
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
+    public void setData(Profile data) {
+        this.data = data;
     }
 }

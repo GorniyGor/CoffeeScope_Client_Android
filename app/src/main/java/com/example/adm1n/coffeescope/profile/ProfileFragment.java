@@ -1,5 +1,6 @@
 package com.example.adm1n.coffeescope.profile;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 import com.example.adm1n.coffeescope.BaseFragment;
 import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.custom_view.GreatEditText;
+import com.example.adm1n.coffeescope.profile.change_password.ChangePasswordActivity;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
 
@@ -80,7 +82,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         view.findViewById(R.id.cv_change_password).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Изменяем пароль", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getContext(), ChangePasswordActivity.class));
             }
         });
 

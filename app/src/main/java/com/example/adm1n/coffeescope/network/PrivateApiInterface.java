@@ -46,4 +46,12 @@ public interface PrivateApiInterface {
     //Refresh
     @GET("buyer/refresh")
     Call<AuthResponse> refresh();
+
+    @FormUrlEncoded
+    @POST("buyer/password/change")
+    Single<BaseResponse> changePassword(
+            @Field("old_password") String oldPassword,
+            @Field("password") String newPassword,
+            @Field("password_confirmation") String newPasswordRepeat
+    );
 }

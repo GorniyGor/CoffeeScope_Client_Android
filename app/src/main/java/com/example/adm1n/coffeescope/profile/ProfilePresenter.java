@@ -15,7 +15,7 @@ class ProfilePresenter implements IProfilePresenter {
 
     ProfilePresenter(IProfileView v) {
         view = v;
-        view.setFields("Тест1", "Тест2", "Тест3");
+        view.setFields("", "", "");
     }
 
     @Override
@@ -49,11 +49,11 @@ class ProfilePresenter implements IProfilePresenter {
                 .subscribe(new Consumer<EditProfileResponse>() {
                     @Override
                     public void accept(@NonNull EditProfileResponse editProfileResponse) throws Exception {
-                        if (editProfileResponse.getProfile() != null) {
+                        if (editProfileResponse.getData() != null) {
                             view.setFields(
-                                    editProfileResponse.getProfile().getFirstName(),
-                                    editProfileResponse.getProfile().getLastName(),
-                                    editProfileResponse.getProfile().getEmail()
+                                    firstName,
+                                    lastName,
+                                    email
                             );
                         }
                     }

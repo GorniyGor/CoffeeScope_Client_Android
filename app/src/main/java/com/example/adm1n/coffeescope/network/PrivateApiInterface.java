@@ -2,6 +2,7 @@ package com.example.adm1n.coffeescope.network;
 
 import com.example.adm1n.coffeescope.network.responses.AuthResponse;
 import com.example.adm1n.coffeescope.network.responses.EditProfileResponse;
+import com.example.adm1n.coffeescope.network.responses.ErrorResponse;
 import com.example.adm1n.coffeescope.network.responses.ProfileResponse;
 
 import io.reactivex.Single;
@@ -49,7 +50,7 @@ public interface PrivateApiInterface {
 
     @FormUrlEncoded
     @POST("buyer/password/change")
-    Single<BaseResponse> changePassword(
+    Single<ErrorResponse> changePassword(
             @Field("old_password") String oldPassword,
             @Field("password") String newPassword,
             @Field("password_confirmation") String newPasswordRepeat

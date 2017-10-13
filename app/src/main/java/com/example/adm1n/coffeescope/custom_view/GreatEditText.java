@@ -19,7 +19,7 @@ public class GreatEditText extends CardView {
     final private EditText editText;
     final private TextInputLayout textInputLayout;
 
-    private int paddintTop = 0;
+    private int paddingTop = 0;
 
     public GreatEditText(Context context) {
         this(context, null);
@@ -32,7 +32,7 @@ public class GreatEditText extends CardView {
     public GreatEditText(final Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        paddintTop = Math.round(12 * (getResources().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        paddingTop = Math.round(12 * (getResources().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT));
 
         inflate(getContext(), R.layout.great_edit_text, this);
         textInputLayout = (TextInputLayout) findViewById(R.id.textInputLayout);
@@ -44,7 +44,8 @@ public class GreatEditText extends CardView {
 
         try {
             textInputLayout.setHint(a.getString(R.styleable.GreatEditText_hint));
-            editText.setText(a.getString(R.styleable.GreatEditText_text));
+            setText(a.getString(R.styleable.GreatEditText_text));
+
             int type = a.getInteger(R.styleable.GreatEditText_type, 0);
             switch (type) {
                 case 1: // password
@@ -65,13 +66,10 @@ public class GreatEditText extends CardView {
         editText.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                int moveTo;
-                if (hasFocus || editText.getText().length() > 0) {
-                    moveTo = paddintTop;
-                } else {
-                    moveTo = 0;
-                }
-                textInputLayout.animate().translationY(moveTo).setDuration(100).start();
+                textInputLayout.animate()
+                        .translationY(hasFocus || editText.getText().length() > 0 ? paddingTop : 0)
+                        .setDuration(100)
+                        .start();
             }
         });
 
@@ -79,7 +77,7 @@ public class GreatEditText extends CardView {
 
     public void setText(String text) {
         editText.setText(text);
-        textInputLayout.setTranslationY(text.isEmpty() ? 0 : paddintTop);
+        textInputLayout.setTranslationY(text.isEmpty() ? 0 : paddingTop);
     }
 
     public String getText() {

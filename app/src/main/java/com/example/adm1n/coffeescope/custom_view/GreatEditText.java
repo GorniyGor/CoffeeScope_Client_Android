@@ -2,6 +2,7 @@ package com.example.adm1n.coffeescope.custom_view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.CardView;
 import android.text.InputType;
@@ -19,6 +20,9 @@ public class GreatEditText extends CardView {
     final private EditText editText;
     final private TextInputLayout textInputLayout;
 
+    final private Drawable errorBackground;
+    final private Drawable fineBackground;
+
     private int paddingTop = 0;
 
     public GreatEditText(Context context) {
@@ -32,7 +36,11 @@ public class GreatEditText extends CardView {
     public GreatEditText(final Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
+        errorBackground = getResources().getDrawable(R.drawable.great_edit_text_error_background);
+        fineBackground = getResources().getDrawable(R.drawable.great_edit_text_fine_background);
         paddingTop = Math.round(12 * (getResources().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT));
+
+        hideError();
 
         inflate(getContext(), R.layout.great_edit_text, this);
         textInputLayout = (TextInputLayout) findViewById(R.id.textInputLayout);
@@ -90,5 +98,13 @@ public class GreatEditText extends CardView {
 
     public TextInputLayout getTextInputLayout() {
         return textInputLayout;
+    }
+
+    public void showError() {
+        this.setBackground(errorBackground);
+    }
+
+    public void hideError() {
+        this.setBackground(fineBackground);
     }
 }

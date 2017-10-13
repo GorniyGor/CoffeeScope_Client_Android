@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.text.InputType;
 import android.util.AttributeSet;
@@ -39,8 +40,8 @@ public class GreatEditText extends CardView {
     public GreatEditText(final Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        errorBackground = getResources().getDrawable(R.drawable.great_edit_text_error_background);
-        fineBackground = getResources().getDrawable(R.drawable.great_edit_text_fine_background);
+        errorBackground = ContextCompat.getDrawable(getContext(), R.drawable.great_edit_text_error_background);
+        fineBackground = ContextCompat.getDrawable(getContext(), R.drawable.great_edit_text_fine_background);
         shaking = AnimationUtils.loadAnimation(context, R.anim.shaking);
         paddingTop = Math.round(12 * (getResources().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT));
 

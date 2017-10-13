@@ -9,6 +9,8 @@ import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 
 import com.example.adm1n.coffeescope.R;
@@ -22,6 +24,7 @@ public class GreatEditText extends CardView {
 
     final private Drawable errorBackground;
     final private Drawable fineBackground;
+    final private Animation shaking;
 
     private int paddingTop = 0;
 
@@ -38,6 +41,7 @@ public class GreatEditText extends CardView {
 
         errorBackground = getResources().getDrawable(R.drawable.great_edit_text_error_background);
         fineBackground = getResources().getDrawable(R.drawable.great_edit_text_fine_background);
+        shaking = AnimationUtils.loadAnimation(context, R.anim.shaking);
         paddingTop = Math.round(12 * (getResources().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT));
 
         hideError();
@@ -101,6 +105,7 @@ public class GreatEditText extends CardView {
     }
 
     public void showError() {
+        this.startAnimation(shaking);
         this.setBackground(errorBackground);
     }
 

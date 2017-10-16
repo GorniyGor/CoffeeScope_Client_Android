@@ -23,6 +23,7 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
  * Created by adm1n on 31.07.2017.
@@ -65,6 +66,12 @@ public class App extends Application {
                 .build();
 
         Realm.setDefaultConfiguration(realmConfig);
+
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                .setDefaultFontPath("fonts/gotham-medium.otf")
+                .setFontAttrId(R.attr.fontPath)
+                .build()
+        );
 
         httpClient = new OkHttpClient()
                 .newBuilder()

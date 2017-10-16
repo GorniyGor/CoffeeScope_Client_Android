@@ -13,10 +13,12 @@ import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 public class HeaderViewHolder extends GroupViewHolder {
 
     private TextView headerTitle;
+    private View decorator;
 
     public HeaderViewHolder(View itemView) {
         super(itemView);
         headerTitle = ((TextView) itemView.findViewById(R.id.tvTitle));
+        decorator = itemView.findViewById(R.id.decorator);
     }
 
     public void setHeaderName(String name) {
@@ -25,5 +27,9 @@ public class HeaderViewHolder extends GroupViewHolder {
 
     public void disableListener() {
         super.setOnGroupClickListener(null);
+    }
+
+    public void showDecorator(boolean show) {
+        decorator.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 }

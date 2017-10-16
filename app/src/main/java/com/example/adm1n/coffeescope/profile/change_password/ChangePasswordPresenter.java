@@ -1,7 +1,8 @@
 package com.example.adm1n.coffeescope.profile.change_password;
 
 import com.example.adm1n.coffeescope.App;
-import com.example.adm1n.coffeescope.network.BaseResponse;
+import com.example.adm1n.coffeescope.ErrorKeys;
+import com.example.adm1n.coffeescope.network.responses.ErrorResponse;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -26,13 +27,18 @@ public class ChangePasswordPresenter implements IChangePasswordPresenter {
         App.getPrivateApi().changePassword(oldPassword, newPassword, newPasswordRepeat)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<BaseResponse>() {
+                .subscribe(new Consumer<ErrorResponse>() {
                     @Override
-                    public void accept(@NonNull BaseResponse baseResponse) throws Exception {
-                        if (baseResponse.getStatus().equals("success")) {
+                    public void accept(@NonNull ErrorResponse response) throws Exception {
+                        if (response.getStatus().equals("success")) {
                             view.passwordChanged();
                         } else {
-                            view.showError("Some shit");
+                            switch (response.getErrorKey()) {
+                                case ErrorKeys.OLD_PASSWORD:
+                                    view.oldPasswordError();
+                                    view.showError("Неверный пароль");
+                                    break;
+                            }
                             view.setButtonEnabled(true);
                         }
                     }

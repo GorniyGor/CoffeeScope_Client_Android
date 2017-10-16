@@ -6,4 +6,6 @@ interface IChangePasswordView {
     void passwordChanged();
 
     void showError(String error);
+
+    void oldPasswordError();
 }

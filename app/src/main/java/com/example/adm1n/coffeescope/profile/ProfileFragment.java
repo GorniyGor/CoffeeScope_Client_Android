@@ -122,6 +122,11 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         compositeDisposable.add(disposable);
     }
 
+    @Override
+    public void setButtonEnabled(boolean enabled) {
+        saveProfileButton.setEnabled(enabled);
+    }
+
     private class Checker implements Function<TextViewAfterTextChangeEvent, Boolean> {
 
         private String current;

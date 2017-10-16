@@ -2,12 +2,15 @@ package com.example.adm1n.coffeescope.custom_view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.CardView;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 
 import com.example.adm1n.coffeescope.R;
@@ -19,7 +22,11 @@ public class GreatEditText extends CardView {
     final private EditText editText;
     final private TextInputLayout textInputLayout;
 
-    private int paddintTop = 0;
+    final private Drawable errorBackground;
+    final private Drawable fineBackground;
+    final private Animation shaking;
+
+    private int paddingTop = 0;
 
     public GreatEditText(Context context) {
         this(context, null);
@@ -32,7 +39,12 @@ public class GreatEditText extends CardView {
     public GreatEditText(final Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        paddintTop = Math.round(12 * (getResources().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        errorBackground = getResources().getDrawable(R.drawable.great_edit_text_error_background);
+        fineBackground = getResources().getDrawable(R.drawable.great_edit_text_fine_background);
+        shaking = AnimationUtils.loadAnimation(context, R.anim.shaking);
+        paddingTop = Math.round(12 * (getResources().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT));
+
+        hideError();
 
         inflate(getContext(), R.layout.great_edit_text, this);
         textInputLayout = (TextInputLayout) findViewById(R.id.textInputLayout);
@@ -44,7 +56,8 @@ public class GreatEditText extends CardView {
 
         try {
             textInputLayout.setHint(a.getString(R.styleable.GreatEditText_hint));
-            editText.setText(a.getString(R.styleable.GreatEditText_text));
+            setText(a.getString(R.styleable.GreatEditText_text));
+
             int type = a.getInteger(R.styleable.GreatEditText_type, 0);
             switch (type) {
                 case 1: // password
@@ -65,13 +78,10 @@ public class GreatEditText extends CardView {
         editText.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                int moveTo;
-                if (hasFocus || editText.getText().length() > 0) {
-                    moveTo = paddintTop;
-                } else {
-                    moveTo = 0;
-                }
-                textInputLayout.animate().translationY(moveTo).setDuration(100).start();
+                textInputLayout.animate()
+                        .translationY(hasFocus || editText.getText().length() > 0 ? paddingTop : 0)
+                        .setDuration(100)
+                        .start();
             }
         });
 
@@ -79,7 +89,7 @@ public class GreatEditText extends CardView {
 
     public void setText(String text) {
         editText.setText(text);
-        textInputLayout.setTranslationY(text.isEmpty() ? 0 : paddintTop);
+        textInputLayout.setTranslationY(text == null || text.isEmpty() ? 0 : paddingTop);
     }
 
     public String getText() {
@@ -92,5 +102,14 @@ public class GreatEditText extends CardView {
 
     public TextInputLayout getTextInputLayout() {
         return textInputLayout;
+    }
+
+    public void showError() {
+        this.startAnimation(shaking);
+        this.setBackground(errorBackground);
+    }
+
+    public void hideError() {
+        this.setBackground(fineBackground);
     }
 }

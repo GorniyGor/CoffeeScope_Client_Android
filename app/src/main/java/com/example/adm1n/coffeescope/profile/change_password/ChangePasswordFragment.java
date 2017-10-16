@@ -104,6 +104,11 @@ public class ChangePasswordFragment extends Fragment implements IChangePasswordV
         Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void oldPasswordError() {
+        oldPassword.showError();
+    }
+
     private class Lenghter implements Function<TextViewAfterTextChangeEvent, Boolean> {
 
         @Override

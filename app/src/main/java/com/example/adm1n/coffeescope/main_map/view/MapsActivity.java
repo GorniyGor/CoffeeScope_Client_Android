@@ -3,6 +3,7 @@ package com.example.adm1n.coffeescope.main_map.view;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -36,12 +37,15 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -53,7 +57,6 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
 
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private final int DEFAULT_MAP_ZOOM = 13;
-
     private ArrayList<CoffeeMenu> coffeeMenuList = new ArrayList<>();
     private ArrayList<Place> placeList = new ArrayList<>();
 
@@ -122,6 +125,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
         mButtonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                presenter.getPlaces();
                 Toast.makeText(MapsActivity.this, "On Search Click", Toast.LENGTH_SHORT).show();
             }
         });
@@ -324,18 +328,25 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
     public void setMarkers(ArrayList<Place> list) {
         for (int i = 0; i < list.size(); i++) {
             Place place = list.get(i);
-//            if (place.getImage().getLable() != null) {
-//                Drawable drawable = Drawable.createFromPath(place.getImage().getLable());
-//                Bitmap bitmap = drawableToBitmap(drawable);
-//                mMap.addMarker(new MarkerOptions()
-//                        .position(new LatLng(place.getCoodrinates().getLongitude(), place.getCoodrinates().getLatitude()))
-//                        .icon(BitmapDescriptorFactory.fromBitmap(bitmap))
-//                        .snippet(String.valueOf(place.getId())));
-//            } else {
-            mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(place.getCoodrinates().getLatitude(), place.getCoodrinates().getLongitude()))
-                    .snippet(String.valueOf(place.getId())));
-//            }
+            if (place.getImage().getLable() != null) {
+                try {
+                    Bitmap bmImg = Ion.with(getApplicationContext())
+                            .load(place.getImage().getLable()).asBitmap().get();
+
+                    mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(place.getCoodrinates().getLatitude(), place.getCoodrinates().getLongitude()))
+                            .icon(BitmapDescriptorFactory.fromBitmap(bmImg))
+                            .snippet(String.valueOf(place.getId())));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(place.getCoodrinates().getLatitude(), place.getCoodrinates().getLongitude()))
+                        .snippet(String.valueOf(place.getId())));
+            }
         }
         placeList.addAll(list);
     }

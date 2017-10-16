@@ -2,7 +2,6 @@ package com.example.adm1n.coffeescope;
 
 import android.app.Application;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.example.adm1n.coffeescope.network.BaseResponse;
 import com.example.adm1n.coffeescope.network.PrivateApiInterface;
@@ -10,14 +9,9 @@ import com.example.adm1n.coffeescope.network.PublicApiInterface;
 import com.example.adm1n.coffeescope.network.responses.AuthResponse;
 import com.example.adm1n.coffeescope.network.responses.ErrorResponse;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import okhttp3.Interceptor;
@@ -102,7 +96,9 @@ public class App extends Application {
                                         if (code != OK_CODE) { //if refresh token failed for some reason
                                             if (code == FAIL_CODE) //only if response is 400, 500 might mean that token was not updated
 //                                        logout(); //go to login screen
-                                                return response; //if token refresh failed - show error to user
+                                                return response.newBuilder()
+                                                        .body(ResponseBody.create(response.body().contentType(), responseBodyString))
+                                                        .build(); //if token refresh failed - show error to user
                                         }
                                     }
 
@@ -133,10 +129,10 @@ public class App extends Application {
                 .build();
 
         privateRetrofit = new Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(getString(R.string.base_url))
-                .client(httpClient)
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .client(httpClient)
                 .build();
 
         publicApi = publicRetrofit.create(PublicApiInterface.class);
@@ -157,6 +153,7 @@ public class App extends Application {
     }
 
     private int refreshToken() {
+        //// TODO: 12.10.2017 Обработать ошибку Инвалид Токен
         Call<AuthResponse> refresh = getRefreshApi().refresh();
         try {
             retrofit2.Response<AuthResponse> execute = refresh.execute();

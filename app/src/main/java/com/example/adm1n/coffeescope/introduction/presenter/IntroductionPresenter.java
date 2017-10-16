@@ -9,6 +9,7 @@ import com.example.adm1n.coffeescope.introduction.authorization.IIntroductionAut
 import com.example.adm1n.coffeescope.introduction.registration.IIntroductionRegistrationView;
 import com.example.adm1n.coffeescope.introduction.reset_password.IIntroductionResetPasswordView;
 import com.example.adm1n.coffeescope.network.responses.AuthResponse;
+import com.example.adm1n.coffeescope.network.responses.ResetPassResponse;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -85,6 +86,28 @@ public class IntroductionPresenter implements IIntroductionPresenter {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
                         registrationView.showError(throwable.getMessage());
+                    }
+                });
+    }
+
+    @Override
+    public void resetPassword(String eMail) {
+        App.getPrivateApi().resetPassword(eMail)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResetPassResponse>() {
+                    @Override
+                    public void accept(@NonNull ResetPassResponse resetPassResponse) throws Exception {
+                        if (resetPassResponse.getStatus().equals("success")) {
+                            resetPasswordView.onResetSuccess();
+                        } else {
+                            resetPasswordView.showError(resetPassResponse.getFirst_error());
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        resetPasswordView.showError(throwable.getMessage());
                     }
                 });
     }

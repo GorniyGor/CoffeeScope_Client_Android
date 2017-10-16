@@ -11,6 +11,7 @@
     <string name="count_position">Кол-во напитков</string>
     <string name="menu">Меню</string>
     <string name="my_order">Мой заказ</string>
+    <string name="send">Отправить</string>
     <string name="save">Сохранить</string>
     <string name="as_soon_as_possible">Как можно скорее</string>
     <string name="at_time">Ко времени</string>
@@ -50,4 +51,5 @@
     <string name="success">success</string>
     <string name="error">error</string>
     <string name="expired">expired</string>
+    <string name="reset_password_text">Введите адрес электронной почты, указанный при регистрации:</string>
 </resources>

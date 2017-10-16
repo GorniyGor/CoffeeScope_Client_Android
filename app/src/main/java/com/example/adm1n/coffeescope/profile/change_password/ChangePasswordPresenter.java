@@ -30,6 +30,7 @@ public class ChangePasswordPresenter implements IChangePasswordPresenter {
                 .subscribe(new Consumer<ErrorResponse>() {
                     @Override
                     public void accept(@NonNull ErrorResponse response) throws Exception {
+                        //todo: обдумать получение верного и неверного объекта
                         if (response.getStatus().equals("success")) {
                             view.passwordChanged();
                         } else {

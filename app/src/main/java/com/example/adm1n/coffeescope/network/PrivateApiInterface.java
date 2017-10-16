@@ -3,6 +3,7 @@ package com.example.adm1n.coffeescope.network;
 import com.example.adm1n.coffeescope.network.responses.AuthResponse;
 import com.example.adm1n.coffeescope.network.responses.EditProfileResponse;
 import com.example.adm1n.coffeescope.network.responses.ProfileResponse;
+import com.example.adm1n.coffeescope.network.responses.ResetPassResponse;
 
 import io.reactivex.Single;
 import retrofit2.Call;
@@ -54,4 +55,9 @@ public interface PrivateApiInterface {
             @Field("password") String newPassword,
             @Field("password_confirmation") String newPasswordRepeat
     );
+
+    @FormUrlEncoded
+    @POST("buyer/password/reset")
+    Single<ResetPassResponse> resetPassword(
+            @Field("email") String eMail);
 }

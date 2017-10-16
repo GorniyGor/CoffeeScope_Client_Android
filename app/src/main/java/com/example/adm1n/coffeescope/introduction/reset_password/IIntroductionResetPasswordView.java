@@ -7,4 +7,5 @@ import com.example.adm1n.coffeescope.introduction.IBaseIntroductionView;
  */
 
 public interface IIntroductionResetPasswordView extends IBaseIntroductionView {
+    void onResetSuccess();
 }

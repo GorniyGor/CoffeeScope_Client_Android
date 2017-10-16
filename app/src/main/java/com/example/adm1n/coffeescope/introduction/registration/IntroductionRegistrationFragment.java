@@ -213,5 +213,6 @@ public class IntroductionRegistrationFragment extends BaseFragment implements II
     @Override
     public void onRegistrationFinish() {
         Toast.makeText(getActivity(), "onRegistrationFinish", Toast.LENGTH_SHORT).show();
+        btnRegistration.setEnabled(true);
     }
 }

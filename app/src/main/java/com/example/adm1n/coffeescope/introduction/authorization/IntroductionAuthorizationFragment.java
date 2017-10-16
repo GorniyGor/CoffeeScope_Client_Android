@@ -156,7 +156,7 @@ public class IntroductionAuthorizationFragment extends BaseFragment implements I
             }
         });
         compositeDisposable.add(mainObs);
-        btnLogin.setEnabled(false);
+//        btnLogin.setEnabled(false);
     }
 
     @Override

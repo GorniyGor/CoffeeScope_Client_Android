@@ -53,7 +53,9 @@ public class IntroductionResetPasswordFragment extends BaseFragment implements I
         btnResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getResetPass.hideError();
                 presenter.resetPassword(getResetPass.getText());
+                btnResetPassword.setEnabled(false);
             }
         });
     }
@@ -61,6 +63,7 @@ public class IntroductionResetPasswordFragment extends BaseFragment implements I
     @Override
     public void showError(String s) {
         OkDialog dialog = new OkDialog(s);
+        getResetPass.showError();
         dialog.show(getFragmentManager(), "ResetPassError");
         btnResetPassword.setEnabled(true);
     }

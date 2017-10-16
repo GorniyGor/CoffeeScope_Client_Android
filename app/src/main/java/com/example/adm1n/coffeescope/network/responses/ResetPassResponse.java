@@ -10,24 +10,9 @@ import java.util.List;
  */
 
 public class ResetPassResponse extends BaseResponse {
-    @SerializedName("status")
-    private String status;
-    @SerializedName("first_error")
     private String first_error;
-    @SerializedName("error_key")
     private String error_key;
-
     private List<Errors> errors = null;
-
-    @Override
-    public String getStatus() {
-        return status;
-    }
-
-    @Override
-    public void setStatus(String status) {
-        this.status = status;
-    }
 
     public String getFirst_error() {
         return first_error;

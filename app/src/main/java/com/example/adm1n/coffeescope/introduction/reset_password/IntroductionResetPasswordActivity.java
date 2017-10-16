@@ -17,11 +17,7 @@ public class IntroductionResetPasswordActivity extends BaseActivityWithToolbar {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         toolbarTitle.setText(R.string.reset_password);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setNavigationIcon(getDrawable(R.drawable.close_button));
-        } else {
-            toolbar.setNavigationIcon(getApplicationContext().getResources().getDrawable(R.drawable.close_button));
-        }
+        toolbarBackButton.setImageResource(R.drawable.close_button);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.container,
                     IntroductionResetPasswordFragment.newInstance()).commit();

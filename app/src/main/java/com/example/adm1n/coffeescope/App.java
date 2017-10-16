@@ -129,10 +129,10 @@ public class App extends Application {
                 .build();
 
         privateRetrofit = new Retrofit.Builder()
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(getString(R.string.base_url))
-                .client(httpClient)
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .client(httpClient)
                 .build();
 
         publicApi = publicRetrofit.create(PublicApiInterface.class);

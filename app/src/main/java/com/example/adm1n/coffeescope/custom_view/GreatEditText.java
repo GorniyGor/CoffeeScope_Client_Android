@@ -6,7 +6,9 @@ import android.graphics.drawable.Drawable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -28,6 +30,8 @@ public class GreatEditText extends CardView {
     final private Animation shaking;
 
     private int paddingTop = 0;
+
+    private int type = 0;
 
     public GreatEditText(Context context) {
         this(context, null);
@@ -59,11 +63,11 @@ public class GreatEditText extends CardView {
             textInputLayout.setHint(a.getString(R.styleable.GreatEditText_hint));
             setText(a.getString(R.styleable.GreatEditText_text));
 
-            int type = a.getInteger(R.styleable.GreatEditText_type, 0);
+            type = a.getInteger(R.styleable.GreatEditText_type, 0);
             switch (type) {
                 case 1: // password
                     editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    textInputLayout.setPasswordVisibilityToggleEnabled(true);
+                    textInputLayout.setPasswordVisibilityToggleEnabled(false);
                     break;
                 case 2: // email
                     editText.setInputType(TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
@@ -86,6 +90,20 @@ public class GreatEditText extends CardView {
             }
         });
 
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                textInputLayout.setPasswordVisibilityToggleEnabled(s.length() > 0 && type == 1);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
     }
 
     public void setText(String text) {

@@ -1,6 +1,7 @@
 package com.example.adm1n.coffeescope;
 
 import android.app.Application;
+import android.content.Context;
 import android.preference.PreferenceManager;
 
 import com.example.adm1n.coffeescope.network.BaseResponse;
@@ -43,6 +44,8 @@ public class App extends Application {
     private OkHttpClient httpClient;
     private String tokenType;
 
+    private static Context context;
+
     public String getToken() {
         return PreferenceManager
                 .getDefaultSharedPreferences(getApplicationContext())
@@ -58,6 +61,8 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        context = getApplicationContext();
+
         Realm.init(this);
         final RealmConfiguration realmConfig = new RealmConfiguration
                 .Builder()
@@ -191,5 +196,13 @@ public class App extends Application {
     private void setAuthHeader(Request.Builder builder, String token) {
         if (token != null) //Add Auth token to each request if authorized
             builder.header("Authorization", String.format("Bearer %s", token));
+    }
+
+    public static void logout() {
+        privateApi.logout();
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .clear()
+                .apply();
     }
 }

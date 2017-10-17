@@ -67,4 +67,10 @@ class ProfilePresenter implements IProfilePresenter {
                     }
                 });
     }
+
+    @Override
+    public void logout() {
+        App.logout();
+        view.logout();
+    }
 }

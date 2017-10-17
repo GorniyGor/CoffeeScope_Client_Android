@@ -208,7 +208,7 @@ public class CoffeeCardView extends FrameLayout {
     }
 
     public void rotateArrow(int angle) {
-        iv_preview_card_top_arrow.animate().rotation(angle).setDuration(300).start();
+        iv_preview_card_top_arrow.animate().scaleY(angle).setDuration(300).start();
     }
 
     public void setOnOrderButtonClickListener(View.OnClickListener listener) {

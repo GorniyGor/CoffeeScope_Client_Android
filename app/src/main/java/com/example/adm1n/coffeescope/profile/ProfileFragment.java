@@ -1,5 +1,6 @@
 package com.example.adm1n.coffeescope.profile;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.example.adm1n.coffeescope.BaseFragment;
 import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.custom_view.GreatEditText;
+import com.example.adm1n.coffeescope.main_map.view.MapsActivity;
 import com.example.adm1n.coffeescope.profile.change_password.ChangePasswordActivity;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
@@ -66,7 +68,12 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.LogoutDialog);
                 builder.setMessage(R.string.logout_message);
                 builder.setPositiveButton(R.string.cancel, null);
-                builder.setNegativeButton(R.string.logout, null);
+                builder.setNegativeButton(R.string.logout, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        presenter.logout();
+                    }
+                });
 
                 AlertDialog dialog = builder.create();
                 dialog.show();
@@ -126,6 +133,14 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
     public void setButtonEnabled(boolean enabled) {
         saveProfileButton.setEnabled(enabled);
     }
+
+    @Override
+    public void logout() {
+        Intent intent = new Intent(getContext(), MapsActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
 
     private class Checker implements Function<TextViewAfterTextChangeEvent, Boolean> {
 

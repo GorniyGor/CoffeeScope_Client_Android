@@ -4,4 +4,6 @@ public interface IProfilePresenter {
     void getProfile();
 
     void saveProfile(String firstName, String lastName, String email);
+
+    void logout();
 }

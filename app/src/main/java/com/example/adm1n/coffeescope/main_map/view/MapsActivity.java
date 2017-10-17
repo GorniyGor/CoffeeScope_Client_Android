@@ -156,8 +156,8 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                if (slideOffset > 0.5) coffeeCardView.rotateArrow(180);
-                else coffeeCardView.rotateArrow(0);
+                if (slideOffset > 0.5) coffeeCardView.rotateArrow(-1);
+                else coffeeCardView.rotateArrow(1);
             }
         });
 
@@ -196,14 +196,8 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
                 if (mBottomSheetBehavior != null) {
                     switch (mBottomSheetBehavior.getState()) {
                         case (BottomSheetBehavior.STATE_HIDDEN):
-                            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                            break;
-                        case (BottomSheetBehavior.STATE_COLLAPSED):
-                            break;
                         case (BottomSheetBehavior.STATE_EXPANDED):
                             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                            break;
-                        default:
                             break;
                     }
                 }
@@ -215,15 +209,9 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
             public void onMapClick(LatLng latLng) {
                 if (mBottomSheetBehavior != null) {
                     switch (mBottomSheetBehavior.getState()) {
-                        case (BottomSheetBehavior.STATE_HIDDEN):
-                            break;
                         case (BottomSheetBehavior.STATE_COLLAPSED):
-                            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                            break;
                         case (BottomSheetBehavior.STATE_EXPANDED):
                             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                            break;
-                        default:
                             break;
                     }
                 }

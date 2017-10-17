@@ -26,7 +26,6 @@ import com.example.adm1n.coffeescope.models.Product;
 import com.example.adm1n.coffeescope.models.basket.Basket;
 import com.example.adm1n.coffeescope.models.basket.BasketProducts;
 import com.example.adm1n.coffeescope.order.view.OrderActivity;
-import com.example.adm1n.coffeescope.utils.OnBackPressedListener;
 import com.example.adm1n.coffeescope.utils.SpaceItemDecoration;
 import com.jakewharton.rxbinding2.view.RxView;
 
@@ -317,7 +316,12 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
             mBasket.getmBasketProductsList().add(mBasketProducts);
         } else {
             mBasket = presenter.getBasket(mPlaceId);
-            mBasket.getmBasketProductsList().add(mBasketProducts);
+            if (mBasket.getmBasketProductsList() != null) {
+                mBasket.getmBasketProductsList().add(mBasketProducts);
+            } else {
+                mBasket.setmBasketProductsList(new RealmList<BasketProducts>());
+                mBasket.getmBasketProductsList().add(mBasketProducts);
+            }
         }
     }
 

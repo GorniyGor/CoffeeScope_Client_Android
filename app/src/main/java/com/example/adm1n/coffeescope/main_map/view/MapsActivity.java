@@ -44,6 +44,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -59,6 +60,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
     private final int DEFAULT_MAP_ZOOM = 13;
     private ArrayList<CoffeeMenu> coffeeMenuList = new ArrayList<>();
     private ArrayList<Place> placeList = new ArrayList<>();
+    private HashMap<Integer, Place> placeHashMap = new HashMap();
 
     private GoogleMap mMap;
     private LocationManager mLocationManager;
@@ -72,6 +74,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
     private CompositeDisposable disposable = new CompositeDisposable();
 
     private CoffeeCardView coffeeCardView;
+    private Marker mLastMarker;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -197,6 +200,19 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
                 presenter.getPlace(marker.getSnippet());
                 mBottomSheetBehavior.setPeekHeight(coffeeCardView.getHeaderHeight());
                 showPeakView(presenter.getPlaceFromRealm(Integer.valueOf(marker.getSnippet())));
+                Place currentPlace = placeHashMap.get(Integer.valueOf(marker.getSnippet()));
+
+                if (currentPlace.getIcon() != null && currentPlace.getIconBig() != null) {
+                    marker.setIcon(BitmapDescriptorFactory.fromBitmap(currentPlace.getIconBig()));
+                }
+
+                if (mLastMarker != null && !marker.equals(mLastMarker)) {
+                    Place lastPlace = placeHashMap.get(Integer.valueOf(mLastMarker.getSnippet()));
+                    if (lastPlace.getIcon() != null) {
+                        mLastMarker.setIcon(BitmapDescriptorFactory.fromBitmap(lastPlace.getIcon()));
+                    }
+                }
+
                 if (mBottomSheetBehavior != null) {
                     switch (mBottomSheetBehavior.getState()) {
                         case (BottomSheetBehavior.STATE_HIDDEN):
@@ -211,6 +227,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
                             break;
                     }
                 }
+                mLastMarker = marker;
                 return false;
             }
         });
@@ -218,6 +235,12 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
             @Override
             public void onMapClick(LatLng latLng) {
                 if (mBottomSheetBehavior != null) {
+                    if (mLastMarker != null) {
+                        Place lastPlace = placeHashMap.get(Integer.valueOf(mLastMarker.getSnippet()));
+                        if (lastPlace != null) {
+                            mLastMarker.setIcon(BitmapDescriptorFactory.fromBitmap(lastPlace.getIcon()));
+                        }
+                    }
                     switch (mBottomSheetBehavior.getState()) {
                         case (BottomSheetBehavior.STATE_HIDDEN):
                             break;
@@ -329,24 +352,17 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
         for (int i = 0; i < list.size(); i++) {
             Place place = list.get(i);
             if (place.getImage().getLable() != null) {
-                try {
-                    Bitmap bmImg = Ion.with(getApplicationContext())
-                            .load(place.getImage().getLable()).asBitmap().get();
-
-                    mMap.addMarker(new MarkerOptions()
-                            .position(new LatLng(place.getCoodrinates().getLatitude(), place.getCoodrinates().getLongitude()))
-                            .icon(BitmapDescriptorFactory.fromBitmap(bmImg))
-                            .snippet(String.valueOf(place.getId())));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
+                place = createAndSaveBitmap(place);
+                mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(place.getCoodrinates().getLatitude(), place.getCoodrinates().getLongitude()))
+                        .icon(BitmapDescriptorFactory.fromBitmap(place.getIcon()))
+                        .snippet(String.valueOf(place.getId())));
             } else {
                 mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(place.getCoodrinates().getLatitude(), place.getCoodrinates().getLongitude()))
                         .snippet(String.valueOf(place.getId())));
             }
+            placeHashMap.put(place.getId(), place);
         }
         placeList.addAll(list);
     }
@@ -392,5 +408,22 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
         } else {
             Toast.makeText(this, "Ошибка RX", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    Place createAndSaveBitmap(Place place) {
+        try {
+            Bitmap bmImg = Ion.with(getApplicationContext())
+                    .load(place.getImage().getLable()).asBitmap().get();
+
+            Bitmap scaledNormalBitmap = Bitmap.createScaledBitmap(bmImg, 70, 70, false);
+            Bitmap scaledBigBitmap = Bitmap.createScaledBitmap(bmImg, 110, 110, false);
+            place.setIcon(scaledNormalBitmap);
+            place.setIconBig(scaledBigBitmap);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return place;
     }
 }

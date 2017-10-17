@@ -1,12 +1,12 @@
 package com.example.adm1n.coffeescope.models;
 
+import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -28,6 +28,12 @@ public class Place extends RealmObject implements Parcelable {
     private RealmList<Categories> categories;
     private RealmList<Ingredients> ingredients;
     private RealmList<Hours> hours;
+
+    @Ignore
+    private Bitmap icon;
+
+    @Ignore
+    private Bitmap iconBig;
 
     public Place() {
     }
@@ -191,5 +197,21 @@ public class Place extends RealmObject implements Parcelable {
 
     public void setHours(RealmList<Hours> hours) {
         this.hours = hours;
+    }
+
+    public Bitmap getIcon() {
+        return icon;
+    }
+
+    public void setIcon(Bitmap icon) {
+        this.icon = icon;
+    }
+
+    public Bitmap getIconBig() {
+        return iconBig;
+    }
+
+    public void setIconBig(Bitmap iconBig) {
+        this.iconBig = iconBig;
     }
 }

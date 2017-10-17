@@ -231,7 +231,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
                 if (mBottomSheetBehavior != null) {
                     if (mLastMarker != null) {
                         Place lastPlace = placeHashMap.get(Integer.valueOf(mLastMarker.getSnippet()));
-                        if (lastPlace != null) {
+                        if (lastPlace != null && lastPlace.getIcon() != null) {
                             mLastMarker.setIcon(BitmapDescriptorFactory.fromBitmap(lastPlace.getIcon()));
                         }
                     }

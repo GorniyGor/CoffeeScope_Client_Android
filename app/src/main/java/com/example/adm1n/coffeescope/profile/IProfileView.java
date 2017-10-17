@@ -4,4 +4,6 @@ public interface IProfileView {
     void setFields(String firstName, String lastName, String email);
 
     void setButtonEnabled(boolean enabled);
+
+    void logout();
 }

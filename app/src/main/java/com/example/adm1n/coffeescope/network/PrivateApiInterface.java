@@ -61,4 +61,7 @@ public interface PrivateApiInterface {
     @POST("buyer/password/reset")
     Single<ResetPassResponse> resetPassword(
             @Field("email") String eMail);
+
+    @GET("buyer/logout")
+    Single<Void> logout();
 }

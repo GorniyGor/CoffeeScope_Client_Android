@@ -120,6 +120,8 @@ public class App extends Application {
                                         return chain.proceed(request); //repeat request with new token
                                     }
                                 }
+                            } else {
+                                throw new IOException(baseResponse.getFirstError());
                             }
                         }
                         return response.newBuilder()

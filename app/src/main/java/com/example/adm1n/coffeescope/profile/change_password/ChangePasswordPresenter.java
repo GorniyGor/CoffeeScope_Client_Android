@@ -30,23 +30,20 @@ public class ChangePasswordPresenter implements IChangePasswordPresenter {
                 .subscribe(new Consumer<BaseResponse>() {
                     @Override
                     public void accept(@NonNull BaseResponse response) throws Exception {
-                        //todo: обдумать получение верного и неверного объекта
-                        if (response.getStatus().equals("success")) {
-                            view.passwordChanged();
-                        } else {
-                            switch (response.getErrorKey()) {
-                                case ErrorKeys.OLD_PASSWORD:
-                                    view.oldPasswordError();
-                                    view.showError("Неверный пароль");
-                                    break;
-                            }
-                            view.setButtonEnabled(true);
-                        }
+                        view.passwordChanged();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-                        view.showError("Some shit");
+                        switch (throwable.getMessage()) {
+                            case ErrorKeys.OLD_PASSWORD:
+                                view.oldPasswordError();
+                                view.showError("Неверный пароль");
+                                break;
+                            default:
+                                view.showError("some shit");
+                                break;
+                        }
                         view.setButtonEnabled(true);
                     }
                 });

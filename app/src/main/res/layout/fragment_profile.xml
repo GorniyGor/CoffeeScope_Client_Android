@@ -45,7 +45,7 @@
             app:type="email" />
 
         <Button
-            android:id="@+id/save_profile_button"
+            android:id="@+id/btn_feedback"
             style="@style/button"
             android:layout_width="match_parent"
             android:layout_height="72dp"

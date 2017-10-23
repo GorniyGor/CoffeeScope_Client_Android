@@ -7,6 +7,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -75,6 +76,13 @@ public class GreatEditText extends CardView {
                 default: // text
                     editText.setInputType(TYPE_CLASS_TEXT);
                     break;
+            }
+
+            int limit = a.getInt(R.styleable.GreatEditText_limit, -1);
+            if (limit > 0) {
+                editText.setFilters(new InputFilter[]{
+                        new InputFilter.LengthFilter(limit)
+                });
             }
         } finally {
             a.recycle();

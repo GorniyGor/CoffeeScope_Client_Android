@@ -54,7 +54,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         etFirstName = (GreatEditText) view.findViewById(R.id.first_name);
         etLastName = (GreatEditText) view.findViewById(R.id.last_name);
         etEmail = (GreatEditText) view.findViewById(R.id.email);
-        saveProfileButton = (Button) view.findViewById(R.id.save_profile_button);
+        saveProfileButton = (Button) view.findViewById(R.id.btn_feedback);
         saveProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

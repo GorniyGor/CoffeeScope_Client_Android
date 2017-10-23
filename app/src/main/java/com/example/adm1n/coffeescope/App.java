@@ -3,6 +3,7 @@ package com.example.adm1n.coffeescope;
 import android.app.Application;
 import android.content.Context;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.example.adm1n.coffeescope.network.BaseResponse;
 import com.example.adm1n.coffeescope.network.PrivateApiInterface;
@@ -95,6 +96,7 @@ public class App extends Application {
                         Response response = chain.proceed(request); //perform request, here original request will be executed
 
                         String responseBodyString = response.body().string();
+                        Log.d("Makaka", responseBodyString);
                         Gson gson = new Gson();
                         BaseResponse baseResponse = gson.fromJson(responseBodyString, BaseResponse.class);
                         if (baseResponse.getStatus().equals(getString(R.string.error))) {

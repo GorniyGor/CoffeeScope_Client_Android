@@ -20,6 +20,7 @@ import android.widget.EditText;
 import com.example.adm1n.coffeescope.R;
 
 import static android.text.InputType.TYPE_CLASS_TEXT;
+import static android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE;
 
 public class GreatEditText extends CardView {
 
@@ -72,6 +73,12 @@ public class GreatEditText extends CardView {
                     break;
                 case 2: // email
                     editText.setInputType(TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                    break;
+                case 3:
+                    editText.setInputType(TYPE_CLASS_TEXT | TYPE_TEXT_FLAG_MULTI_LINE);
+                    editText.setLines(5);
+                    editText.setMinLines(5);
+                    editText.setMaxLines(5);
                     break;
                 default: // text
                     editText.setInputType(TYPE_CLASS_TEXT);

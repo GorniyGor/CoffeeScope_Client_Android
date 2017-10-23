@@ -31,7 +31,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="@string/google_maps_key"/>
 
         <activity
             android:name=".main_map.view.MapsActivity"
@@ -39,51 +39,53 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.MainMapStyle">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".coffee_ingredients.view.CoffeeIngredientsActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeRed" />
+            android:theme="@style/AppThemeRed"/>
         <activity
             android:name=".order.view.OrderActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeRedAndGreen" />
+            android:theme="@style/AppThemeRedAndGreen"/>
         <activity
             android:name=".introduction.authorization.IntroductionAuthorizationActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/IntroductionTheme" />
-
+            android:theme="@style/IntroductionTheme"/>
         <activity
             android:name=".introduction.reset_password.IntroductionResetPasswordActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/IntroductionTheme">
-
         </activity>
-
         <activity
             android:name=".introduction.registration.IntroductionRegistrationActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/IntroductionTheme"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".profile.ProfileActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/IntroductionTheme"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
         <activity
             android:name=".profile.change_password.ChangePasswordActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/IntroductionTheme" />
+            android:theme="@style/IntroductionTheme"/>
+        <activity
+            android:name=".profile.feedback.FeedbackActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/IntroductionTheme">
+        </activity>
     </application>
 
 </manifest>

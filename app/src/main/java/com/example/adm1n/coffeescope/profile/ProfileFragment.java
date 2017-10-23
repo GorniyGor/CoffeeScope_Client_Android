@@ -10,13 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.adm1n.coffeescope.BaseFragment;
 import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.custom_view.GreatEditText;
 import com.example.adm1n.coffeescope.main_map.view.MapsActivity;
 import com.example.adm1n.coffeescope.profile.change_password.ChangePasswordActivity;
+import com.example.adm1n.coffeescope.profile.feedback.FeedbackActivity;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
 
@@ -83,7 +83,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         view.findViewById(R.id.cv_feedback).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Фидбэк", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getContext(), FeedbackActivity.class));
             }
         });
         view.findViewById(R.id.cv_change_password).setOnClickListener(new View.OnClickListener() {

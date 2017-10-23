@@ -5,5 +5,5 @@ package com.example.adm1n.coffeescope.profile.feedback;
  */
 
 public interface IFeedbackPresenter {
-    void sendFeedback();
+    void sendFeedback(String comment);
 }

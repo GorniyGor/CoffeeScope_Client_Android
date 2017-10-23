@@ -51,7 +51,7 @@ public class FeedbackFragment extends Fragment implements IFeedbackView {
         btnFeedback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.sendFeedback();
+                presenter.sendFeedback(etFeedback.getText());
             }
         });
 

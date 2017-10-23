@@ -64,4 +64,10 @@ public interface PrivateApiInterface {
 
     @GET("buyer/logout")
     Single<Void> logout();
+
+    @FormUrlEncoded
+    @POST("buyer/feedback")
+    Single<BaseResponse> feedback(
+            @Field("comment") String comment
+    );
 }

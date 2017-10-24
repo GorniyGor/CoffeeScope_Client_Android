@@ -6,4 +6,6 @@ public interface IProfileView {
     void setButtonEnabled(boolean enabled);
 
     void logout();
+
+    void showMessage(String message);
 }

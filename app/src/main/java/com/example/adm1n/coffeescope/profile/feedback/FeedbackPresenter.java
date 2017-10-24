@@ -1,7 +1,5 @@
 package com.example.adm1n.coffeescope.profile.feedback;
 
-import android.util.Log;
-
 import com.example.adm1n.coffeescope.App;
 import com.example.adm1n.coffeescope.network.BaseResponse;
 
@@ -10,7 +8,7 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-public class FeedbackPresenter implements IFeedbackPresenter {
+class FeedbackPresenter implements IFeedbackPresenter {
 
     private final IFeedbackView view;
 
@@ -33,7 +31,6 @@ public class FeedbackPresenter implements IFeedbackPresenter {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-                        Log.d("Makaka", throwable.getMessage());
                         view.showProgress(false);
                     }
                 });

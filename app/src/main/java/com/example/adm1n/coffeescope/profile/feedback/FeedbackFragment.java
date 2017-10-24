@@ -66,7 +66,7 @@ public class FeedbackFragment extends Fragment implements IFeedbackView {
     @Override
     public void feedbackSent() {
         etFeedback.setText("");
-        OkDialog dialog = new OkDialog("Ваш отзыв успешно отправлен!");
+        OkDialog dialog = new OkDialog(getString(R.string.feedback_sent));
         dialog.show(getFragmentManager(), "AuthError");
     }
 }

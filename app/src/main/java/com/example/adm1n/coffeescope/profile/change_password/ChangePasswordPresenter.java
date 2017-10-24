@@ -2,7 +2,7 @@ package com.example.adm1n.coffeescope.profile.change_password;
 
 import com.example.adm1n.coffeescope.App;
 import com.example.adm1n.coffeescope.ErrorKeys;
-import com.example.adm1n.coffeescope.network.responses.ErrorResponse;
+import com.example.adm1n.coffeescope.network.BaseResponse;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -27,26 +27,23 @@ public class ChangePasswordPresenter implements IChangePasswordPresenter {
         App.getPrivateApi().changePassword(oldPassword, newPassword, newPasswordRepeat)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ErrorResponse>() {
+                .subscribe(new Consumer<BaseResponse>() {
                     @Override
-                    public void accept(@NonNull ErrorResponse response) throws Exception {
-                        //todo: обдумать получение верного и неверного объекта
-                        if (response.getStatus().equals("success")) {
-                            view.passwordChanged();
-                        } else {
-                            switch (response.getErrorKey()) {
-                                case ErrorKeys.OLD_PASSWORD:
-                                    view.oldPasswordError();
-                                    view.showError("Неверный пароль");
-                                    break;
-                            }
-                            view.setButtonEnabled(true);
-                        }
+                    public void accept(@NonNull BaseResponse response) throws Exception {
+                        view.passwordChanged();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-                        view.showError("Some shit");
+                        switch (throwable.getMessage()) {
+                            case ErrorKeys.OLD_PASSWORD:
+                                view.oldPasswordError();
+                                view.showError("Неверный пароль");
+                                break;
+                            default:
+                                view.showError("some shit");
+                                break;
+                        }
                         view.setButtonEnabled(true);
                     }
                 });

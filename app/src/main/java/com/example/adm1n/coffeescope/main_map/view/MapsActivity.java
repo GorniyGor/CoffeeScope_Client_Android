@@ -31,6 +31,7 @@ import com.example.adm1n.coffeescope.models.Place;
 import com.example.adm1n.coffeescope.models.Product;
 import com.example.adm1n.coffeescope.models.basket.Basket;
 import com.example.adm1n.coffeescope.order.view.OrderActivity;
+import com.example.adm1n.coffeescope.search.SearchActivity;
 import com.example.adm1n.coffeescope.utils.MapsUtils;
 import com.example.adm1n.coffeescope.utils.PermissionUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -38,6 +39,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -61,6 +63,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
     private ArrayList<CoffeeMenu> coffeeMenuList = new ArrayList<>();
     private ArrayList<Place> placeList = new ArrayList<>();
     private HashMap<Integer, Place> placeHashMap = new HashMap();
+    private HashMap<Integer, Marker> mHashMap = new HashMap();
 
     private GoogleMap mMap;
     private LocationManager mLocationManager;
@@ -128,15 +131,16 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
         mButtonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.getPlaces();
-                Toast.makeText(MapsActivity.this, "On Search Click", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
+                startActivityForResult(intent, 100);
             }
         });
         Button mButtonApply = (Button) findViewById(R.id.btn_apply);
         mButtonApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MapsActivity.this, "On Apply Click", Toast.LENGTH_SHORT).show();
+                presenter.getPlaces();
+                Toast.makeText(MapsActivity.this, "Refresh Place", Toast.LENGTH_SHORT).show();
             }
         });
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -197,31 +201,7 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                presenter.getPlace(marker.getSnippet());
-                mBottomSheetBehavior.setPeekHeight(coffeeCardView.getHeaderHeight());
-                showPeakView(presenter.getPlaceFromRealm(Integer.valueOf(marker.getSnippet())));
-                Place currentPlace = placeHashMap.get(Integer.valueOf(marker.getSnippet()));
-
-                if (currentPlace.getIcon() != null && currentPlace.getIconBig() != null) {
-                    marker.setIcon(BitmapDescriptorFactory.fromBitmap(currentPlace.getIconBig()));
-                }
-
-                if (mLastMarker != null && !marker.equals(mLastMarker)) {
-                    Place lastPlace = placeHashMap.get(Integer.valueOf(mLastMarker.getSnippet()));
-                    if (lastPlace.getIcon() != null) {
-                        mLastMarker.setIcon(BitmapDescriptorFactory.fromBitmap(lastPlace.getIcon()));
-                    }
-                }
-
-                if (mBottomSheetBehavior != null) {
-                    switch (mBottomSheetBehavior.getState()) {
-                        case (BottomSheetBehavior.STATE_HIDDEN):
-                        case (BottomSheetBehavior.STATE_EXPANDED):
-                            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                            break;
-                    }
-                }
-                mLastMarker = marker;
+                showPreviewCard(Integer.valueOf(marker.getSnippet()));
                 return false;
             }
         });
@@ -337,18 +317,22 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
 
     @Override
     public void setMarkers(ArrayList<Place> list) {
+        placeHashMap.clear();
+        mHashMap.clear();
         for (int i = 0; i < list.size(); i++) {
             Place place = list.get(i);
             if (place.getImage().getLable() != null) {
                 place = createAndSaveBitmap(place);
-                mMap.addMarker(new MarkerOptions()
+                Marker marker = mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(place.getCoodrinates().getLatitude(), place.getCoodrinates().getLongitude()))
                         .icon(BitmapDescriptorFactory.fromBitmap(place.getIcon()))
                         .snippet(String.valueOf(place.getId())));
+                mHashMap.put(place.getId(), marker);
             } else {
-                mMap.addMarker(new MarkerOptions()
+                Marker marker = mMap.addMarker(new MarkerOptions()
                         .position(new LatLng(place.getCoodrinates().getLatitude(), place.getCoodrinates().getLongitude()))
                         .snippet(String.valueOf(place.getId())));
+                mHashMap.put(place.getId(), marker);
             }
             placeHashMap.put(place.getId(), place);
         }
@@ -413,5 +397,57 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
             e.printStackTrace();
         }
         return place;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 100: {
+                if (resultCode == android.app.Activity.RESULT_OK) {
+                    Integer search_result_place_id = data.getIntExtra("EXTRA_SEARCH_ID", 0);
+                    showPreviewCard(search_result_place_id);
+                }
+            }
+        }
+    }
+
+    public void showPreviewCard(Integer placeId) {
+        presenter.getPlace(String.valueOf(placeId)); // Идем на сервак за меню!
+        mBottomSheetBehavior.setPeekHeight(coffeeCardView.getHeaderHeight());
+        Place currentPlace = placeHashMap.get(placeId);
+//        Place currentPlace = presenter.getPlaceFromRealm(placeId);
+        showPeakView(currentPlace);
+        Marker currentMarker = mHashMap.get(placeId);
+
+        //устанавливаем увеличенную иконку на текущий маркер
+        if (currentMarker != null) {
+            if (currentPlace.getIcon() != null && currentPlace.getIconBig() != null) {
+                currentMarker.setIcon(BitmapDescriptorFactory.fromBitmap(currentPlace.getIconBig()));
+            }
+        }
+
+        //устанавливаем уменьшенную иконку на предыдущий маркер
+        if (mLastMarker != null && mLastMarker != currentMarker) {
+            Place lastPlace = placeHashMap.get(Integer.valueOf(mLastMarker.getSnippet()));
+            if (lastPlace.getIcon() != null) {
+                mLastMarker.setIcon(BitmapDescriptorFactory.fromBitmap(lastPlace.getIcon()));
+            }
+        }
+
+        if (mBottomSheetBehavior != null) {
+            switch (mBottomSheetBehavior.getState()) {
+                case (BottomSheetBehavior.STATE_HIDDEN):
+                case (BottomSheetBehavior.STATE_EXPANDED):
+                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    break;
+            }
+        }
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(currentPlace.getCoodrinates().getLatitude(),
+                        currentPlace.getCoodrinates().getLongitude()), DEFAULT_MAP_ZOOM));
+        mLastPlace = currentPlace;
+        mLastMarker = currentMarker;
     }
 }

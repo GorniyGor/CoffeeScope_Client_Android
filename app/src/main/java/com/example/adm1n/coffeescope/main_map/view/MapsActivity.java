@@ -116,6 +116,8 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                                 new LatLng(mMap.getMyLocation().getLatitude(), mMap.getMyLocation().getLongitude()), currentZoom));
                     }
+                    MapsUtils.setMyLocationLatitude(mMap.getMyLocation().getLatitude());
+                    MapsUtils.setMyLocationLongitude(mMap.getMyLocation().getLongitude());
                 }
             }
         });
@@ -413,17 +415,17 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
     }
 
     public void showPreviewCard(Integer placeId) {
-        presenter.getPlace(String.valueOf(placeId)); // Идем на сервак за меню!
+        presenter.getPlace(String.valueOf(placeId));// Идем на сервак за меню!
         mBottomSheetBehavior.setPeekHeight(coffeeCardView.getHeaderHeight());
-        Place currentPlace = placeHashMap.get(placeId);
-//        Place currentPlace = presenter.getPlaceFromRealm(placeId);
-        showPeakView(currentPlace);
+        Place currentPlaceForBitmap = placeHashMap.get(placeId);
+        Place placeFromRealm = presenter.getPlaceFromRealm(placeId);
+        showPeakView(placeFromRealm);
         Marker currentMarker = mHashMap.get(placeId);
 
         //устанавливаем увеличенную иконку на текущий маркер
         if (currentMarker != null) {
-            if (currentPlace.getIcon() != null && currentPlace.getIconBig() != null) {
-                currentMarker.setIcon(BitmapDescriptorFactory.fromBitmap(currentPlace.getIconBig()));
+            if (currentPlaceForBitmap.getIcon() != null && currentPlaceForBitmap.getIconBig() != null) {
+                currentMarker.setIcon(BitmapDescriptorFactory.fromBitmap(currentPlaceForBitmap.getIconBig()));
             }
         }
 
@@ -445,9 +447,9 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
         }
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(currentPlace.getCoodrinates().getLatitude(),
-                        currentPlace.getCoodrinates().getLongitude()), DEFAULT_MAP_ZOOM));
-        mLastPlace = currentPlace;
+                new LatLng(currentPlaceForBitmap.getCoodrinates().getLatitude(),
+                        currentPlaceForBitmap.getCoodrinates().getLongitude()), DEFAULT_MAP_ZOOM));
+        mLastPlace = placeFromRealm;
         mLastMarker = currentMarker;
     }
 }

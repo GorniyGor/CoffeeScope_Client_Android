@@ -1,4 +1,4 @@
-package com.example.adm1n.coffeescope.search;
+package com.example.adm1n.coffeescope.search.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

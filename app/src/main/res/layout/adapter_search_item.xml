@@ -15,8 +15,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:text="name"
+            android:layout_toStartOf="@+id/tv_search_coffee_distance"
             android:textColor="@color/black"
+            android:layout_alignParentStart="true"
             android:textSize="24sp" />
 
         <TextView
@@ -24,10 +25,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/tv_search_coffee_name"
-            android:layout_alignEnd="@+id/tv_search_coffee_name"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="16dp"
-            android:text="distance"
             android:textColor="@color/grey"
             android:textSize="18sp" />
     </RelativeLayout>
@@ -37,7 +36,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="adress"
         android:textColor="@color/another_grey"
         android:textSize="16sp" />
 

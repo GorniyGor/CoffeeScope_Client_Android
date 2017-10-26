@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.models.Place;
+import com.example.adm1n.coffeescope.utils.MapsUtils;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
@@ -43,6 +45,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         Place place = places.get(i);
         viewHolder.name.setText(place.getName());
         viewHolder.address.setText(place.getAddress());
+        String s = String.valueOf(MapsUtils.calculationDistance(
+                new LatLng(place.getCoodrinates().getLatitude(),
+                        place.getCoodrinates().getLongitude())) + " m");
+        viewHolder.distance.setText(s);
         viewHolder.setPosition(i);
     }
 
@@ -82,7 +88,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         }
     }
 
-    interface OnPlaceClickListener {
+    public interface OnPlaceClickListener {
         void onPlaceClick(int position);
+    }
+
+    void getMyLocation() {
+
     }
 }

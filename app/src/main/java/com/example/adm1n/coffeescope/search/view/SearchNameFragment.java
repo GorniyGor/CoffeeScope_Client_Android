@@ -1,4 +1,4 @@
-package com.example.adm1n.coffeescope.search;
+package com.example.adm1n.coffeescope.search.view;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,13 +16,21 @@ import android.widget.LinearLayout;
 import com.example.adm1n.coffeescope.BaseFragment;
 import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.models.Place;
+import com.example.adm1n.coffeescope.search.SearchAdapter;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
+import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.schedulers.Timed;
 
 /**
  * Created by adm1n on 23.10.2017.
@@ -73,23 +81,38 @@ public class SearchNameFragment extends BaseFragment implements SearchAdapter.On
         rlSearchName.setItemAnimator(itemAnimator);
         rlSearchName.setAdapter(mAdapter);
         RxTextView
-                .afterTextChangeEvents(etSearch)
-                .subscribe(new Consumer<TextViewAfterTextChangeEvent>() {
+                .textChangeEvents(etSearch)
+                .filter(new Predicate<TextViewTextChangeEvent>() {
                     @Override
-                    public void accept(@NonNull TextViewAfterTextChangeEvent textEvent) throws Exception {
-                        placesSearchResult.clear();
-                        for (int i = 0; i < places.size(); i++) {
-                            Place place = places.get(i);
-                            String name = place.getName();
-                            if (name.contains(String.valueOf(textEvent.editable()))) {
-                                placesSearchResult.add(place);
+                    public boolean test(@NonNull TextViewTextChangeEvent textViewTextChangeEvent) throws Exception {
+                        return textViewTextChangeEvent.count() > 0;
+                    }
+                })
+                .debounce(300, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<TextViewTextChangeEvent>() {
+                    @Override
+                    public void accept(@NonNull TextViewTextChangeEvent textEvent) throws Exception {
+                        if (textEvent.view().getText().length() != 0) {
+                            int oldSize = placesSearchResult.size();
+                            placesSearchResult.clear();
+                            for (int i = 0; i < places.size(); i++) {
+                                Place place = places.get(i);
+                                String name = place.getName();
+                                if (name.contains(String.valueOf(textEvent.text()))) {
+                                    placesSearchResult.add(place);
+                                }
                             }
-                        }
-                        if (placesSearchResult.isEmpty()) {
-                            showEmptyBanner();
-                        } else {
-                            hideEmptyBanner();
-                            mAdapter.notifyDataSetChanged();
+                            if (placesSearchResult.size() == 0) {
+                                showEmptyBanner();
+                            } else {
+                                hideEmptyBanner();
+                                if (oldSize != 0) {
+                                    mAdapter.notifyItemRangeRemoved(0, oldSize);
+                                } else {
+                                    mAdapter.notifyDataSetChanged();
+                                }
+                            }
                         }
                     }
                 });

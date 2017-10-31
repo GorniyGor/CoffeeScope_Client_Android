@@ -12,8 +12,32 @@ import java.math.BigDecimal;
 
 public class MapsUtils {
 
+    private static double myLocationLatitude;
+    private static double myLocationLongitude;
+
+    public static double getMyLocationLatitude() {
+        return myLocationLatitude;
+    }
+
+    public static void setMyLocationLatitude(double myLocationLatitude) {
+        MapsUtils.myLocationLatitude = myLocationLatitude;
+    }
+
+    public static double getMyLocationLongitude() {
+        return myLocationLongitude;
+    }
+
+    public static void setMyLocationLongitude(double myLocationLongitude) {
+        MapsUtils.myLocationLongitude = myLocationLongitude;
+    }
+
     public static int calculationDistance(LatLng StartP, LatLng EndP) {
         double d = calculationDistanceByCoord(StartP.latitude, StartP.longitude, EndP.latitude, EndP.longitude);
+        return (int) d;
+    }
+
+    public static int calculationDistance(LatLng EndP) {
+        double d = calculationDistanceByCoord(myLocationLatitude, myLocationLongitude, EndP.latitude, EndP.longitude);
         return (int) d;
     }
 

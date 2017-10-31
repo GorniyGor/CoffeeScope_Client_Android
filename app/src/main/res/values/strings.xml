@@ -32,6 +32,7 @@
     <string name="cancel">Отмена</string>
     <string name="let">Давайте</string>
     <string name="profile">Профиль</string>
+    <string name="rating">Рейтинг</string>
     <string name="write_feedback">Написать обратную связь</string>
     <string name="edit_pass">Изменить пароль</string>
     <string name="logout">Выйти</string>
@@ -61,4 +62,9 @@
         <item quantity="few">Ограничение по символам: %1$d символа.</item>
         <item quantity="many">Ограничение по символам: %1$d символов.</item>
     </plurals>
+    <string name="search">Поиск</string>
+    <string name="search_hint">Введите название или адрес</string>
+    <string name="emtpy_search_text">Найди свою кофейню!</string>
+    <string name="rating_text">Ваша оценка</string>
+    <string name="write_comment">Напишите комментарий</string>
 </resources>

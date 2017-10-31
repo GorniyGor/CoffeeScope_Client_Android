@@ -161,6 +161,7 @@
                         style="@style/PreviewCardCoffeeName"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_toEndOf="@+id/iv_check_icon"
                         android:gravity="center"
                         android:text="@string/how_to_pay">
 

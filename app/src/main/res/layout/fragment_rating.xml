@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_rating_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/rating_text"
+        android:textColor="@color/account_grey"
+        android:textSize="16sp" />
+
+    <include
+        android:id="@+id/line_rating_divider"
+        layout="@layout/line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/tv_rating_text"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="9dp" />
+
+    <TextView
+        android:id="@+id/tv_rating_write_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/line_rating_divider"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="17dp"
+        android:text="@string/write_comment"
+        android:textColor="@color/double_grey"
+        android:textSize="20sp" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cvTalkAboutTrouble"
+        android:layout_width="match_parent"
+        android:layout_height="112dp"
+        android:layout_below="@id/tv_rating_write_comment"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="13dp"
+        app:cardCornerRadius="8dp">
+
+        <EditText
+            android:id="@+id/etTalkAboutTrouble"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="5dp"
+            android:background="@android:color/transparent"
+            android:scrollHorizontally="true" />
+
+    </android.support.v7.widget.CardView>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_below="@+id/cvTalkAboutTrouble"
+        android:layout_marginEnd="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/green_btn_selector"
+        android:text="@string/send"
+        android:textColor="@color/white"
+        android:textSize="22sp" />
+</RelativeLayout>

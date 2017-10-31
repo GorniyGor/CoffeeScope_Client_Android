@@ -66,5 +66,4 @@
     <string name="search_hint">Введите название или адрес</string>
     <string name="emtpy_search_text">Найди свою кофейню!</string>
     <string name="rating_text">Ваша оценка</string>
-    <string name="write_comment">Напишите комментарий</string>
 </resources>

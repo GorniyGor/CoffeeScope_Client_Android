@@ -1,4 +1,4 @@
-package com.example.adm1n.coffeescope.rating;
+package com.example.adm1n.coffeescope.rating.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

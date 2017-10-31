@@ -31,7 +31,7 @@ import com.example.adm1n.coffeescope.models.Place;
 import com.example.adm1n.coffeescope.models.Product;
 import com.example.adm1n.coffeescope.models.basket.Basket;
 import com.example.adm1n.coffeescope.order.view.OrderActivity;
-import com.example.adm1n.coffeescope.rating.RatingActivity;
+import com.example.adm1n.coffeescope.rating.view.RatingActivity;
 import com.example.adm1n.coffeescope.search.SearchActivity;
 import com.example.adm1n.coffeescope.utils.MapsUtils;
 import com.example.adm1n.coffeescope.utils.PermissionUtils;

@@ -18,10 +18,8 @@ import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.models.Place;
 import com.example.adm1n.coffeescope.search.SearchAdapter;
 import com.jakewharton.rxbinding2.widget.RxTextView;
-import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
 import com.jakewharton.rxbinding2.widget.TextViewTextChangeEvent;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -29,8 +27,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Predicate;
-import io.reactivex.schedulers.Schedulers;
-import io.reactivex.schedulers.Timed;
 
 /**
  * Created by adm1n on 23.10.2017.
@@ -124,8 +120,8 @@ public class SearchNameFragment extends BaseFragment implements SearchAdapter.On
     }
 
     void hideEmptyBanner() {
-        rlSearchName.setVisibility(View.VISIBLE);
         llGroup.setVisibility(View.GONE);
+        rlSearchName.setVisibility(View.VISIBLE);
     }
 
     @Override

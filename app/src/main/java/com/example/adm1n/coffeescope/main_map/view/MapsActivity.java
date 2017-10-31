@@ -31,6 +31,7 @@ import com.example.adm1n.coffeescope.models.Place;
 import com.example.adm1n.coffeescope.models.Product;
 import com.example.adm1n.coffeescope.models.basket.Basket;
 import com.example.adm1n.coffeescope.order.view.OrderActivity;
+import com.example.adm1n.coffeescope.rating.RatingActivity;
 import com.example.adm1n.coffeescope.search.SearchActivity;
 import com.example.adm1n.coffeescope.utils.MapsUtils;
 import com.example.adm1n.coffeescope.utils.PermissionUtils;
@@ -39,7 +40,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -143,6 +143,14 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
             public void onClick(View v) {
                 presenter.getPlaces();
                 Toast.makeText(MapsActivity.this, "Refresh Place", Toast.LENGTH_SHORT).show();
+            }
+        });
+        mButtonApply.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), RatingActivity.class);
+                startActivity(intent);
+                return false;
             }
         });
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()

@@ -84,6 +84,11 @@
             android:name=".search.SearchActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeRed" />
+
+        <activity
+            android:name=".rating.RatingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeRed" />
     </application>
 
 </manifest>

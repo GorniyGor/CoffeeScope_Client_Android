@@ -7,6 +7,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 import com.example.adm1n.coffeescope.R;
 
 import static android.text.InputType.TYPE_CLASS_TEXT;
+import static android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE;
 
 public class GreatEditText extends CardView {
 
@@ -72,9 +74,22 @@ public class GreatEditText extends CardView {
                 case 2: // email
                     editText.setInputType(TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                     break;
+                case 3:
+                    editText.setInputType(TYPE_CLASS_TEXT | TYPE_TEXT_FLAG_MULTI_LINE);
+                    editText.setLines(5);
+                    editText.setMinLines(5);
+                    editText.setMaxLines(5);
+                    break;
                 default: // text
                     editText.setInputType(TYPE_CLASS_TEXT);
                     break;
+            }
+
+            int limit = a.getInt(R.styleable.GreatEditText_limit, -1);
+            if (limit > 0) {
+                editText.setFilters(new InputFilter[]{
+                        new InputFilter.LengthFilter(limit)
+                });
             }
         } finally {
             a.recycle();

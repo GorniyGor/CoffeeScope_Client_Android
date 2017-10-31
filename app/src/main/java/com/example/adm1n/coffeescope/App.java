@@ -3,12 +3,12 @@ package com.example.adm1n.coffeescope;
 import android.app.Application;
 import android.content.Context;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.example.adm1n.coffeescope.network.BaseResponse;
 import com.example.adm1n.coffeescope.network.PrivateApiInterface;
 import com.example.adm1n.coffeescope.network.PublicApiInterface;
 import com.example.adm1n.coffeescope.network.responses.AuthResponse;
-import com.example.adm1n.coffeescope.network.responses.ErrorResponse;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -96,11 +96,11 @@ public class App extends Application {
                         Response response = chain.proceed(request); //perform request, here original request will be executed
 
                         String responseBodyString = response.body().string();
+                        Log.d("Makaka", responseBodyString);
                         Gson gson = new Gson();
                         BaseResponse baseResponse = gson.fromJson(responseBodyString, BaseResponse.class);
                         if (baseResponse.getStatus().equals(getString(R.string.error))) {
-                            ErrorResponse message = gson.fromJson(responseBodyString, ErrorResponse.class);
-                            if (message.getFirstError().equals(getString(R.string.error_token_expired))) {
+                            if (baseResponse.getFirstError().equals(getString(R.string.error_token_expired))) {
                                 synchronized (httpClient) { //perform all 401 in sync blocks, to avoid multiply token updates
                                     String currentToken = getToken(); //get currently stored token
                                     if (currentToken != null && currentToken.equals(token)) { //compare current token with token that was stored before, if it was not updated - do update
@@ -120,6 +120,8 @@ public class App extends Application {
                                         return chain.proceed(request); //repeat request with new token
                                     }
                                 }
+                            } else {
+                                throw new IOException(baseResponse.getFirstError());
                             }
                         }
                         return response.newBuilder()

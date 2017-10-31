@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="GreatEditText">
-        <attr name="hint" format="string" />
+        <attr name="hint" format="string"/>
         <attr name="type" format="enum">
-            <enum name="text" value="0" />
-            <enum name="password" value="1" />
-            <enum name="email" value="2" />
+            <enum name="text" value="0"/>
+            <enum name="password" value="1"/>
+            <enum name="email" value="2"/>
+            <enum name="multiline" value="3"/>
         </attr>
-        <attr name="text" format="string" />
+        <attr name="text" format="string"/>
+        <attr name="limit" format="integer"/>
     </declare-styleable>
 </resources>

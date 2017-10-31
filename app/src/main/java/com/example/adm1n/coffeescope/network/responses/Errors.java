@@ -8,7 +8,7 @@ import java.util.List;
  * Created by adm1n on 09.10.2017.
  */
 
-class Errors {
+public class Errors {
     @SerializedName("email")
     public List<String> errors = null;
 

@@ -13,9 +13,13 @@ class ProfilePresenter implements IProfilePresenter {
 
     private IProfileView view;
 
+    private String currentFirstName = "";
+    private String currentLastName = "";
+    private String currentEmail = "";
+
     ProfilePresenter(IProfileView v) {
         view = v;
-        view.setFields("", "", "");
+        setFields();
     }
 
     @Override
@@ -27,11 +31,10 @@ class ProfilePresenter implements IProfilePresenter {
                     @Override
                     public void accept(@NonNull ProfileResponse profileResponse) throws Exception {
                         if (profileResponse.getData() != null) {
-                            view.setFields(
-                                    profileResponse.getData().getFirstName(),
-                                    profileResponse.getData().getLastName(),
-                                    profileResponse.getData().getEmail()
-                            );
+                            currentFirstName = profileResponse.getData().getFirstName();
+                            currentLastName = profileResponse.getData().getLastName();
+                            currentEmail = profileResponse.getData().getEmail();
+                            setFields();
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -51,19 +54,22 @@ class ProfilePresenter implements IProfilePresenter {
                     @Override
                     public void accept(@NonNull EditProfileResponse editProfileResponse) throws Exception {
                         if (editProfileResponse.getData() != null) {
-                            view.setFields(
-                                    firstName,
-                                    lastName,
-                                    email
-                            );
+                            currentFirstName = editProfileResponse.getData().getFirstName();
+                            currentLastName = editProfileResponse.getData().getLastName();
+                            currentEmail = editProfileResponse.getData().getEmail();
+                            view.showMessage("Профиль успешно изменен");
                         } else {
                             view.setButtonEnabled(true);
+                            view.showMessage("Какие-то проблемы");
                         }
+                        setFields();
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
                         view.setButtonEnabled(true);
+                        setFields();
+                        view.showMessage(throwable.getMessage());
                     }
                 });
     }
@@ -72,5 +78,13 @@ class ProfilePresenter implements IProfilePresenter {
     public void logout() {
         App.logout();
         view.logout();
+    }
+
+    private void setFields() {
+        view.setFields(
+                currentFirstName,
+                currentLastName,
+                currentEmail
+        );
     }
 }

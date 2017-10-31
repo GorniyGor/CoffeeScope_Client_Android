@@ -53,6 +53,15 @@
     <string name="error">error</string>
     <string name="expired">expired</string>
     <string name="reset_password_text">Введите адрес электронной почты, указанный при регистрации:</string>
+    <string name="feedback_sent">Ваш отзыв успешно отправлен!</string>
+    <string name="write_comment">Напишите комментарий</string>
+    <string name="have_a_nice_day">Удачного Вам дня!</string>
+    <plurals name="feedback_limit">
+        <item quantity="zero">Ограничение по символам: 0 символов.</item>
+        <item quantity="one">Ограничение по символам: %1$d символ.</item>
+        <item quantity="few">Ограничение по символам: %1$d символа.</item>
+        <item quantity="many">Ограничение по символам: %1$d символов.</item>
+    </plurals>
     <string name="search">Поиск</string>
     <string name="search_hint">Введите название или адрес</string>
     <string name="emtpy_search_text">Найди свою кофейню!</string>

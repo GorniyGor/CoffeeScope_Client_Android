@@ -56,7 +56,7 @@ public class IntroductionPresenter implements IIntroductionPresenter {
                             saveToken(authResponse.getAccessToken(), authResponse.getToken_type());
                             authorizationView.successLogin();
                         } else {
-                            authorizationView.showError(authResponse.getFirst_error());
+                            authorizationView.showError(authResponse.getFirstError());
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -79,7 +79,7 @@ public class IntroductionPresenter implements IIntroductionPresenter {
                             saveToken(authResponse.getAccessToken(), authResponse.getToken_type());
                             registrationView.onRegistrationFinish();
                         } else {
-                            registrationView.showError(authResponse.getFirst_error());
+                            registrationView.showError(authResponse.getFirstError());
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -101,7 +101,7 @@ public class IntroductionPresenter implements IIntroductionPresenter {
                         if (resetPassResponse.getStatus().equals("success")) {
                             resetPasswordView.onResetSuccess();
                         } else {
-                            resetPasswordView.showError(resetPassResponse.getFirst_error());
+//                            resetPasswordView.showError(resetPassResponse.getFirst_error());
                         }
                     }
                 }, new Consumer<Throwable>() {

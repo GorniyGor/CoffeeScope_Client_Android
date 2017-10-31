@@ -1,8 +1,9 @@
 package com.example.adm1n.coffeescope.network.responses;
 
 import com.example.adm1n.coffeescope.models.Profile;
+import com.example.adm1n.coffeescope.network.BaseResponse;
 
-public class EditProfileResponse {
+public class EditProfileResponse extends BaseResponse {
     private Profile data;
 
     public Profile getData() {

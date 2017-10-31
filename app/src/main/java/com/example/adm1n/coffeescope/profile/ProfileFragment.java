@@ -17,6 +17,7 @@ import com.example.adm1n.coffeescope.R;
 import com.example.adm1n.coffeescope.custom_view.GreatEditText;
 import com.example.adm1n.coffeescope.main_map.view.MapsActivity;
 import com.example.adm1n.coffeescope.profile.change_password.ChangePasswordActivity;
+import com.example.adm1n.coffeescope.profile.feedback.FeedbackActivity;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.jakewharton.rxbinding2.widget.TextViewAfterTextChangeEvent;
 
@@ -54,7 +55,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         etFirstName = (GreatEditText) view.findViewById(R.id.first_name);
         etLastName = (GreatEditText) view.findViewById(R.id.last_name);
         etEmail = (GreatEditText) view.findViewById(R.id.email);
-        saveProfileButton = (Button) view.findViewById(R.id.save_profile_button);
+        saveProfileButton = (Button) view.findViewById(R.id.btn_feedback);
         saveProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,7 +84,7 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         view.findViewById(R.id.cv_feedback).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "Фидбэк", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getContext(), FeedbackActivity.class));
             }
         });
         view.findViewById(R.id.cv_change_password).setOnClickListener(new View.OnClickListener() {
@@ -139,6 +140,11 @@ public class ProfileFragment extends BaseFragment implements IProfileView {
         Intent intent = new Intent(getContext(), MapsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
 

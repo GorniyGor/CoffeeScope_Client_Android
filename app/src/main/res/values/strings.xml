@@ -38,14 +38,17 @@
     <string name="logout">Выйти</string>
     <string name="until">до %s</string>
     <plurals name="drinks">
-        <item quantity="zero">нет напитков</item>
+        <item quantity="zero">%d напитков</item>
         <item quantity="one">%d напиток</item>
         <item quantity="few">%d напитка</item>
         <item quantity="many">%d напитков</item>
+        <item quantity="other">%d напитков</item>
+        <item quantity="two">%d напитка</item>
     </plurals>
     <string name="button_order">В заказе %1$s (%2$d Р)</string>
     <string name="logout_message">Вы уверены, что хотите выйти?</string>
     <string name="base_url">http://coffeescope.istomin.im/api/v1/</string>
+    <string name="transitionProduct">transitionProductToToolbar</string>
 
     //network and errors
     <string name="error_token_expired">Срок действия данного токена истек.</string>

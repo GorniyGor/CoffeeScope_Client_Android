@@ -31,6 +31,7 @@ public class BaseActivity extends AppCompatActivity {
     //toolbar
     protected TextView toolbarTitle;
     protected ImageView toolbarBackButton;
+    protected TextView toolbarBackText;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

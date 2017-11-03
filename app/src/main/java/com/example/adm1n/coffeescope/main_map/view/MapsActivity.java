@@ -1,11 +1,15 @@
 package com.example.adm1n.coffeescope.main_map.view;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -31,7 +35,7 @@ import com.example.adm1n.coffeescope.models.Place;
 import com.example.adm1n.coffeescope.models.Product;
 import com.example.adm1n.coffeescope.models.basket.Basket;
 import com.example.adm1n.coffeescope.order.view.OrderActivity;
-import com.example.adm1n.coffeescope.rating.view.RatingActivity;
+import com.example.adm1n.coffeescope.rating.RatingActivity;
 import com.example.adm1n.coffeescope.search.SearchActivity;
 import com.example.adm1n.coffeescope.utils.MapsUtils;
 import com.example.adm1n.coffeescope.utils.PermissionUtils;
@@ -315,14 +319,50 @@ public class MapsActivity extends BaseActivityWithoutToolbar implements OnMapRea
         return coffeeMenuList;
     }
 
+    /**
+     * Last redaction 01.11.17 12:57 by Egor
+     * (add ripple effect on item product click)
+     *
+     */
+
     @Override
     public void onClick(View v, Product product) {
+
+        //--For other version there applying a ripple effect written in xml
+        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            //--анимация при нажатии
+            ObjectAnimator animation = ObjectAnimator.ofFloat(v, View.ALPHA, 1, 0.1f);
+            animation.setRepeatMode(ValueAnimator.REVERSE);
+            animation.setRepeatCount(1);
+            animation.start();
+            //---
+        }
+
+
         Intent intent = new Intent(getApplicationContext(), CoffeeIngredientsActivity.class);
         intent.setFlags(intent.getFlags() | Intent.FLAG_ACTIVITY_NO_HISTORY);
         intent.putExtra(PRODUCT_ID_EXTRA, product.getId());
         intent.putExtra(PARAM_EXTRA, CoffeeIngredientsFragment.Param.Add);
         intent.putExtra(PLACE_ID_EXTRA, mLastPlace.getId());
-        startActivity(intent);
+
+        //--Transaction between the screens animation
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+
+            // Анимация, при которой название продукта переплывает в название экрана (на туллбаре),
+            // который открывается после нажатия
+            /*TextView view = (TextView) findViewById(R.id.tv_napitok_name);
+            ActivityOptionsCompat options = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation(this, view, view.getTransitionName());*/
+
+
+            //Анимация, при которой открывающийся экран выезжает справа
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this);
+            startActivity(intent, options.toBundle());
+        }
+        else {
+            startActivity(intent);
+        }
+        /*startActivity(intent);*/
     }
 
     @Override

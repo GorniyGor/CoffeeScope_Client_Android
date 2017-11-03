@@ -9,7 +9,13 @@
         android:layout_height="wrap_content"
         android:background="@color/primaryRed">
 
-        <LinearLayout
+        <ImageView
+            android:id="@+id/iv_action_bar_back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/back_button" />
+
+        <!--<LinearLayout
             android:id="@+id/ll_coffee_ingredients_back"
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
@@ -28,10 +34,11 @@
                 android:gravity="center"
                 android:textColor="@color/white"
                 android:textSize="18sp" />
-        </LinearLayout>
+        </LinearLayout>-->
 
         <TextView
             android:id="@+id/tv_action_bar_title"
+            android:transitionName="@string/transitionProduct"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -68,7 +75,7 @@
                         android:id="@+id/layout_coffee_tabs_size"
                         layout="@layout/coffee_tabs_size"
                         android:layout_width="match_parent"
-                        android:layout_height="80dp" />
+                        android:layout_height="87dp" />
 
                     <include
                         android:id="@+id/layout_product_count_control"

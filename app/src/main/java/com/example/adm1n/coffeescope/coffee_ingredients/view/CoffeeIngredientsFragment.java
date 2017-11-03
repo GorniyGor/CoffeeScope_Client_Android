@@ -1,6 +1,9 @@
 package com.example.adm1n.coffeescope.coffee_ingredients.view;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -10,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.CycleInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -55,6 +59,7 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
     private View btnLayout;
     private LinearLayout llBack;
     private TextView toolbarBackText;
+    private ImageView toolbarBackImage;
     private ImageView ivAddProductCount;
     private ImageView ivRemoveProductCount;
     private TextView tvProductCount;
@@ -112,12 +117,15 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
         mTabLayout = ((TabLayout) v.findViewById(R.id.tl_coffee_size));
         mButtonSave = (Button) v.findViewById(R.id.btn_order_save_button);
         btnLayout = v.findViewById(R.id.layout_btn_vibor_napitka);
-        toolbarBackText = (TextView) v.findViewById(R.id.tv_action_bar_back_text);
-        llBack = (LinearLayout) v.findViewById(R.id.ll_coffee_ingredients_back);
+        //-Объяснение 1: Егор закомментил, т.к. нужно было убрать с экрана ингридиентов надпись "Меню"
+        /*toolbarBackText = (TextView) v.findViewById(R.id.tv_action_bar_back_text);
+        llBack = (LinearLayout) v.findViewById(R.id.ll_coffee_ingredients_back);*/
+        toolbarBackImage = (ImageView) v.findViewById(R.id.iv_action_bar_back_button);
         if (mParam != null && mParam.equals(Param.Edit)) {
             mButtonSave.setVisibility(View.VISIBLE);
             btnLayout.setVisibility(View.GONE);
-            toolbarBackText.setVisibility(View.GONE);
+            //-Объяснение 1), ищи выше
+            /*toolbarBackText.setVisibility(View.GONE);*/
         } else {
             mButtonSave.setVisibility(View.GONE);
             btnLayout.setVisibility(View.VISIBLE);
@@ -162,6 +170,12 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
         mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                // Анимация при нажатии
+                if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT)
+                    animateLikeARipple(v);
+
+
                 presenter.saveBasket(mBasket);
                 getActivity().onBackPressed();
             }
@@ -189,7 +203,8 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
         if (mProduct.getSizes() != null) {
             createTabs();
         }
-        llBack.setOnClickListener(new View.OnClickListener() {
+        //-Объяснение 1), ищи выше
+        toolbarBackImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getActivity().onBackPressed();
@@ -229,24 +244,33 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
                 }
             }
         }
+
+        /**
+         * Last redaction 01.11.17 11:06 by Egor
+         * (add animation on tab)
+         */
         mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                View viewCup = tab.getCustomView().findViewById(R.id.icon);
+
+                animateLikeJelly(viewCup);
+
                 switch (String.valueOf(tab.getContentDescription())) {
                     case "s":
-                        tab.getCustomView().findViewById(R.id.icon).setBackgroundResource(R.drawable.size_s_active);
+                        viewCup.setBackgroundResource(R.drawable.size_s_active);
                         TextView viewByIdS = (TextView) tab.getCustomView().findViewById(R.id.tvCost);
                         mBasketProducts.setCost(Integer.valueOf(viewByIdS.getText().toString()));
                         mBasketProducts.setSizeId(tab.getContentDescription().toString());
                         break;
                     case "m":
-                        tab.getCustomView().findViewById(R.id.icon).setBackgroundResource(R.drawable.size_m_active);
+                        viewCup.setBackgroundResource(R.drawable.size_m_active);
                         TextView viewByIdM = (TextView) tab.getCustomView().findViewById(R.id.tvCost);
                         mBasketProducts.setCost(Integer.valueOf(viewByIdM.getText().toString()));
                         mBasketProducts.setSizeId(tab.getContentDescription().toString());
                         break;
                     case "l":
-                        tab.getCustomView().findViewById(R.id.icon).setBackgroundResource(R.drawable.size_l_active);
+                        viewCup.setBackgroundResource(R.drawable.size_l_active);
                         TextView viewByIdL = (TextView) tab.getCustomView().findViewById(R.id.tvCost);
                         mBasketProducts.setCost(Integer.valueOf(viewByIdL.getText().toString()));
                         mBasketProducts.setSizeId(tab.getContentDescription().toString());
@@ -325,12 +349,32 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
         }
     }
 
+    /**
+     * Last redaction 01.11.17 by Egor
+     * (add animation for the checkIcon)
+     */
+
     @Override
     //Клик по ингредиенту
     public void onIngredientsClick(View v, int position) {
+
+        //--For other version there applying a ripple effect written in xml
+        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            //--анимация при нажатии
+            //!!!!!!!!!--Сделать подпрыгивание при выборе ингридиента---------
+            //-Не сделал, т.к. пошёл разбираться в анимациях перехода
+            ObjectAnimator animation = ObjectAnimator.ofFloat(v, View.ALPHA, 1, 0.5f);
+            animation.setRepeatMode(ValueAnimator.REVERSE);
+            animation.setRepeatCount(1);
+            animation.start();
+            //---
+        }
+
         int realPosition = position - 1;
         Ingredients ingredientClick = mIngredientsList.get(realPosition);
         ImageView viewById = (ImageView) v.findViewById(R.id.iv_napitok_add);
+
+
 
         if (checkIcon(realPosition)) {
             for (int i = 0; i < mBasketProducts.getmIngredientsList().size(); i++) {
@@ -338,10 +382,10 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
                     mBasketProducts.getmIngredientsList().remove(i);
                 }
             }
-            viewById.setImageResource(R.drawable.add_icon);
+            animateCoinFlip(viewById, R.drawable.add_icon);
         } else {
             mBasketProducts.getmIngredientsList().add(ingredientClick);
-            viewById.setImageResource(R.drawable.done_icon);
+            animateCoinFlip(viewById, R.drawable.done_icon);
         }
         showSumma();
     }
@@ -359,6 +403,11 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
         RxView.clicks(ivAddProductCount).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
+
+                //if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT){
+                    animateLikeARipple(ivAddProductCount);
+
+
                 int i = Integer.parseInt(tvProductCount.getText().toString());
                 if (i != 9) {
                     i++;
@@ -376,6 +425,11 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
         RxView.clicks(ivRemoveProductCount).subscribe(new Consumer<Object>() {
             @Override
             public void accept(Object o) throws Exception {
+
+                //if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+                    animateLikeARipple(ivRemoveProductCount);
+
+
                 int i = Integer.parseInt(tvProductCount.getText().toString());
                 if (i != 1) {
                     i--;
@@ -397,5 +451,52 @@ public class CoffeeIngredientsFragment extends BaseFragment implements CoffeeIng
         if (mBasket != null) {
             mPayButton.setText("Оплатить (" + String.valueOf(mBasket.getSumma(mBasket)) + ")");
         }
+    }
+
+    /**
+     * Animation by Egor
+     */
+
+    /**
+     * Эффект мигания (разовое при каком-либо действии)
+     * @param view
+     */
+    void animateLikeARipple(View view) {
+        view.animate()
+                .alpha(0.5f)//число экспериментальное
+                //.scaleY(0.75f)
+                .setInterpolator(new CycleInterpolator(1))
+                .start();
+    }
+
+    /**
+     * Эффект желе
+     * @param view
+     */
+    void animateLikeJelly(View view){
+        view.animate()
+                //Проблема: при использовании CycleInterpolator картинка вылазит за рамки
+                //т.е. обрезается
+                //Решение: либо другой интерполятор юзать, либо увеличить padding
+                .scaleX(0.75f)
+                .scaleY(0.75f)
+                .setInterpolator(new CycleInterpolator(1));
+    }
+
+    /**
+     * Эффект переворачивающейся монетки
+     * @param view - Вью, для которой применяется
+     * @param resourceTo - Изображени, НА которое поменяется нынешнее, выставленное во "view"
+     */
+    void animateCoinFlip(ImageView view, int resourceTo){
+        view.animate()
+                .scaleX(0).start();
+
+        view.setImageResource(resourceTo);
+        view.setScaleX(0);
+
+        view.animate()
+                .scaleX(1).start();
+
     }
 }

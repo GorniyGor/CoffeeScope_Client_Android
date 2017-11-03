@@ -14,7 +14,8 @@
         android:layout_gravity="center"
         android:layout_marginStart="9dp"
         android:layout_weight="5"
-        android:src="@drawable/add_button" />
+        android:src="@drawable/add_button"
+        android:background="@drawable/ripple_effect_dark"/>
 
     <Button
         android:id="@+id/btn_pay_napitok"

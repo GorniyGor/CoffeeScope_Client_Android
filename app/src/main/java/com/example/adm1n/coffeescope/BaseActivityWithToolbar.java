@@ -22,6 +22,7 @@ public class BaseActivityWithToolbar extends BaseActivity {
         }
         toolbar = (Toolbar) findViewById(R.id.cool_toolbar);
         toolbarTitle = (TextView) toolbar.findViewById(R.id.tv_action_bar_title);
+        toolbarBackText = (TextView) toolbar.findViewById(R.id.tv_action_bar_back_text);
         toolbarBackButton = (ImageView) toolbar.findViewById(R.id.iv_action_bar_back_button);
         toolbarBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -29,5 +30,12 @@ public class BaseActivityWithToolbar extends BaseActivity {
                 onBackPressed();
             }
         });
+        toolbarBackText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
     }
 }

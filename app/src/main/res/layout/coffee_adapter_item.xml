@@ -3,9 +3,9 @@
     android:id="@+id/rlCoffeeAdapterFrame"
     android:layout_width="match_parent"
     android:layout_height="80dp"
-    android:background="@color/white"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/ripple_effect_light">
 
     <TextView
         android:id="@+id/tv_napitok_name"

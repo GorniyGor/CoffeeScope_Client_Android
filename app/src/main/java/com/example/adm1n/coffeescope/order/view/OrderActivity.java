@@ -2,6 +2,7 @@ package com.example.adm1n.coffeescope.order.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.example.adm1n.coffeescope.BaseActivityWithToolbar;
 import com.example.adm1n.coffeescope.R;
@@ -20,6 +21,8 @@ public class OrderActivity extends BaseActivityWithToolbar {
         placeId = getIntent().getIntExtra(PLACE_ID_EXTRA, 0);
 
         toolbarTitle.setText(R.string.my_order);
+        toolbarBackText.setVisibility(View.VISIBLE);
+
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.container, OrderFragment.newInstance(placeId)).commit();

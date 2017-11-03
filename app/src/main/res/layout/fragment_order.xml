@@ -181,16 +181,28 @@
                 android:textAllCaps="false"
                 android:textSize="22sp" />
 
-            <Button
-                android:id="@+id/btn_order_pay_product"
-                style="@style/button"
-                android:layout_width="match_parent"
-                android:layout_height="72dp"
+            <RelativeLayout
+                android:id="@+id/layout_btn_order_pay_product"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/btn_order_summa_count"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:text="Оформить заказ" />
+                android:layout_marginTop="8dp">
+
+                <Button
+                    android:id="@+id/btn_order_pay_product"
+                    style="@style/button"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:text="Оформить заказ"/>
+
+                <ProgressBar
+                    android:layout_width="40sp"
+                    android:layout_height="40sp"
+                    android:layout_centerInParent="true" />
+
+            </RelativeLayout>
 
             <View
                 android:id="@+id/line_divider4"
@@ -198,7 +210,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_alignParentBottom="true"
-                android:layout_below="@+id/btn_order_pay_product"
+                android:layout_below="@+id/layout_btn_order_pay_product"
                 android:layout_marginTop="10dp"
                 android:background="@android:color/transparent" />
         </RelativeLayout>

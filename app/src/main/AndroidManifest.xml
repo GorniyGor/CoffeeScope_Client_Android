@@ -93,7 +93,7 @@
             android:theme="@style/AppThemeRed" />
 
         <activity
-            android:name=".rating.view.RatingActivity"
+            android:name=".rating.RatingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeRed" />
     </application>

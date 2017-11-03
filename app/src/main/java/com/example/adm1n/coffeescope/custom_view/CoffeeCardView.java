@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -189,7 +190,8 @@ public class CoffeeCardView extends FrameLayout {
             int items = basket.getmBasketProductsList().size();
             String drinks = getContext().getResources().getQuantityString(R.plurals.drinks, items, items);
             mBtnPayCoffee.setEnabled(basket.getmBasketProductsList().size() > 0);
-            mBtnPayCoffee.setText(getContext().getString(R.string.button_order, drinks, basket.getSumma(basket)));
+            mBtnPayCoffee.setText(getContext().getString(R.string.button_order, drinks,
+                    basket.getSumma(basket), Html.fromHtml(" &#x20bd")));
         } else {
             mBtnPayCoffee.setEnabled(false);
         }

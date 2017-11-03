@@ -14,7 +14,6 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.chauthai.swipereveallayout.SwipeRevealLayout;
 import com.example.adm1n.coffeescope.BaseActivity;
 import com.example.adm1n.coffeescope.BaseFragment;
 import com.example.adm1n.coffeescope.R;
@@ -91,6 +90,7 @@ public class OrderFragment extends BaseFragment implements OrderAdapter.OnOrderC
         mRecyclerView.setAdapter(mAdapter);
         mRadioButtonFast.setOnClickListener(radioButtonClickListener);
         mRadioButtonTime.setOnClickListener(radioButtonClickListener);
+
         timePicker.setIs24HourView(true);
         timePicker.setEnabled(false);
         btn_order_summa_count.setText(getString(btn_order_result_text) + " " + mBasket.getSumma() + "\u20BD");
@@ -137,6 +137,20 @@ public class OrderFragment extends BaseFragment implements OrderAdapter.OnOrderC
         mRadioButtonFast = (RadioButton) v.findViewById(R.id.rb_1_order_coffee);
         mRadioButtonTime = (RadioButton) v.findViewById(R.id.rb_2_order_coffee);
         timePicker = (TimePicker) v.findViewById(R.id.time_picker);
+        /*timePicker.setOnTimeChangedListener(mTimePicherChangedListener);
+
+        TimePicker.OnTimeChangedListener mTimePicherChangedListener =
+                new TimePicker.OnTimeChangedListener() {
+                    public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                        updateDisplay(view, startDate, hourOfDay, minute);
+                    }
+                };
+
+        TimePicker.OnTimeChangedListener mNullTimeChangedListener =
+                new TimePicker.OnTimeChangedListener() {
+                    public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {}
+                };*/
+
         mRecyclerView = (RecyclerView) v.findViewById(R.id.rv_order_basket);
         btn_order_summa_count = (Button) v.findViewById(R.id.btn_order_summa_count);
     }

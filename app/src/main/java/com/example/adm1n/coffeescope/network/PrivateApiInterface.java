@@ -11,7 +11,6 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
 
 /**
  * Created by adm1n on 31.07.2017.
@@ -70,12 +69,4 @@ public interface PrivateApiInterface {
     Single<BaseResponse> feedback(
             @Field("comment") String comment
     );
-
-    @FormUrlEncoded
-    @POST("place/{place_id}/review")
-    Single<BaseResponse> sendRating(
-            @Path("place_id") Integer place_id,
-            @Field("valuation") String valuation,
-            @Field("comment") String comment
-            );
 }
